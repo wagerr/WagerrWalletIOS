@@ -554,9 +554,9 @@ protocol BRPeerManagerListener {
 class BRPeerManager {
     let cPtr: OpaquePointer
     let listener: BRPeerManagerListener
-    let mainNetParams = [BRMainNetParams]
+    let mainNetParams = [BRCoinParams]
     let bcashParams = [BRBCashParams]
-    let testNetParams = [BRTestNetParams]
+    let testNetParams = [BRCoinTestNetParams]
     let bcashTestNetParams = [BRBCashTestNetParams]
     let currency: CurrencyDef
 
@@ -713,12 +713,12 @@ class BRPeerManager {
     let d = BRBCashTestNetCheckpoints
     let e = BRBCashTestNetDNSSeeds
     let f = BRBCashTestNetVerifyDifficulty
-    let g = BRMainNetDNSSeeds
-    let h = BRMainNetCheckpoints
-    let i = BRMainNetVerifyDifficulty
-    let j = BRTestNetDNSSeeds
-    let k = BRTestNetCheckpoints
-    let l = BRTestNetVerifyDifficulty
+    let g = BRCoinDNSSeeds
+    let h = BRCoinCheckpoints
+    let i = BRCoinVerifyDifficulty
+    let j = BRCoinTestNetDNSSeeds
+    let k = BRCoinTestNetCheckpoints
+    let l = BRCoinTestNetVerifyDifficulty
 }
 
 extension UInt256 : CustomStringConvertible {    

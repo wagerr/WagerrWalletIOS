@@ -247,13 +247,13 @@ extension ERC20Token {
 // MARK: Instances
 
 public struct Currencies {
-    static let btc = Bitcoin(name: "Bitcoin",
+    static let btc = Bitcoin(name: "Biblepay",
                              code: "BTC",
                              symbol: S.Symbols.btc,
                              colors: (UIColor(red:0.972549, green:0.623529, blue:0.200000, alpha:1.0), UIColor(red:0.898039, green:0.505882, blue:0.031373, alpha:1.0)),
                              dbPath: "BreadWallet.sqlite",
                              forkId: 0,
-                             urlSchemes: ["bitcoin"])
+                             urlSchemes: ["biblepay"])
     static let bch = Bitcoin(name: "Bitcoin Cash",
                              code: "BCH",
                              symbol: S.Symbols.btc,

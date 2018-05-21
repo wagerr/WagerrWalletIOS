@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06C0C6C220B360C10047C540 /* x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C020B360C00047C540 /* x11.c */; };
 		1B1AFFA01FB7EF7C00E61908 /* BiometricsSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1AFF9E1FB7EF7C00E61908 /* BiometricsSettingsViewController.swift */; };
 		1B1AFFA11FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1AFF9F1FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift */; };
 		22122B721F0B8996000E9AB9 /* BRAPIClient+Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22122B711F0B8996000E9AB9 /* BRAPIClient+Events.swift */; };
@@ -660,6 +661,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		06C0C6BE20B360BF0047C540 /* x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x11.h; sourceTree = "<group>"; };
+		06C0C6BF20B360C00047C540 /* coin */ = {isa = PBXFileReference; lastKnownFileType = folder; path = coin; sourceTree = "<group>"; };
+		06C0C6C020B360C00047C540 /* x11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x11.c; sourceTree = "<group>"; };
+		06C0C6C120B360C00047C540 /* sha3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = sha3; sourceTree = "<group>"; };
 		1B1AFF9E1FB7EF7C00E61908 /* BiometricsSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsSettingsViewController.swift; sourceTree = "<group>"; };
 		1B1AFF9F1FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricsSpendingLimitViewController.swift; sourceTree = "<group>"; };
 		22122B711F0B8996000E9AB9 /* BRAPIClient+Events.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BRAPIClient+Events.swift"; sourceTree = "<group>"; };
@@ -2963,6 +2968,10 @@
 		75DC77AB1DAA05B500932D9A /* breadwallet-core */ = {
 			isa = PBXGroup;
 			children = (
+				06C0C6BF20B360C00047C540 /* coin */,
+				06C0C6C120B360C00047C540 /* sha3 */,
+				06C0C6C020B360C00047C540 /* x11.c */,
+				06C0C6BE20B360BF0047C540 /* x11.h */,
 				7C754AAA205864D4006646A6 /* ethereum */,
 				75DC77AE1DAA05B500932D9A /* BRAddress.c */,
 				75DC77AF1DAA05B500932D9A /* BRAddress.h */,
@@ -4156,6 +4165,7 @@
 				75C468AA2056E5F800113F92 /* BRBech32.c in Sources */,
 				3C83B27620631739001D08CE /* BRRlpCoder.c in Sources */,
 				3C83B27820631740001D08CE /* BRUtilMathParse.c in Sources */,
+				06C0C6C220B360C10047C540 /* x11.c in Sources */,
 				755CD9DF1DAA1A270075898E /* BRBloomFilter.c in Sources */,
 				7CF1161C205C943800C03D42 /* BREthereumAccount.c in Sources */,
 				755CD9DE1DAA1A270075898E /* BRBIP39Mnemonic.c in Sources */,

@@ -42,11 +42,14 @@ class ApplicationController : Subscriber, Trackable {
 
     init() {
         guardProtected(queue: DispatchQueue.walletQueue) {
+            self.initWallet(completion: self.didAttemptInitWallet)  // no bch here
+            /*
             if UserDefaults.hasBchConnected {
                 self.initWallet(completion: self.didAttemptInitWallet)
             } else {
                 self.initWalletWithMigration(completion: self.didAttemptInitWallet)
             }
+            */
         }
     }
 

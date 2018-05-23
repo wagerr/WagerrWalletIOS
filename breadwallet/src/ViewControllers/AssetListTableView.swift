@@ -108,7 +108,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         
         switch section {
         case .assets:
-            return Store.state.displayCurrencies.count + 1
+            return Store.state.displayCurrencies.count  // remove +1 to hide "Manage wallets" menu
         case .menu:
             return Menu.allItems.count
         }
@@ -127,6 +127,7 @@ class AssetListTableView: UITableViewController, Subscriber {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
 
+         // disable token management
         if section == .assets && isAddWalletRow(row: indexPath.row) {
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.cellIdentifier, for: indexPath) as! MenuCell
             cell.set(title: manageWalletContent.0, icon: manageWalletContent.1)

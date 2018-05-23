@@ -61,9 +61,9 @@ extension State {
                         pinLength: 6,
                         walletID: nil,
                         wallets: [Currencies.btc.code: WalletState.initial(Currencies.btc, displayOrder: -1),
-                                  Currencies.bch.code: WalletState.initial(Currencies.bch, displayOrder: -1),
+                                /*  Currencies.bch.code: WalletState.initial(Currencies.bch, displayOrder: -1),
                                   Currencies.eth.code: WalletState.initial(Currencies.eth, displayOrder: -1),
-                                  Currencies.brd.code: WalletState.initial(Currencies.brd, displayOrder: -1),
+                                  Currencies.brd.code: WalletState.initial(Currencies.brd, displayOrder: -1),*/
             ])
     }
     

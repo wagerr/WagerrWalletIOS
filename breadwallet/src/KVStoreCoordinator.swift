@@ -57,7 +57,9 @@ class KVStoreCoordinator : Subscriber {
             if let walletState = oldWallets[$0] {
                 newWallets[$0] = walletState.mutate(displayOrder: displayOrder)
                 displayOrder = displayOrder + 1
-            } else {
+            }
+            // no token wallets in alt-coin version
+            /*else {
                 //Since a WalletState wasn't found, it must be a token address
                 let tokenAddress = $0.replacingOccurrences(of: C.erc20Prefix, with: "")
                 if tokenAddress.lowercased() == Currencies.brd.address.lowercased() {
@@ -68,11 +70,12 @@ class KVStoreCoordinator : Subscriber {
                     if let token = filteredTokens.first {
                         newWallets[token.code] = WalletState.initial(token, displayOrder: displayOrder)
                         displayOrder = displayOrder + 1
-                    } else {
+                    }  else {
                         assert(false)
                     }
                 }
             }
+ */
         }
 
         //Re-add hidden default currencies

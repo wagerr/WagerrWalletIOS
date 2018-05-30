@@ -20,7 +20,10 @@ class ExchangeUpdater : Subscriber {
             Store.subscribe(self,
                             selector: { $0.defaultCurrencyCode != $1.defaultCurrencyCode },
                             callback: { state in
-                                guard let currentRate = state[currency]!.rates.first( where: { $0.code == state.defaultCurrencyCode }) else { return }
+                                guard let CoinRate = state[currency]!.rates.first( where: { $0.code == Currencies.btc.code }) else { return }
+                                guard let BTCRate = state[currency]!.rates.first( where: { $0.code == Store.state.defaultCurrencyCode }) else { return }
+                                let currentRate = Rate(code: BTCRate.code, name: BTCRate.name, rate: BTCRate.rate*CoinRate.rate, reciprocalCode: Currencies.btc.code)
+
                                 Store.perform(action: WalletChange(currency).setExchangeRate(currentRate))
             })
         }
@@ -55,10 +58,16 @@ class ExchangeUpdater : Subscriber {
     }
 
     private func findCurrentRate(rates: [Rate]) -> Rate {
+        guard let CoinRate = rates.first( where: { $0.code == Currencies.btc.code }) else { return Rate.empty }
+        guard let BTCRate = rates.first( where: { $0.code == Store.state.defaultCurrencyCode }) else { return Rate.empty }
+        let currentRate = Rate(code: BTCRate.code, name: BTCRate.name, rate: BTCRate.rate*CoinRate.rate, reciprocalCode: Currencies.btc.code)
+
+/*
         guard let currentRate = rates.first( where: { $0.code == Store.state.defaultCurrencyCode }) else {
             Store.perform(action: DefaultCurrency.setDefault(C.usdCurrencyCode))
             return rates.first( where: { $0.code == C.usdCurrencyCode })!
         }
+ */
         return currentRate
     }
 

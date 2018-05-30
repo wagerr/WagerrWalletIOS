@@ -118,6 +118,7 @@ extension TxDetailViewModel {
         let nf = NumberFormatter()
         nf.currencySymbol = symbol
         nf.numberStyle = .currency
+        nf.maximumFractionDigits = 4  // smaller cap alt-coins
         return nf.string(from: rate as NSNumber) ?? nil
     }
     

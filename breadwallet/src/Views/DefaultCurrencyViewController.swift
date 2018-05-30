@@ -13,7 +13,7 @@ class DefaultCurrencyViewController : UITableViewController, Subscriber {
 
     init(walletManager: BTCWalletManager) {
         self.walletManager = walletManager
-        self.rates = Currencies.btc.state?.rates.filter { $0.code != Currencies.btc.code } ?? [Rate]()
+        self.rates = Currencies.btc.state?.rates ?? [Rate]()
         super.init(style: .plain)
     }
 
@@ -38,7 +38,7 @@ class DefaultCurrencyViewController : UITableViewController, Subscriber {
     }
 
     private let bitcoinLabel = UILabel(font: .customBold(size: 14.0), color: .grayTextTint)
-    private let bitcoinSwitch = UISegmentedControl(items: ["Bits (\(S.Symbols.bits))", "BTC (\(S.Symbols.btc))"])
+    private let bitcoinSwitch = UISegmentedControl(items: ["Bits (\(S.Symbols.bits))", "BBP (\(S.Symbols.btc))"])
     private let rateLabel = UILabel(font: .customBody(size: 16.0), color: .darkText)
     private var header: UIView?
 
@@ -71,11 +71,12 @@ class DefaultCurrencyViewController : UITableViewController, Subscriber {
     }
 
     private func setExchangeRateLabel() {
-        if let currentRate = rates.filter({ $0.code == defaultCurrencyCode }).first {
-            let amount = Amount(amount: UInt256(C.satoshis), currency: Currencies.btc, rate: currentRate)
-            rateLabel.textColor = .darkText
-            rateLabel.text = "\(amount.tokenDescription) = \(amount.fiatDescription(forLocale: currentRate.locale))"
-        }
+        guard let CoinRate = rates.first( where: { $0.code == Currencies.btc.code }) else { return }
+        guard let BTCRate = rates.first( where: { $0.code == defaultCurrencyCode }) else { return }
+        let currentRate = Rate(code: BTCRate.code, name: BTCRate.name, rate: BTCRate.rate*CoinRate.rate, reciprocalCode:Currencies.btc.code)
+        let amount = Amount(amount: UInt256(C.satoshis), currency: Currencies.btc, rate: currentRate)
+        rateLabel.textColor = .darkText
+        rateLabel.text = "\(amount.tokenDescription) = \(amount.fiatDescription(forLocale: currentRate.locale))"
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {

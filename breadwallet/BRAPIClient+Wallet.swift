@@ -183,7 +183,7 @@ extension BRAPIClient {
 
     func fetchUTXOS(address: String, currency: CurrencyDef, completion: @escaping ([[String: Any]]?)->Void) {
         let path = "http://explorer.biblepay-central.org/ext/getutxos/\(address)"
-        var req = URLRequest(url: url(path))
+        var req = URLRequest(url: URL(string: path)!)
         req.httpMethod = "GET"
         //req.httpBody = "addrs=\(address)".data(using: .utf8)
         dataTaskWithRequest(req, handler: { data, resp, error in

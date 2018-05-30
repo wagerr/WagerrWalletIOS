@@ -12,7 +12,7 @@ import SafariServices
 class AboutViewController : UIViewController {
 
     private let titleLabel = UILabel(font: .customBold(size: 26.0), color: .darkText)
-    private let logo = UIImageView(image: #imageLiteral(resourceName: "LogoCutout"))
+    private let logo = UIImageView(image: #imageLiteral(resourceName: "LogoGradient"))
     private let logoBackground = GradientView()
     private let walletID = WalletIDCell()
     private let blog = AboutCell(text: S.About.blog)
@@ -20,6 +20,7 @@ class AboutViewController : UIViewController {
     private let reddit = AboutCell(text: S.About.reddit)
     private let privacy = UIButton(type: .system)
     private let footer = UILabel(font: .customBody(size: 13.0), color: .secondaryGrayText)
+    private let footer2 = UILabel(font: .customBody(size: 13.0), color: .secondaryGrayText)
     override func viewDidLoad() {
         addSubviews()
         addConstraints()
@@ -31,12 +32,13 @@ class AboutViewController : UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(logoBackground)
         logoBackground.addSubview(logo)
-        view.addSubview(walletID)
+        //view.addSubview(walletID)
         view.addSubview(blog)
         view.addSubview(twitter)
         view.addSubview(reddit)
         view.addSubview(privacy)
         view.addSubview(footer)
+        view.addSubview(footer2)
     }
 
     private func addConstraints() {
@@ -46,15 +48,17 @@ class AboutViewController : UIViewController {
         logoBackground.constrain([
             logoBackground.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoBackground.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: C.padding[3]),
-            logoBackground.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
-            logoBackground.heightAnchor.constraint(equalTo: logoBackground.widthAnchor, multiplier: 342.0/553.0) ])
+            logoBackground.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+            logoBackground.heightAnchor.constraint(equalTo: logoBackground.widthAnchor, multiplier: 142.0/553.0) ])
         logo.constrain(toSuperviewEdges: nil)
+        /*
         walletID.constrain([
             walletID.topAnchor.constraint(equalTo: logoBackground.bottomAnchor, constant: C.padding[2]),
             walletID.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             walletID.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
+ */
         blog.constrain([
-            blog.topAnchor.constraint(equalTo: walletID.bottomAnchor, constant: C.padding[2]),
+            blog.topAnchor.constraint(equalTo: logoBackground.bottomAnchor, constant: C.padding[2]),
             blog.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             blog.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
         twitter.constrain([
@@ -71,6 +75,9 @@ class AboutViewController : UIViewController {
         footer.constrain([
             footer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             footer.topAnchor.constraint(equalTo: privacy.bottomAnchor) ])
+        footer2.constrain([
+            footer2.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            footer2.topAnchor.constraint(equalTo: footer.bottomAnchor) ])
     }
 
     private func setData() {
@@ -81,21 +88,22 @@ class AboutViewController : UIViewController {
         footer.textAlignment = .center
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
             footer.text = String(format: S.About.footer, "\(version) (\(build))")
+            footer2.text = S.About.footer2
         }
     }
 
     private func setActions() {
         blog.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://breadapp.com/blog/")
+            myself.presentURL(string: "https://biblepay.org/")
         }
         twitter.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://twitter.com/breadapp")
+            myself.presentURL(string: "https://twitter.com/biblepay")
         }
         reddit.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://reddit.com/r/breadwallet/")
+            myself.presentURL(string: "https://reddit.com/r/biblepay/")
         }
         privacy.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://breadapp.com/privacy-policy")
+            myself.presentURL(string: "https://www.biblepay.org/mobile/privacy.htm")
         }
     }
 

@@ -31,8 +31,8 @@ extension BRAPIClient {
         let param = code == Currencies.bch.code ? "?currency=bch" : ""
         let req = URLRequest(url: url("/fee-per-kb\(param)"))
         let task = self.dataTaskWithRequest(req) { (data, response, err) -> Void in
-            var regularFeePerKb: uint_fast64_t = 0
-            var economyFeePerKb: uint_fast64_t = 0
+            var regularFeePerKb: uint_fast64_t = 10000
+            var economyFeePerKb: uint_fast64_t = 5000
             var errStr: String? = nil
             if err == nil {
                 do {
@@ -48,10 +48,10 @@ extension BRAPIClient {
                 if regularFeePerKb == 0 || economyFeePerKb == 0 {
                     errStr = "invalid json"
                 }
-            } else {
+            } /*else {
                 self.log("fee-per-kb network error: \(String(describing: err))")
                 errStr = "bad network connection"
-            }
+            }*/
             handler(Fees(regular: regularFeePerKb, economy: economyFeePerKb, timestamp: Date().timeIntervalSince1970), errStr)
         }
         task.resume()
@@ -59,23 +59,29 @@ extension BRAPIClient {
     
     /// Fetches Bitcoin exchange rates in all available fiat currencies
     func bitcoinExchangeRates(isFallback: Bool = false, _ handler: @escaping (RatesResult) -> Void) {
-        let code = Currencies.btc.code
+        let code = "BTC"
         let param = "?currency=\(code.lowercased())"
         let request = isFallback ? URLRequest(url: URL(string: fallbackRatesURL)!) : URLRequest(url: url("/rates\(param)"))
         let task = dataTaskWithRequest(request) { (data, response, error) in
             if error == nil, let data = data,
                 let parsedData = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
-                if isFallback {
-                    guard let array = parsedData as? [Any] else {
-                        return handler(.error("/rates didn't return an array"))
+                self.FetchCoinRate() { [weak self] result in
+                    guard let `self` = self,
+                        case .success(let CoinRates) = result else { return }
+                    
+                    // calculate token/fiat rates
+                    if isFallback {
+                        guard let array = parsedData as? [Any] else {
+                            return handler(.error("/rates didn't return an array"))
+                        }
+                        handler(.success(CoinRates + array.compactMap { Rate(data: $0, reciprocalCode: code) }))
+                    } else {
+                        guard var dict = parsedData as? [String: Any],
+                            let array = dict["body"] as? [Any] else {
+                                return self.bitcoinExchangeRates(isFallback: true, handler)
+                        }
+                        handler(.success(CoinRates + array.compactMap { Rate(data: $0, reciprocalCode: code) }))
                     }
-                    handler(.success(array.compactMap { Rate(data: $0, reciprocalCode: code) }))
-                } else {
-                    guard let dict = parsedData as? [String: Any],
-                        let array = dict["body"] as? [Any] else {
-                            return self.bitcoinExchangeRates(isFallback: true, handler)
-                    }
-                    handler(.success(array.compactMap { Rate(data: $0, reciprocalCode: code) }))
                 }
             } else {
                 if isFallback {
@@ -86,6 +92,29 @@ extension BRAPIClient {
             }
         }
         task.resume()
+    }
+
+    func FetchCoinRate(_ handler: @escaping (RatesResult) -> Void) {
+        let urlString = "https://api.coinmarketcap.com/v1/ticker/biblepay/"
+        var ret = [Rate]()
+        
+        guard let requestUrl = URL(string:urlString) else { return handler(.error("BBP rate not found")) }
+        let request = URLRequest(url:requestUrl)
+        let task = URLSession.shared.dataTask(with: request) {
+            (data, response, error) in
+            if error == nil,let usableData = data {
+                let json = try? JSONSerialization.jsonObject(with: usableData, options: []) as? [Any]
+                let bbpdata = json!?.first as? [String: Any]
+                guard let ratestr = bbpdata!["price_btc"] as? String else {
+                    return
+                }
+                let coinrate = Double(ratestr)
+                ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
+                handler(.success(ret))
+            }
+        }
+        task.resume()
+        return
     }
 
     /// Fetches all token exchange rates in BTC from CoinMarketCap
@@ -153,10 +182,10 @@ extension BRAPIClient {
     }
 
     func fetchUTXOS(address: String, currency: CurrencyDef, completion: @escaping ([[String: Any]]?)->Void) {
-        let path = currency.matches(Currencies.btc) ? "/q/addrs/utxo" : "/q/addrs/utxo?currency=bch"
+        let path = "http://explorer.biblepay-central.org/ext/getutxos/\(address)"
         var req = URLRequest(url: url(path))
-        req.httpMethod = "POST"
-        req.httpBody = "addrs=\(address)".data(using: .utf8)
+        req.httpMethod = "GET"
+        //req.httpBody = "addrs=\(address)".data(using: .utf8)
         dataTaskWithRequest(req, handler: { data, resp, error in
             guard error == nil else { completion(nil); return }
             guard let data = data,

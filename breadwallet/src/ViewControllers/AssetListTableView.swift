@@ -108,7 +108,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         
         switch section {
         case .assets:
-            return Store.state.displayCurrencies.count  // remove +1 to hide "Manage wallets" menu
+            return Store.state.displayCurrencies.count   // remove +1 to hide "Manage wallets" menu
         case .menu:
             return Menu.allItems.count
         }

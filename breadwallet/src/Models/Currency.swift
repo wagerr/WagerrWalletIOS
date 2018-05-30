@@ -248,7 +248,7 @@ extension ERC20Token {
 
 public struct Currencies {
     static let btc = Bitcoin(name: "Biblepay",
-                             code: "BTC",
+                             code: "BBP",
                              symbol: S.Symbols.btc,
                              colors: (UIColor.gradientStart, UIColor.gradientEnd),
                              dbPath: "BreadWallet.sqlite",

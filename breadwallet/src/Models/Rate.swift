@@ -51,6 +51,7 @@ struct Rate {
     var localString: String {
         let format = NumberFormatter()
         format.numberStyle = .currency
+        format.maximumFractionDigits = 4  // smaller cap alt-coins
         format.currencySymbol = currencySymbol
         return format.string(from: rate as NSNumber) ?? ""
     }

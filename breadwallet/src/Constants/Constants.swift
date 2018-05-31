@@ -34,11 +34,11 @@ struct C {
     static let secondsInDay: TimeInterval = 86400
     static let maxMoney: UInt64 = 5100000000*100000000
     static let satoshis: UInt64 = 100000000
-    static let walletQueue = "com.biblepaywallet.walletqueue"
+    static let walletQueue = "com.digiwagewallet.walletqueue"
     static let null = "(null)"
     static let maxMemoLength = 250
-    static let feedbackEmail = "mobile@biblepay.org"
-    static let iosEmail = "mobile@biblepay.org"
+    static let feedbackEmail = "support@digiwage.org"
+    static let iosEmail = "support@digiwage.org"
     static let reviewLink = "https://itunes.apple.com/app/breadwallet-bitcoin-wallet/id885251393?action=write-review"
     static var standardPort: Int {
         return E.isTestnet ? 40001 : 40000

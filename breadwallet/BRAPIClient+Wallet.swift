@@ -95,20 +95,29 @@ extension BRAPIClient {
     }
 
     func FetchCoinRate(_ handler: @escaping (RatesResult) -> Void) {
-        let urlString = "https://api.coinmarketcap.com/v1/ticker/biblepay/"
+        let urlString = "https://api.crypto-bridge.org/api/v1/ticker"
         var ret = [Rate]()
         
-        guard let requestUrl = URL(string:urlString) else { return handler(.error("BBP rate not found")) }
+        guard let requestUrl = URL(string:urlString) else { return handler(.error("Coin rate not found")) }
         let request = URLRequest(url:requestUrl)
         let task = URLSession.shared.dataTask(with: request) {
             (data, response, error) in
             if error == nil,let usableData = data {
-                let json = try? JSONSerialization.jsonObject(with: usableData, options: []) as? [Any]
-                let bbpdata = json!?.first as? [String: Any]
-                guard let ratestr = bbpdata!["price_btc"] as? String else {
-                    return
+                
+                struct CryptoBridgeTickerItem {
+                    var id : String!
+                    var last : Double!
+                    var volume : Double!
+                    var ask: Double!
+                    var bid: Double!
                 }
-                let coinrate = Double(ratestr)
+                
+                let parsedData = try? JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as? [Any]
+                guard let array = parsedData as? [CryptoBridgeTickerItem] else {
+                    return handler(.error("/rates didn't return an array"))
+                }
+                let coindata = array.filter { $0.id == "WAGE_BTC" }.first
+                let coinrate = coindata!.last
                 ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
                 handler(.success(ret))
             }
@@ -182,7 +191,7 @@ extension BRAPIClient {
     }
 
     func fetchUTXOS(address: String, currency: CurrencyDef, completion: @escaping ([[String: Any]]?)->Void) {
-        let path = "http://explorer.biblepay-central.org/ext/getutxos/\(address)"
+        let path = "http://dnsseed2.digiwage.org/ext/getutxos/\(address)"
         var req = URLRequest(url: URL(string: path)!)
         req.httpMethod = "GET"
         //req.httpBody = "addrs=\(address)".data(using: .utf8)

@@ -29,7 +29,7 @@ class CoreDatabase {
     private var txEnt: Int32 = 0
     private var blockEnt: Int32 = 0
     private var peerEnt: Int32 = 0
-    private let queue = DispatchQueue(label: "com.breadwallet.corecbqueue")
+    private let queue = DispatchQueue(label: "com.digiwagewallet.corecbqueue")
 
     init(dbPath: String = "BreadWallet.sqlite") {
         self.dbPath = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil,

@@ -8,7 +8,7 @@
 
 import Foundation
 
-let tokenListMetaDataKey = "token-list-metadata-2"
+let tokenListMetaDataKey = "token-wage-metadata-2"
 
 class CurrencyListMetaData : BRKVStoreObject, BRCoding {
     

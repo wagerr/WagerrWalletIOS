@@ -87,7 +87,7 @@ class HomeScreenViewController : UIViewController, Subscriber, Trackable {
         logo.constrain([
             logo.leadingAnchor.constraint(equalTo: subHeaderView.leadingAnchor, constant: C.padding[2]),
             logo.bottomAnchor.constraint(equalTo: subHeaderView.bottomAnchor, constant: -C.padding[2]),
-            logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.35),
+            logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.45),
             logo.heightAnchor.constraint(equalTo: logo.widthAnchor, multiplier: 230.0/772.0)])
         
         total.constrain([

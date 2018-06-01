@@ -228,7 +228,7 @@ import WebKit
     }
 
     func navigate(to: String) {
-        let js = "window.location = '\(to)';"
+        let js = "window.location.href = '\(to)';"
         webView?.evaluateJavaScript(js, completionHandler: { result, error in
             if let error = error {
                 print("WEBVIEW navigate to error: \(String(describing: error))")

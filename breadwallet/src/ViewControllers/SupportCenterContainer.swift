@@ -11,7 +11,16 @@ import UIKit
 class SupportCenterContainer : UIViewController {
 
     func navigate(to: String) {
-        webView.navigate(to: to)
+        //webView.navigate(to: to)
+        guard let url = URL(string: to) else {
+            return //be safe
+        }
+
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            UIApplication.shared.openURL(url)
+        }
     }
 
     init(walletManagers: [String: WalletManager], apiClient: BRAPIClient) {

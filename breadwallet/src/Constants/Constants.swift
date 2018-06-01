@@ -41,7 +41,7 @@ struct C {
     static let iosEmail = "support@digiwage.org"
     static let reviewLink = "https://itunes.apple.com/app/breadwallet-bitcoin-wallet/id885251393?action=write-review"
     static var standardPort: Int {
-        return E.isTestnet ? 40001 : 40000
+        return E.isTestnet ? 46005 : 46003
     }
     static let feeCacheTimeout: TimeInterval = C.secondsInDay*3
     static let bCashForkBlockHeight: UInt32 = E.isTestnet ? 1155876 : 478559

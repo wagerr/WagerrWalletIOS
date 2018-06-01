@@ -226,7 +226,7 @@ class ModalPresenter : Subscriber, Trackable {
         } else {
             url = "/support?"
         }
-        supportCenter.navigate(to: url)
+        supportCenter.navigate(to: "https://discord.gg/HnYGD5h")        // bypass support
         topViewController?.present(supportCenter, animated: true, completion: {})
     }
 
@@ -385,7 +385,8 @@ class ModalPresenter : Subscriber, Trackable {
                         Store.trigger(name: .resetDisplayCurrencies)
                     })
                 })
-        ]*/
+        ]
+ */
         
         let rows = [
             SettingsSections.wallet: [

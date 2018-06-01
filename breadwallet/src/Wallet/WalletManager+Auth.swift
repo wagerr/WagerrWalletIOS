@@ -425,7 +425,7 @@ extension BTCWalletManager : WalletAuthenticator {
 
         do {
             resetForWipe()
-            masterPubKey = BRMasterPubKey()
+            masterPubKey     = BRMasterPubKey()
             earliestKeyTime = 0
             if let bundleId = Bundle.main.bundleIdentifier {
                 UserDefaults.standard.removePersistentDomain(forName: bundleId)

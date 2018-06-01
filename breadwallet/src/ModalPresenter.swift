@@ -379,15 +379,14 @@ class ModalPresenter : Subscriber, Trackable {
                 let currencySettingsVC = SettingsViewController(sections: sections, rows: currencySettings, optionalTitle: pageTitle)
                 settingsNav.pushViewController(currencySettingsVC, animated: true)
             })
-            } /*+ [
+            } + [
                 Setting(title: S.Settings.resetCurrencies, callback: {
                     settingsNav.dismiss(animated: true, completion: {
                         Store.trigger(name: .resetDisplayCurrencies)
                     })
                 })
         ]
- */
-        
+ 
         let rows = [
             SettingsSections.wallet: [
                 Setting(title: S.Settings.wipe, callback: { [weak self] in

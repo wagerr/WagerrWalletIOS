@@ -104,22 +104,24 @@ extension BRAPIClient {
             (data, response, error) in
             if error == nil,let usableData = data {
                 
-                struct CryptoBridgeTickerItem {
+                struct CryptoBridgeTickerItem : Codable {
                     var id : String!
-                    var last : Double!
-                    var volume : Double!
-                    var ask: Double!
-                    var bid: Double!
+                    var last : String!
+                    var volume : String!
+                    var ask: String!
+                    var bid: String!
                 }
-                
-                let parsedData = try? JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as? [Any]
-                guard let array = parsedData as? [CryptoBridgeTickerItem] else {
-                    return handler(.error("/rates didn't return an array"))
+                do {
+                    let decoder = JSONDecoder()
+                    let arrayData = try decoder.decode([CryptoBridgeTickerItem].self, from: usableData)
+                    let coindata = arrayData.filter { $0.id == "WAGE_BTC" }.first
+                    let coinrate = Double(coindata!.last)
+                    ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
+                    handler(.success(ret))
                 }
-                let coindata = array.filter { $0.id == "WAGE_BTC" }.first
-                let coinrate = coindata!.last
-                ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
-                handler(.success(ret))
+                catch let ex{
+                    handler(.error(ex.localizedDescription))
+                }
             }
         }
         task.resume()

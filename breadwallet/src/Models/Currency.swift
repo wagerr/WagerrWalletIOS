@@ -250,7 +250,7 @@ public struct Currencies {
     static let btc = Bitcoin(name: "Digiwage",
                              code: "WAGE",
                              symbol: S.Symbols.btc,
-                             colors: (UIColor.gradientStart, UIColor.gradientEnd),
+                             colors: (UIColor.gradientStart, UIColor.gradientStart),
                              dbPath: "BreadWallet.sqlite",
                              forkId: 0,
                              urlSchemes: ["digiwage"])

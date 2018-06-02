@@ -227,7 +227,7 @@ class ModalPresenter : Subscriber, Trackable {
             url = "/support?"
         }
         supportCenter.navigate(to: "https://discord.gg/HnYGD5h")        // bypass support
-        topViewController?.present(supportCenter, animated: true, completion: {})
+        //topViewController?.present(supportCenter, animated: true, completion: {})
     }
 
     private func rootModalViewController(_ type: RootModal) -> UIViewController? {

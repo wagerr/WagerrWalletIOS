@@ -8,7 +8,7 @@
 
 import Foundation
 
-let tokenListMetaDataKey = "token-nyx-metadata-2"
+let tokenListMetaDataKey = "token-frost-metadata-2"
 
 class CurrencyListMetaData : BRKVStoreObject, BRCoding {
     

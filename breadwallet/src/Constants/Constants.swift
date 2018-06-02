@@ -34,14 +34,14 @@ struct C {
     static let secondsInDay: TimeInterval = 86400
     static let maxMoney: UInt64 = 5100000000*100000000
     static let satoshis: UInt64 = 100000000
-    static let walletQueue = "com.nyxwallet.walletqueue"
+    static let walletQueue = "com.bifrostwallet.walletqueue"
     static let null = "(null)"
     static let maxMemoLength = 250
-    static let feedbackEmail = "support@nyxcoin.org"
-    static let iosEmail = "support@nyxcoin.org"
+    static let feedbackEmail = "bifrost.actual@gmail.com"
+    static let iosEmail = "bifrost.actual@gmail.com"
     static let reviewLink = "https://itunes.apple.com/app/breadwallet-bitcoin-wallet/id885251393?action=write-review"
     static var standardPort: Int {
-        return E.isTestnet ? 4332 : 4330
+        return E.isTestnet ? 19229 : 9229
     }
     static let feeCacheTimeout: TimeInterval = C.secondsInDay*3
     static let bCashForkBlockHeight: UInt32 = E.isTestnet ? 1155876 : 478559

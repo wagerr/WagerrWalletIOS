@@ -319,7 +319,7 @@ enum S {
         static let privacy = NSLocalizedString("About.privacy", value:"Privacy Policy", comment: "Privay Policy button label")
         static let walletID = NSLocalizedString("About.walletID", value:"BRD Rewards ID", comment: "About screen wallet ID label")
         static let footer = NSLocalizedString("About.footer", value:"Made by the global BRD team. Version %1$@", comment: "About screen footer")
-        static let footer2 = NSLocalizedString("About.footer2", value:"Adapted to Digiwage by MIP", comment: "About screen footer 2")
+        static let footer2 = NSLocalizedString("About.footer2", value:"Adapted to NYXCoin by MIP", comment: "About screen footer 2")
     }
 
     enum PushNotifications {

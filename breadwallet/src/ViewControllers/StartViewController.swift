@@ -59,7 +59,7 @@ class StartViewController : UIViewController {
 
     private func addConstraints() {
         background.constrain(toSuperviewEdges: nil)
-        let yConstraint = NSLayoutConstraint(item: logo, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 0.5, constant: 0.0)
+        let yConstraint = NSLayoutConstraint(item: logo, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 0.8, constant: 0.0)
         logo.constrain([
             logo.constraint(.centerX, toView: view, constant: nil),
             yConstraint])

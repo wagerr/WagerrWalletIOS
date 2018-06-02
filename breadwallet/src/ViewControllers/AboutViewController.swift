@@ -48,8 +48,8 @@ class AboutViewController : UIViewController {
         logoBackground.constrain([
             logoBackground.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logoBackground.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: C.padding[3]),
-            logoBackground.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
-            logoBackground.heightAnchor.constraint(equalTo: logoBackground.widthAnchor, multiplier: 142.0/553.0) ])
+            logoBackground.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.4),
+            logoBackground.heightAnchor.constraint(equalTo: logoBackground.widthAnchor, multiplier: 542.0/553.0) ])
         logo.constrain(toSuperviewEdges: nil)
         /*
         walletID.constrain([
@@ -103,7 +103,7 @@ class AboutViewController : UIViewController {
             myself.presentURL(string: "https://reddit.com/r/NYXCoin/")
         }
         privacy.tap = strongify(self) { myself in
-            myself.presentURL(string: "http://www.nyxcoin.org/privacy-policy.htm")
+            myself.presentURL(string: "https://www.nyxcoin.org/mobile-wallet-privacy-policy")
         }
     }
 

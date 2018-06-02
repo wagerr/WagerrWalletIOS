@@ -26,7 +26,7 @@ class ReachabilityMonitor : Trackable {
     var didChange: ((Bool) -> Void)?
 
     private var networkReachability: SCNetworkReachability?
-    private let reachabilitySerialQueue = DispatchQueue(label: "com.nyxwallet.reachabilityQueue")
+    private let reachabilitySerialQueue = DispatchQueue(label: "com.bifrostwallet.reachabilityQueue")
 
     func notify() {
         DispatchQueue.main.async {

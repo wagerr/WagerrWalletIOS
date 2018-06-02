@@ -114,7 +114,7 @@ extension BRAPIClient {
                 do {
                     let decoder = JSONDecoder()
                     let arrayData = try decoder.decode([CryptoBridgeTickerItem].self, from: usableData)
-                    let coindata = arrayData.filter { $0.id == "NYX_BTC" }.first
+                    let coindata = arrayData.filter { $0.id == "FROST_BTC" }.first
                     let coinrate = Double(coindata!.last)
                     ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
                     handler(.success(ret))
@@ -193,7 +193,7 @@ extension BRAPIClient {
     }
 
     func fetchUTXOS(address: String, currency: CurrencyDef, completion: @escaping ([[String: Any]]?)->Void) {
-        let path = "http://explorer2.nyxcoin.org/ext/getutxos/\(address)"
+        let path = "http://explorer2.Bifrost.org/ext/getutxos/\(address)"
         var req = URLRequest(url: URL(string: path)!)
         req.httpMethod = "GET"
         //req.httpBody = "addrs=\(address)".data(using: .utf8)

@@ -209,7 +209,7 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
             logo.topAnchor.constraint(equalTo: topControlContainer.bottomAnchor, constant: C.padding[8]),
             logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logo.heightAnchor.constraint(equalTo: logo.widthAnchor, multiplier: C.Sizes.logoAspectRatio),
-            logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.45) ])
+            logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.85) ])
         if walletManager != nil {
             pinPadBackground.constrain([
                 pinPadBackground.leadingAnchor.constraint(equalTo: pinPad.view.leadingAnchor),

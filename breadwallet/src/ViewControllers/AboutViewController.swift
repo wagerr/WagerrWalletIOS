@@ -30,8 +30,8 @@ class AboutViewController : UIViewController {
 
     private func addSubviews() {
         view.addSubview(titleLabel)
-        view.addSubview(logoBackground)
-        logoBackground.addSubview(logo)
+        view.addSubview(logo)
+        //logoBackground.addSubview(logo)
         //view.addSubview(walletID)
         view.addSubview(blog)
         view.addSubview(twitter)
@@ -45,12 +45,12 @@ class AboutViewController : UIViewController {
         titleLabel.constrain([
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[2]),
             titleLabel.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor, constant: C.padding[2]) ])
-        logoBackground.constrain([
-            logoBackground.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoBackground.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: C.padding[3]),
-            logoBackground.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.4),
-            logoBackground.heightAnchor.constraint(equalTo: logoBackground.widthAnchor, multiplier: 542.0/553.0) ])
-        logo.constrain(toSuperviewEdges: nil)
+        logo.constrain([
+            logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            logo.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: C.padding[3]),
+            logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
+            logo.heightAnchor.constraint(equalTo: logo.widthAnchor, multiplier: 202.0/553.0) ])
+        //logo.constrain(toSuperviewEdges: nil)
         /*
         walletID.constrain([
             walletID.topAnchor.constraint(equalTo: logoBackground.bottomAnchor, constant: C.padding[2]),
@@ -58,7 +58,7 @@ class AboutViewController : UIViewController {
             walletID.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
  */
         blog.constrain([
-            blog.topAnchor.constraint(equalTo: logoBackground.bottomAnchor, constant: C.padding[2]),
+            blog.topAnchor.constraint(equalTo: logo.bottomAnchor, constant: C.padding[2]),
             blog.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             blog.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
         twitter.constrain([
@@ -94,16 +94,16 @@ class AboutViewController : UIViewController {
 
     private func setActions() {
         blog.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://Bifrost.org/")
+            myself.presentURL(string: "http://www.bifrostcoin.io/")
         }
         twitter.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://twitter.com/Bifrost")
+            myself.presentURL(string: "https://twitter.com/BifrostCoin")
         }
         reddit.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://reddit.com/r/Bifrost/")
+            myself.presentURL(string: "https://www.reddit.com/r/bifrostcoin/")
         }
         privacy.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://www.Bifrost.org/mobile-wallet-privacy-policy")
+            myself.presentURL(string: "http://www.bifrostcoin.io/privacy/")
         }
     }
 

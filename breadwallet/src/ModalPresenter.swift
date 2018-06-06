@@ -226,7 +226,7 @@ class ModalPresenter : Subscriber, Trackable {
         } else {
             url = "/support?"
         }
-        supportCenter.navigate(to: "https://discord.gg/Q465cD2")        // bypass support
+        supportCenter.navigate(to: "https://discord.gg/pQ2BtKM")        // bypass support
         //topViewController?.present(supportCenter, animated: true, completion: {})
     }
 

@@ -239,7 +239,6 @@
 		75A2A79B1DA5934300A983D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75A2A79A1DA5934300A983D8 /* Assets.xcassets */; };
 		75A2A79E1DA5934300A983D8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75A2A79C1DA5934300A983D8 /* LaunchScreen.storyboard */; };
 		75A2A7B41DA5934300A983D8 /* breadwalletUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A2A7B31DA5934300A983D8 /* breadwalletUITests.swift */; };
-		75A2A7B91DA5934300A983D8 /* breadwallet WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 75A2A7B81DA5934300A983D8 /* breadwallet WatchKit App.app */; };
 		75A2A7BF1DA5934300A983D8 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75A2A7BD1DA5934300A983D8 /* Interface.storyboard */; };
 		75A2A7C11DA5934300A983D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75A2A7C01DA5934300A983D8 /* Assets.xcassets */; };
 		75A2A7C81DA5934300A983D8 /* breadwallet WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 75A2A7C71DA5934300A983D8 /* breadwallet WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -256,7 +255,6 @@
 		75A2A8101DA5936F00A983D8 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75A2A80E1DA5936F00A983D8 /* MainInterface.storyboard */; };
 		75A2A8141DA5936F00A983D8 /* TodayExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 75A2A8081DA5936F00A983D8 /* TodayExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		75A2A81F1DA5938500A983D8 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A2A81E1DA5938500A983D8 /* NotificationService.swift */; };
-		75A2A8231DA5938500A983D8 /* NotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 75A2A81C1DA5938500A983D8 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		75C468AA2056E5F800113F92 /* BRBech32.c in Sources */ = {isa = PBXBuildFile; fileRef = 75C468A82056E5F700113F92 /* BRBech32.c */; };
 		75C735AA1DAA1B9C00251ECF /* libunbound.c in Sources */ = {isa = PBXBuildFile; fileRef = 755CD4121DAA0E3E0075898E /* libunbound.c */; };
 		7C230E752037AD52002F0FF1 /* SyncingIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C230E742037AD52002F0FF1 /* SyncingIndicator.swift */; };
@@ -566,13 +564,6 @@
 			remoteGlobalIDString = 75A2A78F1DA5934300A983D8;
 			remoteInfo = breadwallet;
 		};
-		75A2A7BA1DA5934300A983D8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 75A2A7881DA5934300A983D8 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 75A2A7B71DA5934300A983D8;
-			remoteInfo = "breadwallet WatchKit App";
-		};
 		75A2A7C91DA5934300A983D8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 75A2A7881DA5934300A983D8 /* Project object */;
@@ -586,13 +577,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 75A2A8071DA5936F00A983D8;
 			remoteInfo = TodayExtension;
-		};
-		75A2A8211DA5938500A983D8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 75A2A7881DA5934300A983D8 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 75A2A81B1DA5938500A983D8;
-			remoteInfo = NotificationServiceExtension;
 		};
 		CEA7E6801F09A9D2001F8C27 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -651,7 +635,6 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				75A2A7B91DA5934300A983D8 /* breadwallet WatchKit App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -663,7 +646,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				75A2A8141DA5936F00A983D8 /* TodayExtension.appex in Embed App Extensions */,
-				75A2A8231DA5938500A983D8 /* NotificationServiceExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3773,9 +3755,7 @@
 			);
 			dependencies = (
 				759DA0BD1DAC369C008CC49B /* PBXTargetDependency */,
-				75A2A7BB1DA5934300A983D8 /* PBXTargetDependency */,
 				75A2A8131DA5936F00A983D8 /* PBXTargetDependency */,
-				75A2A8221DA5938500A983D8 /* PBXTargetDependency */,
 				22A9A99C1DF63426000F0016 /* PBXTargetDependency */,
 				752FB04F1DF8BF5C009086FB /* PBXTargetDependency */,
 			);
@@ -4815,11 +4795,6 @@
 			target = 75A2A78F1DA5934300A983D8 /* breadwallet */;
 			targetProxy = 75A2A7B01DA5934300A983D8 /* PBXContainerItemProxy */;
 		};
-		75A2A7BB1DA5934300A983D8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 75A2A7B71DA5934300A983D8 /* breadwallet WatchKit App */;
-			targetProxy = 75A2A7BA1DA5934300A983D8 /* PBXContainerItemProxy */;
-		};
 		75A2A7CA1DA5934300A983D8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 75A2A7C61DA5934300A983D8 /* breadwallet WatchKit Extension */;
@@ -4829,11 +4804,6 @@
 			isa = PBXTargetDependency;
 			target = 75A2A8071DA5936F00A983D8 /* TodayExtension */;
 			targetProxy = 75A2A8121DA5936F00A983D8 /* PBXContainerItemProxy */;
-		};
-		75A2A8221DA5938500A983D8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 75A2A81B1DA5938500A983D8 /* NotificationServiceExtension */;
-			targetProxy = 75A2A8211DA5938500A983D8 /* PBXContainerItemProxy */;
 		};
 		CEA7E6811F09A9D2001F8C27 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

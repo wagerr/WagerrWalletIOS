@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		063B76EA20C282A600B3CB35 /* neoscrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 063B76E920C282A600B3CB35 /* neoscrypt.c */; };
-		063B76ED20C33A3100B3CB35 /* hash9.c in Sources */ = {isa = PBXBuildFile; fileRef = 063B76EB20C33A3000B3CB35 /* hash9.c */; };
+		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
 		06C0C6C220B360C10047C540 /* x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C020B360C00047C540 /* x11.c */; };
 		06C0C6E020B377250047C540 /* BRCoinAddr.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C620B377240047C540 /* BRCoinAddr.c */; };
 		06C0C6E120B377250047C540 /* keccak.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C820B377250047C540 /* keccak.c */; };
@@ -36,7 +35,6 @@
 		06C0C71420B377B50047C540 /* bmw.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C70420B377B50047C540 /* bmw.c */; };
 		06C0C71520B377B50047C540 /* skein.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C70920B377B50047C540 /* skein.c */; };
 		06C0C71620B377B50047C540 /* echo.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C70A20B377B50047C540 /* echo.c */; };
-		06FB16CD20BFF44C00EA6D9E /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
 		1B1AFFA01FB7EF7C00E61908 /* BiometricsSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1AFF9E1FB7EF7C00E61908 /* BiometricsSettingsViewController.swift */; };
 		1B1AFFA11FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1AFF9F1FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift */; };
 		22122B721F0B8996000E9AB9 /* BRAPIClient+Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22122B711F0B8996000E9AB9 /* BRAPIClient+Events.swift */; };
@@ -4031,6 +4029,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 				fr,
@@ -4045,6 +4044,12 @@
 				pt,
 				ko,
 				"zh-Hant",
+				sv,
+				nb,
+				pl,
+				tr,
+				hu,
+				el,
 			);
 			mainGroup = 75A2A7871DA5934300A983D8;
 			productRefGroup = 75A2A7911DA5934300A983D8 /* Products */;
@@ -4337,12 +4342,12 @@
 				75C468AA2056E5F800113F92 /* BRBech32.c in Sources */,
 				06C0C71320B377B50047C540 /* groestl.c in Sources */,
 				06C0C71620B377B50047C540 /* echo.c in Sources */,
-				06FB16CD20BFF44C00EA6D9E /* quark.c in Sources */,
 				06C0C6E020B377250047C540 /* BRCoinAddr.c in Sources */,
 				06C0C6EB20B377250047C540 /* skein.c in Sources */,
 				06C0C6E520B377250047C540 /* blake.c in Sources */,
 				3C83B27620631739001D08CE /* BRRlpCoder.c in Sources */,
 				3C83B27820631740001D08CE /* BRUtilMathParse.c in Sources */,
+				06747C68234BBFC400E52463 /* quark.c in Sources */,
 				06C0C6C220B360C10047C540 /* x11.c in Sources */,
 				755CD9DF1DAA1A270075898E /* BRBloomFilter.c in Sources */,
 				06C0C70F20B377B50047C540 /* blake.c in Sources */,
@@ -4361,7 +4366,6 @@
 				755CD9DC1DAA1A270075898E /* BRBIP32Sequence.c in Sources */,
 				759B4BDF203E5A32002C68CA /* BRBCashAddr.c in Sources */,
 				3C83B27720631740001D08CE /* BRUtilMath.c in Sources */,
-				063B76EA20C282A600B3CB35 /* neoscrypt.c in Sources */,
 				06C0C71420B377B50047C540 /* bmw.c in Sources */,
 				06C0C6E820B377250047C540 /* shavite.c in Sources */,
 				7CF11623205C943800C03D42 /* BREthereumEther.c in Sources */,
@@ -4586,7 +4590,6 @@
 				CE36454C1E7B42850079D0CF /* WhiteDecimalPad.swift in Sources */,
 				CE5F21D91E4A922700C47B8E /* DismissLoginAnimator.swift in Sources */,
 				CECCE5A51E02408300D99448 /* UIView+FrameChangeBlocking.swift in Sources */,
-				063B76ED20C33A3100B3CB35 /* hash9.c in Sources */,
 				22A9A94F1DF61945000F0016 /* BRHTTPRouter.swift in Sources */,
 				CE6DCC271E6108D50044257B /* EnterPhraseCell.swift in Sources */,
 				CE760EDD1E561DF900EFAC2B /* UpdatePinViewController.swift in Sources */,

@@ -105,7 +105,7 @@ class SenderBase<CurrencyType: CurrencyDef, WalletType: WalletManager> {
 
 // MARK: -
 
-class BitcoinSender: SenderBase<Bitcoin, BTCWalletManager>, Sender {
+class BitcoinSender: SenderBase<Wagerr, BTCWalletManager>, Sender {
     
     // MARK: Sender
     
@@ -342,8 +342,8 @@ class BitcoinSender: SenderBase<Bitcoin, BTCWalletManager>, Sender {
             request.httpBody = payment?.json?.data(using: .utf8)
         }
         else {
-            request.setValue("application/bitcoin-payment", forHTTPHeaderField: "Content-Type")
-            request.addValue("application/bitcoin-paymentack", forHTTPHeaderField: "Accept")
+            request.setValue("application/wagerr-payment", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/wagerr-paymentack", forHTTPHeaderField: "Accept")
             request.httpBody = Data(bytes: payment!.bytes)
         }
         
@@ -361,7 +361,7 @@ class BitcoinSender: SenderBase<Bitcoin, BTCWalletManager>, Sender {
                     return completion(.publishFailure(.posixError(errorCode: 74, description: "no response or data")))
                 }
                 
-                if response.mimeType == "application/bitcoin-paymentack" && data.count <= 50000 {
+                if response.mimeType == "application/wagerr-paymentack" && data.count <= 50000 {
                     if let ack = PaymentProtocolACK(data: data) {
                         print("received ack: \(ack)") //TODO - show memo to user
                         completion(.success(nil,nil))
@@ -568,8 +568,8 @@ extension CurrencyDef {
     func createSender(walletManager: WalletManager, kvStore: BRReplicatedKVStore) -> Sender? {
         
         switch (self, walletManager) {
-        case (is Bitcoin, is BTCWalletManager):
-            return BitcoinSender(currency: self as! Bitcoin, walletManager: walletManager as! BTCWalletManager, kvStore: kvStore)
+        case (is Wagerr, is BTCWalletManager):
+            return BitcoinSender(currency: self as! Wagerr, walletManager: walletManager as! BTCWalletManager, kvStore: kvStore)
         case (is Ethereum, is EthWalletManager):
             return EthereumSender(currency: self as! Ethereum, walletManager: walletManager as! EthWalletManager, kvStore: kvStore)
         case (is ERC20Token, is EthWalletManager):

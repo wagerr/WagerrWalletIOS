@@ -121,7 +121,7 @@ class ApplicationController : Subscriber, Trackable {
             dispatchGroup.leave()
             return
         }
-        guard let currency = currency as? Bitcoin else { return }
+        guard let currency = currency as? Wagerr else { return }
         guard let walletManager = try? BTCWalletManager(currency: currency, dbPath: currency.dbPath) else { return }
         walletManagers[currency.code] = walletManager
         walletManager.initWallet { success in

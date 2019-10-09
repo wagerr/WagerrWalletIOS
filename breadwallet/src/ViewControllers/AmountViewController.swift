@@ -28,7 +28,7 @@ class AmountViewController : UIViewController, Trackable {
         }
         self.feeSelector = FeeSelector()
         self.pinPad = PinPadViewController(style: .white, keyboardType: .decimalPad, maxDigits: currency.state?.maxDigits ?? currency.commonUnit.decimals)
-        self.canEditFee = (currency is Bitcoin)
+        self.canEditFee = (currency is Wagerr)
         super.init(nibName: nil, bundle: nil)
     }
 

@@ -73,7 +73,7 @@ struct PaymentRequest {
             }
         }
         
-        // core internally uses bitcoin address format but PaymentRequest will only accept the currency-specific address format
+        // core internally uses wagerr address format but PaymentRequest will only accept the currency-specific address format
         if currency.isValidAddress(string) {
             if currency.matches(Currencies.bch) {
                 toAddress = string.bitcoinAddr
@@ -108,7 +108,7 @@ struct PaymentRequest {
         }
         
         if self.currency.matches(Currencies.btc) {
-            request.setValue("application/bitcoin-paymentrequest", forHTTPHeaderField: "Accept")
+            request.setValue("application/wagerr-paymentrequest", forHTTPHeaderField: "Accept")
             //request.addValue("application/payment-request", forHTTPHeaderField: "Accept") // this breaks bitpay :(
         }
         else {
@@ -120,7 +120,7 @@ struct PaymentRequest {
             guard let data = data else { return completion(nil) }
             guard let response = response else { return completion(nil) }
 
-            if response.mimeType?.lowercased() == "application/bitcoin-paymentrequest" {
+            if response.mimeType?.lowercased() == "application/wagerr-paymentrequest" {
                 completion(PaymentRequest(data: data, currency: Currencies.btc))
             }
             else if response.mimeType?.lowercased() == "application/payment-request" {

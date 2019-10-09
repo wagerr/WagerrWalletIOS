@@ -26,7 +26,7 @@ class BitIdTests : XCTestCase {
     }
 
 //    func testBitIdResponse() {
-//        let url = URL(string: "bitid://bitid.bitcoin.blue/callback?x=f98f5e62d82b7086&u=1")!
+//        let url = URL(string: "bitid://bitid.wagerr.blue/callback?x=f98f5e62d82b7086&u=1")!
 //        let response = walletManager.buildBitIdResponse(stringToSign: url.absoluteString,
 //                                                        url: url.host!,
 //                                                        index: 0)

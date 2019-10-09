@@ -103,7 +103,7 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
         Store.subscribe(self, selector: { $0[self.currency]?.fees != $1[self.currency]?.fees }, callback: { [unowned self] in
             guard let fees = $0[self.currency]?.fees else { return }
             self.sender.updateFeeRates(fees, level: self.feeSelection)
-            if self.currency is Bitcoin {
+            if self.currency is Wagerr {
                 self.amountView.canEditFee = (fees.regular != fees.economy) || self.currency.matches(Currencies.btc)
             } else {
                 self.amountView.canEditFee = false
@@ -143,7 +143,7 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
             self?.amount = amount
         }
         amountView.didUpdateFee = strongify(self) { myself, fee in
-            guard myself.currency is Bitcoin else { return }
+            guard myself.currency is Wagerr else { return }
             myself.feeSelection = fee
             if let fees = myself.currency.state?.fees {
                 myself.sender.updateFeeRates(fees, level: fee)

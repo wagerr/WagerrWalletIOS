@@ -26,7 +26,7 @@
 import Foundation
 import BRCore
 
-// BIP70 payment protocol: https://github.com/bitcoin/bips/blob/master/bip-0070.mediawiki
+// BIP70 payment protocol: https://github.com/wagerr/bips/blob/master/bip-0070.mediawiki
 // bitpay json payment protocol: https://github.com/bitpay/jsonPaymentProtocol/blob/master/specification.md
 
 class PaymentProtocolDetails {
@@ -311,7 +311,7 @@ class PaymentProtocolRequest {
         return errMsg
     }
     
-    var mimeType: String = "application/bitcoin-paymentrequest"
+    var mimeType: String = "application/wagerr-paymentrequest"
     
     deinit {
         if isManaged { BRPaymentProtocolRequestFree(cPtr) }

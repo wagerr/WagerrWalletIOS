@@ -39,7 +39,7 @@ open class BRBitID : NSObject {
         return url.scheme == SCHEME
     }
     
-    static let BITCOIN_SIGNED_MESSAGE_HEADER = "Bitcoin Signed Message:\n".data(using: String.Encoding.utf8)!
+    static let BITCOIN_SIGNED_MESSAGE_HEADER = "Wagerr Signed Message:\n".data(using: String.Encoding.utf8)!
     
     class func formatMessageForBitcoinSigning(_ message: String) -> Data {
         let data = NSMutableData()

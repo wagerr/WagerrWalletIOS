@@ -32,7 +32,7 @@ extension NSNotification.Name {
     public static let WalletDidWipe = NSNotification.Name("WalletDidWipe")
 }
 
-// A WalletManger instance manages a single wallet, and that wallet's individual connection to the bitcoin network.
+// A WalletManger instance manages a single wallet, and that wallet's individual connection to the wagerr network.
 // After instantiating a WalletManager object, call myWalletManager.peerManager.connect() to begin syncing.
 
 protocol WalletManager: class {

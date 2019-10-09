@@ -22,7 +22,7 @@ class PaymentRequestTests : XCTestCase {
     }
 
     func testBasicExampleBTC() {
-        let uri = "bitcoin:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu"
+        let uri = "wagerr:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu"
         let request = PaymentRequest(string: uri, currency: Currencies.btc)
         XCTAssertNotNil(request)
         XCTAssertTrue(request?.toAddress == "12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu")
@@ -54,7 +54,7 @@ class PaymentRequestTests : XCTestCase {
     }
 
     func testAmountInUriBTC() {
-        let uri = "bitcoin:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2"
+        let uri = "wagerr:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2"
         let request = PaymentRequest(string: uri, currency: Currencies.btc)
         XCTAssertNotNil(request)
         XCTAssertTrue(request?.toAddress == "12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu")
@@ -72,7 +72,7 @@ class PaymentRequestTests : XCTestCase {
     }
 
     func testRequestMetaDataBTC() {
-        let uri = "bitcoin:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2&message=Payment&label=Satoshi"
+        let uri = "wagerr:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2&message=Payment&label=Satoshi"
         let request = PaymentRequest(string: uri, currency: Currencies.btc)
         XCTAssertTrue(request?.toAddress == "12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu")
         XCTAssertTrue(request?.displayAddress == "12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu")
@@ -92,13 +92,13 @@ class PaymentRequestTests : XCTestCase {
     }
 
     func testExtraEqualSign() {
-        let uri = "bitcoin:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2&message=Payment=true&label=Satoshi"
+        let uri = "wagerr:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2&message=Payment=true&label=Satoshi"
         let request = PaymentRequest(string: uri, currency: Currencies.btc)
         XCTAssertTrue(request?.message == "Payment=true")
     }
 
     func testMessageWithSpace() {
-        let uri = "bitcoin:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2&message=Payment message test&label=Satoshi"
+        let uri = "wagerr:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2&message=Payment message test&label=Satoshi"
         let request = PaymentRequest(string: uri, currency: Currencies.btc)
         XCTAssertTrue(request?.message == "Payment message test")
     }

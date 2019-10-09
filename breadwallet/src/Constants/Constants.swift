@@ -37,8 +37,8 @@ struct C {
     static let walletQueue = "com.bifrostwallet.walletqueue"
     static let null = "(null)"
     static let maxMemoLength = 250
-    static let feedbackEmail = "bifrost.actual@gmail.com"
-    static let iosEmail = "bifrost.actual@gmail.com"
+    static let feedbackEmail = "wagerr.actual@gmail.com"
+    static let iosEmail = "wagerr.actual@gmail.com"
     static let reviewLink = "itms-apps://itunes.apple.com/app/id1393817110?action=write-review"
     static var standardPort: Int {
         return E.isTestnet ? 19229 : 9229

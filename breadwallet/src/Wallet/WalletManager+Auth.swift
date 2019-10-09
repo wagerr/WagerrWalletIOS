@@ -542,7 +542,7 @@ extension EthWalletManager {
                 var seed = UInt512()
                 guard let phrase: String = try keychainItem(key: KeychainKey.mnemonic) else { return nil }
                 BRBIP39DeriveKey(&seed, phrase, nil)
-                // BIP44 etherium path m/44H/60H/0H/0/0: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
+                // BIP44 etherium path m/44H/60H/0H/0/0: https://github.com/wagerr/bips/blob/master/bip-0044.mediawiki
                 BRBIP32vPrivKeyPath(&key, &seed, MemoryLayout<UInt512>.size, 5,
                                     getVaList([44 | BIP32_HARD, 60 | BIP32_HARD, 0 | BIP32_HARD, 0, 0]))
                 seed = UInt512() // clear seed

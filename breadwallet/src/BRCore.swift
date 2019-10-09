@@ -719,6 +719,9 @@ class BRPeerManager {
     let j = BRCoinTestNetDNSSeeds
     let k = BRCoinTestNetCheckpoints
     let l = BRCoinTestNetVerifyDifficulty
+    let m = BRCoinBetAddresses
+    let n = BRCoinTestnetBetAddresses
+    
 }
 
 extension UInt256 : CustomStringConvertible {    

@@ -5397,7 +5397,7 @@
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5420,7 +5420,7 @@
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -5444,7 +5444,7 @@
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-DDebug";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5468,7 +5468,7 @@
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5543,7 +5543,7 @@
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.MessageExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -5557,7 +5557,7 @@
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.MessageExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -5570,7 +5570,7 @@
 				DEVELOPMENT_TEAM = QC6288YCNV;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.TodayExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -5583,7 +5583,7 @@
 				DEVELOPMENT_TEAM = QC6288YCNV;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.TodayExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -5596,7 +5596,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.NotificationExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -5610,7 +5610,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.NotificationExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -5766,7 +5766,7 @@
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-DDebug -DScreenshots -DTestnet";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5816,7 +5816,7 @@
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -5852,7 +5852,7 @@
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.MessageExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -5865,7 +5865,7 @@
 				DEVELOPMENT_TEAM = QC6288YCNV;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.TodayExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -5878,7 +5878,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.NotificationExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -6083,7 +6083,7 @@
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-DDebug -DTestnet";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -6133,7 +6133,7 @@
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -6169,7 +6169,7 @@
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.MessageExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -6182,7 +6182,7 @@
 				DEVELOPMENT_TEAM = QC6288YCNV;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.TodayExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -6195,7 +6195,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.NotificationExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;
@@ -6393,7 +6393,7 @@
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-DTestflight -DDebug";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -6443,7 +6443,7 @@
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -6479,7 +6479,7 @@
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.MessageExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -6492,7 +6492,7 @@
 				DEVELOPMENT_TEAM = QC6288YCNV;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.TodayExt;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -6505,7 +6505,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = org.bifrostwallet.NotificationExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerrwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.0;

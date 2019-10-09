@@ -34,11 +34,11 @@ struct C {
     static let secondsInDay: TimeInterval = 86400
     static let maxMoney: UInt64 = 5100000000*100000000
     static let satoshis: UInt64 = 100000000
-    static let walletQueue = "com.bifrostwallet.walletqueue"
+    static let walletQueue = "com.wagerrwallet.walletqueue"
     static let null = "(null)"
     static let maxMemoLength = 250
-    static let feedbackEmail = "wagerr.actual@gmail.com"
-    static let iosEmail = "wagerr.actual@gmail.com"
+    static let feedbackEmail = "support@wagerr.com"
+    static let iosEmail = "support@wagerr.com"
     static let reviewLink = "itms-apps://itunes.apple.com/app/id1393817110?action=write-review"
     static var standardPort: Int {
         return E.isTestnet ? 19229 : 9229

@@ -248,13 +248,13 @@ extension ERC20Token {
 
 public struct Currencies {
     static let btc = Wagerr(name: "Wagerr",
-                             code: "FROST",
+                             code: "WGR",
                              symbol: S.Symbols.btc,
                              colors: (UIColor.gradientStart, UIColor.gradientEnd),
                              dbPath: "BreadWallet.sqlite",
                              forkId: 0,
-                             urlSchemes: ["Wagerr"])
-    static let bch = Wagerr(name: "Wagerr Cash",
+                             urlSchemes: ["wagerr"])
+    static let bch = Wagerr(name: "Bitcoin Cash",
                              code: "BCH",
                              symbol: S.Symbols.btc,
                              colors: (UIColor(red:0.278431, green:0.521569, blue:0.349020, alpha:1.0), UIColor(red:0.278431, green:0.521569, blue:0.349020, alpha:1.0)),

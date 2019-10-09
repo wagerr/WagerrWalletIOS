@@ -173,7 +173,7 @@ class ShadowButton: UIControl {
             imageView?.tintColor = .darkText
         case .tertiary:
             container.backgroundColor = .secondaryButton
-            label.textColor = .grayTextTint
+            label.textColor = .primaryText
             container.layer.borderColor = UIColor.secondaryBorder.cgColor
             container.layer.borderWidth = 1.0
             shadowView.layer.shadowColor = UIColor.black.cgColor

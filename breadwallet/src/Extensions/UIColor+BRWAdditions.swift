@@ -12,7 +12,7 @@ extension UIColor {
 
     // MARK: Buttons
     static var primaryButton: UIColor {
-        return UIColor(red: 76.0/255.0, green: 152.0/255.0, blue: 252.0/255.0, alpha: 1.0)
+        return UIColor(red: 194.0/255.0, green: 12.0/255.0, blue: 34.0/255.0, alpha: 1.0)
     }
 
     static var primaryText: UIColor {
@@ -20,7 +20,7 @@ extension UIColor {
     }
 
     static var secondaryButton: UIColor {
-        return UIColor(red: 245.0/255.0, green: 247.0/255.0, blue: 250.0/255.0, alpha: 1.0)
+        return UIColor(red: 194.0/255.0, green: 12.0/255.0, blue: 34.0/255.0, alpha: 1.0)
     }
 
     static var secondaryBorder: UIColor {

@@ -14,7 +14,7 @@ class StartImportViewController : UIViewController {
     init(walletManager: BTCWalletManager) {
         self.walletManager = walletManager
         self.currency = walletManager.currency
-        assert(walletManager.currency is Bitcoin, "Importing only supports bitcoin")
+        assert(walletManager.currency is Wagerr, "Importing only supports wagerr")
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -212,7 +212,7 @@ class StartImportViewController : UIViewController {
         present(importingActivity, animated: true, completion: {
             tx.addOutput(amount: balance - fee, script: script)
             var keys = [key]
-            let _ = tx.sign(forkId: (self.currency as! Bitcoin).forkId, keys: &keys)
+            let _ = tx.sign(forkId: (self.currency as! Wagerr).forkId, keys: &keys)
                 guard tx.isSigned else {
                     self.importingActivity.dismiss(animated: true, completion: {
                         self.showErrorMessage(S.Import.Error.signing)

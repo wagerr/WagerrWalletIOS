@@ -57,7 +57,7 @@ extension BRAPIClient {
         task.resume()
     }
     
-    /// Fetches Bitcoin exchange rates in all available fiat currencies
+    /// Fetches Wagerr exchange rates in all available fiat currencies
     func bitcoinExchangeRates(isFallback: Bool = false, _ handler: @escaping (RatesResult) -> Void) {
         let code = "BTC"
         let param = "?currency=\(code.lowercased())"
@@ -97,7 +97,7 @@ extension BRAPIClient {
     func FetchCoinRate(_ handler: @escaping (RatesResult) -> Void) {
         let urlString = "https://api.crypto-bridge.org/api/v1/ticker"
         var ret = [Rate]()
-        
+        /*
         guard let requestUrl = URL(string:urlString) else { return handler(.error("Coin rate not found")) }
         let request = URLRequest(url:requestUrl)
         let task = URLSession.shared.dataTask(with: request) {
@@ -115,7 +115,7 @@ extension BRAPIClient {
                     let decoder = JSONDecoder()
                     let arrayData = try decoder.decode([CryptoBridgeTickerItem].self, from: usableData)
                     let coindata = arrayData.filter { $0.id == "FROST_BTC" }.first
-                    let coinrate = Double(coindata!.last)
+                   let coinrate = Double(coindata!.last)
                     ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
                     handler(.success(ret))
                 }
@@ -125,6 +125,8 @@ extension BRAPIClient {
             }
         }
         task.resume()
+        */
+        handler(.success(ret))
         return
     }
 
@@ -193,7 +195,7 @@ extension BRAPIClient {
     }
 
     func fetchUTXOS(address: String, currency: CurrencyDef, completion: @escaping ([[String: Any]]?)->Void) {
-        let path = "http://explorer2.Bifrost.org/ext/getutxos/\(address)"
+        let path = "http://explorer2.Wagerr.org/ext/getutxos/\(address)"
         var req = URLRequest(url: URL(string: path)!)
         req.httpMethod = "GET"
         //req.httpBody = "addrs=\(address)".data(using: .utf8)

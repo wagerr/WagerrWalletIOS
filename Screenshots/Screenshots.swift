@@ -52,7 +52,7 @@ class Screenshots: XCTestCase {
         
         // tx list
         let tablesQuery = app.tables
-        tablesQuery.staticTexts["Bitcoin"].tap()
+        tablesQuery.staticTexts["Wagerr"].tap()
         snapshot("1TxList")
         app.navigationBars.buttons.element(boundBy: 0).tap()
         

@@ -16,7 +16,7 @@ extension BRAPIClient {
     func updateFeatureFlags() {
         let req = URLRequest(url: url("/me/features"))
         dataTaskWithRequest(req, authenticated: true) { (data, resp, err) in
-            if let resp = resp, let data = data {
+           /* if let resp = resp, let data = data {
                 if resp.statusCode == 200 {
                     let defaults = UserDefaults.standard
                     do {
@@ -38,7 +38,7 @@ extension BRAPIClient {
                 }
             } else {
                 self.log("error fetching features: \(String(describing: err))")
-            }
+            }*/
             }.resume()
     }
     

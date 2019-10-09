@@ -358,7 +358,7 @@ class ModalPresenter : Subscriber, Trackable {
                 guard let `self` = self else { return }
                 let sections = [SettingsSections.currency]
                 var currencySettings = [SettingsSections: [Setting]]()
-                if currency is Bitcoin {
+                if currency is Wagerr {
                     currencySettings = [
                         SettingsSections.currency: [
                             Setting(title: S.Settings.importTile, callback: {

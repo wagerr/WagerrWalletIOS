@@ -196,7 +196,7 @@ extension BRKey {
         return hash
     }
     
-    // pay-to-pubkey-hash bitcoin address
+    // pay-to-pubkey-hash wagerr address
     mutating func address() -> String? {
         var addr = [CChar](repeating: 0, count: MemoryLayout<BRAddress>.size)
         guard BRKeyAddress(&self, &addr, addr.count) > 0 else { return nil }
@@ -221,7 +221,7 @@ extension BRKey {
         BRKeyClean(&self)
     }
     
-    // Pieter Wuille's compact signature encoding used for bitcoin message signing
+    // Pieter Wuille's compact signature encoding used for wagerr message signing
     // to verify a compact signature, recover a public key from the sig and verify that it matches the signer's pubkey
     mutating func compactSign(md: UInt256) -> [UInt8]? {
         var sig = [UInt8](repeating:0, count: 65)
@@ -334,7 +334,7 @@ extension UnsafeMutablePointer where Pointee == BRTransaction {
         return BRTransactionSize(self)
     }
     
-    // minimum transaction fee needed for tx to relay across the bitcoin network
+    // minimum transaction fee needed for tx to relay across the wagerr network
     var standardFee: UInt64 {
         return BRTransactionStandardFee(self)
     }
@@ -345,7 +345,7 @@ extension UnsafeMutablePointer where Pointee == BRTransaction {
     }
 
     // adds signatures to any inputs with NULL signatures that can be signed with any keys
-    // forkId is 0 for bitcoin, 0x40 for b-cash
+    // forkId is 0 for wagerr, 0x40 for b-cash
     // returns true if tx is signed
     func sign(forkId: Int, keys: inout [BRKey]) -> Bool {
         return BRTransactionSign(self, Int32(forkId), &keys, keys.count) != 0
@@ -460,7 +460,7 @@ class BRWallet {
     }
     
     // signs any inputs in tx that can be signed using private keys from the wallet
-    // forkId is 0 for bitcoin, 0x40 for b-cash
+    // forkId is 0 for wagerr, 0x40 for b-cash
     // seed is the master private key (wallet seed) corresponding to the master public key given when wallet was created
     // returns true if all inputs were signed, or false if there was an error or not all inputs were able to be signed
     func signTransaction(_ tx: BRTxRef, forkId: Int, seed: inout UInt512) -> Bool {
@@ -609,7 +609,7 @@ class BRPeerManager {
         return BRPeerManagerConnectStatus(cPtr)
     }
     
-    // connect to bitcoin peer-to-peer network (also call this whenever networkIsReachable() status changes)
+    // connect to wagerr peer-to-peer network (also call this whenever networkIsReachable() status changes)
     func connect() {
         if currency.code == Currencies.bch.code {
             UserDefaults.hasBchConnected = true
@@ -620,7 +620,7 @@ class BRPeerManager {
         BRPeerManagerConnect(cPtr)
     }
     
-    // disconnect from bitcoin peer-to-peer network
+    // disconnect from wagerr peer-to-peer network
     func disconnect() {
         BRPeerManagerDisconnect(cPtr)
     }
@@ -662,7 +662,7 @@ class BRPeerManager {
         return String(cString: BRPeerManagerDownloadPeerName(cPtr))
     }
     
-    // publishes tx to bitcoin network
+    // publishes tx to wagerr network
     func publishTx(_ tx: BRTxRef, completion: @escaping (Bool, BRPeerManagerError?) -> ()) {
         BRPeerManagerPublishTx(cPtr, tx, Unmanaged.passRetained(CompletionWrapper(completion)).toOpaque())
         { (info, error) in

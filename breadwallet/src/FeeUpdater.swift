@@ -54,7 +54,7 @@ class FeeUpdater : Trackable {
 
     func refresh(completion: @escaping () -> Void) {
         switch walletManager.currency {
-        case is Bitcoin:
+        case is Wagerr:
             refreshBitcoin(completion: completion)
         case is Ethereum:
             refreshEthereum(completion: completion)
@@ -82,7 +82,7 @@ class FeeUpdater : Trackable {
     private let feeUpdateInterval: TimeInterval = 15
     
     private func refreshBitcoin(completion: @escaping () -> Void) {
-        // Bitcoin-specific constants
+        // Wagerr-specific constants
         let txFeePerKb: UInt64 = 1000
         let minFeePerKB: UInt64 = (txFeePerKb*1000 + 190)/191 // minimum relay fee on a 191byte tx
         let maxFeePerKB: UInt64 = ((1000100*1000 + 190)/191) // slightly higher than a 10000bit fee on a 191byte tx

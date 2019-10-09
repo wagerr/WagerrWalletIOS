@@ -158,7 +158,7 @@ struct WalletChange: Trackable {
     }
 
     func setMaxDigits(_ maxDigits: Int) -> WalletAction {
-        if self.currency is Bitcoin {
+        if self.currency is Wagerr {
             UserDefaults.maxDigits = maxDigits
         }
         saveEvent("maxDigits.set", attributes: ["maxDigits": "\(maxDigits)"])

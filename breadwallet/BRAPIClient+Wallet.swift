@@ -95,27 +95,37 @@ extension BRAPIClient {
     }
 
     func FetchCoinRate(_ handler: @escaping (RatesResult) -> Void) {
-        let urlString = "https://api.crypto-bridge.org/api/v1/ticker"
+        let urlString = "https://api.crex24.com/CryptoExchangeService/BotPublic/ReturnTicker?request=[NamePairs=BTC_WGR]";
         var ret = [Rate]()
-        /*
+        
         guard let requestUrl = URL(string:urlString) else { return handler(.error("Coin rate not found")) }
         let request = URLRequest(url:requestUrl)
         let task = URLSession.shared.dataTask(with: request) {
             (data, response, error) in
             if error == nil,let usableData = data {
                 
-                struct CryptoBridgeTickerItem : Codable {
-                    var id : String!
-                    var last : String!
-                    var volume : String!
-                    var ask: String!
-                    var bid: String!
+                struct Crex24TickerItem : Codable {
+                    var PairId : integer_t!
+                    var PairName : String!
+                    var Last : double_t!
+                    var LowPrice: double_t!
+                    var HighPrice: double_t!
+                    var PercentChange: double_t!
+                    var BaseVolume: double_t!
+                    var QuoteVolume: double_t!
+                    var VolumeInBtc: double_t!
+                    var VolumeInUsd: double_t!
                 }
+                
+                struct Crex24TickerObject : Codable {
+                    var Error : String!
+                    var Tickers : [Crex24TickerItem]!
+                }
+                
                 do {
                     let decoder = JSONDecoder()
-                    let arrayData = try decoder.decode([CryptoBridgeTickerItem].self, from: usableData)
-                    let coindata = arrayData.filter { $0.id == "WGR_BTC" }.first
-                    let coinrate = Double(coindata!.last)
+                    let objData = try decoder.decode(Crex24TickerObject.self, from: usableData)
+                    let coinrate = objData.Tickers[0].Last;
                     ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
                     handler(.success(ret))
                 }
@@ -126,7 +136,6 @@ extension BRAPIClient {
         }
  
         task.resume()
- */
         handler(.success(ret))
         return
     }
@@ -196,16 +205,19 @@ extension BRAPIClient {
     }
 
     func fetchUTXOS(address: String, currency: CurrencyDef, completion: @escaping ([[String: Any]]?)->Void) {
-        let path = "https://chainz.cryptoid.info/wgr/getutxos/\(address)"
+        let path = "https://chainz.cryptoid.info/wgr/api.dws?key=552651714eae&q=unspent&active=\(address)";
         var req = URLRequest(url: URL(string: path)!)
         req.httpMethod = "GET"
         //req.httpBody = "addrs=\(address)".data(using: .utf8)
         dataTaskWithRequest(req, handler: { data, resp, error in
             guard error == nil else { completion(nil); return }
-            guard let data = data,
-                let jsonData = try? JSONSerialization.jsonObject(with: data, options: []),
-                let json = jsonData as? [[String: Any]] else { completion(nil); return }
-                completion(json)
+            if  let data = data,
+                let jsonData = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any] {
+                if let utxos = jsonData["unspent_outputs"] as? [[String: Any]] {
+                    completion(utxos)
+                }
+            }
+            else { completion(nil); return }
         }).resume()
     }
 }

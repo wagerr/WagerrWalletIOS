@@ -18,6 +18,7 @@ class AboutViewController : UIViewController {
     private let blog = AboutCell(text: S.About.blog)
     private let twitter = AboutCell(text: S.About.twitter)
     private let reddit = AboutCell(text: S.About.reddit)
+    private let telegram = AboutCell(text: S.About.telegram)
     private let privacy = UIButton(type: .system)
     private let footer = UILabel(font: .customBody(size: 13.0), color: .secondaryGrayText)
     private let footer2 = UILabel(font: .customBody(size: 13.0), color: .secondaryGrayText)
@@ -36,6 +37,7 @@ class AboutViewController : UIViewController {
         view.addSubview(blog)
         view.addSubview(twitter)
         view.addSubview(reddit)
+        view.addSubview(telegram)
         view.addSubview(privacy)
         view.addSubview(footer)
         view.addSubview(footer2)
@@ -94,16 +96,19 @@ class AboutViewController : UIViewController {
 
     private func setActions() {
         blog.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://wagerr.com/en/")
+            myself.presentURL(string: "https://www.wagerr.com/")
         }
         twitter.button.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://twitter.com/wagerrx?lang=en")
+            myself.presentURL(string: "https://twitter.com/wagerrx")
         }
         reddit.button.tap = strongify(self) { myself in
             myself.presentURL(string: "https://www.reddit.com/r/Wagerr/")
         }
+        telegram.button.tap = strongify(self) { myself in
+            myself.presentURL(string: "https://t.me/wagerrcoin")
+        }
         privacy.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://wagerr.com/en/about")
+            myself.presentURL(string: "https://www.wagerr.com/privacy/")
         }
     }
 

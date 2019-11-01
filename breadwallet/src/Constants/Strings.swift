@@ -316,6 +316,7 @@ enum S {
         static let blog = NSLocalizedString("About.blog", value:"Blog", comment: "About screen blog label")
         static let twitter = NSLocalizedString("About.twitter", value:"Twitter", comment: "About screen twitter label")
         static let reddit = NSLocalizedString("About.reddit", value:"Reddit", comment: "About screen reddit label")
+        static let telegram = NSLocalizedString("About.telegram", value:"Telegram", comment: "About screen telegram label")
         static let privacy = NSLocalizedString("About.privacy", value:"Privacy Policy", comment: "Privay Policy button label")
         static let walletID = NSLocalizedString("About.walletID", value:"Wagerr Rewards ID", comment: "About screen wallet ID label")
         static let footer = NSLocalizedString("About.footer", value:"Made by the global Wagerr team. Version %1$@", comment: "About screen footer")

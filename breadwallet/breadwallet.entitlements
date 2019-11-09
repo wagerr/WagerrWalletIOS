@@ -8,7 +8,7 @@
 	<string>NSFileProtectionComplete</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.mipmobile</string>
+		<string>group.wagerr</string>
 	</array>
 </dict>
 </plist>

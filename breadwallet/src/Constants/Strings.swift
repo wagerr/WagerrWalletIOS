@@ -319,7 +319,7 @@ enum S {
         static let telegram = NSLocalizedString("About.telegram", value:"Telegram", comment: "About screen telegram label")
         static let privacy = NSLocalizedString("About.privacy", value:"Privacy Policy", comment: "Privay Policy button label")
         static let walletID = NSLocalizedString("About.walletID", value:"Wagerr Rewards ID", comment: "About screen wallet ID label")
-        static let footer = NSLocalizedString("About.footer", value:"Made by the global Wagerr team. Version %1$@", comment: "About screen footer")
+        static let footer = NSLocalizedString("About.footer", value:"Made by the global BRD team. Version %1$@", comment: "About screen footer")
         static let footer2 = NSLocalizedString("About.footer2", value:"Adapted to Wagerr by MIP", comment: "About screen footer 2")
     }
 

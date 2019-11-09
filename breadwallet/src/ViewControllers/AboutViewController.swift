@@ -51,7 +51,7 @@ class AboutViewController : UIViewController {
             logo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             logo.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: C.padding[3]),
             logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
-            logo.heightAnchor.constraint(equalTo: logo.widthAnchor, multiplier: 202.0/553.0) ])
+            logo.heightAnchor.constraint(equalTo: logo.widthAnchor, multiplier: 162.0/553.0) ])
         //logo.constrain(toSuperviewEdges: nil)
         /*
         walletID.constrain([
@@ -71,9 +71,13 @@ class AboutViewController : UIViewController {
             reddit.topAnchor.constraint(equalTo: twitter.bottomAnchor, constant: C.padding[2]),
             reddit.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             reddit.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
+        telegram.constrain([
+            telegram.topAnchor.constraint(equalTo: reddit.bottomAnchor, constant: C.padding[2]),
+            telegram.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            telegram.trailingAnchor.constraint(equalTo: view.trailingAnchor) ])
         privacy.constrain([
             privacy.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            privacy.topAnchor.constraint(equalTo: reddit.bottomAnchor, constant: C.padding[2])])
+            privacy.topAnchor.constraint(equalTo: telegram.bottomAnchor, constant: C.padding[2])])
         footer.constrain([
             footer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             footer.topAnchor.constraint(equalTo: privacy.bottomAnchor) ])
@@ -108,7 +112,7 @@ class AboutViewController : UIViewController {
             myself.presentURL(string: "https://t.me/wagerrcoin")
         }
         privacy.tap = strongify(self) { myself in
-            myself.presentURL(string: "https://www.wagerr.com/privacy/")
+            myself.presentURL(string: "https://github.com/wagerr/WagerrWalletAndroid/blob/master/PrivacyPolicy.md")
         }
     }
 

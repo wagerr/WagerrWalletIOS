@@ -218,15 +218,48 @@ class ModalPresenter : Subscriber, Trackable {
         supportCenter.modalPresentationCapturesStatusBarAppearance = true
         supportCenter.transitioningDelegate = supportCenter
         var url: String
+        var aId: String
         if let articleId = articleId {
-            url = "/support/article?slug=\(articleId)"
-            if let currency = currency {
-                url += "&currency=\(currency.code.lowercased())"
+            switch articleId    {
+                case ArticleIds.walletDisabled:
+                    aId = "articles/360035353391-Why-is-my-wallet-disabled-"
+                case ArticleIds.receiveBitcoin:
+                    aId = "articles/360035353511-How-do-I-receive-Wagerr-WGR-";
+                case ArticleIds.setPin:
+                    aId = "/articles/360035353791-Why-do-i-need-a-PIN-";
+                case ArticleIds.enableTouchId:
+                    aId = "articles/360035353591-What-is-fingerprint-authentication-";
+                case ArticleIds.touchIdSpendingLimit:
+                    aId = "articles/360035353631-What-is-the-fingerprint-touch-ID-spending-limit-";
+                case ArticleIds.wipeWallet:
+                    aId = "articles/360035358811-How-do-I-wipe-my-wallet-";
+                case ArticleIds.paperKey,
+                     ArticleIds.writePhrase,
+                     ArticleIds.recoverWallet:
+                    aId = "articles/360035353811-What-is-a-recovery-key-";
+                case ArticleIds.importWallet:
+                    aId = "articles/360034979472-What-happens-when-I-import-a-Wagerr-private-key-";
+                case ArticleIds.displayCurrency:
+                    aId = "articles/360035353871-How-does-the-Wagerr-wallet-app-show-my-balance-in-my-local-currency-";
+                case ArticleIds.reScan:
+                    aId = "articles/360034979492-When-should-I-re-sync-my-Wagerr-wallet-with-the-blockchain-";
+                case ArticleIds.securityCenter:
+                    aId = "articles/360035353831-What-is-the-Security-Center-";
+                case ArticleIds.sendBitcoin:
+                    aId = "articles/360034979232-How-can-I-send-Wagerr-WGR-";
+                case ArticleIds.requestAmount:
+                    aId = "articles/360034983592-How-do-I-use-the-Request-an-Amount-screen-in-my-Wagerr-wallet-";
+                //case ArticleIds.betSlip:
+                //    aId = "articles/360035358891-Betting-Slip";
+                default:
+                    aId = "categories/360002247832-Mobile-Application";
             }
         } else {
-            url = "/support?"
+            aId = "categories/360002247832-Mobile-Application";
         }
-        supportCenter.navigate(to: "https://discord.gg/vecf8Ca")        // bypass support
+        url = "https://wagerr.zendesk.com/hc/en-us/\(aId)"
+
+        supportCenter.navigate(to: url)        // bypass support
         //topViewController?.present(supportCenter, animated: true, completion: {})
     }
 
@@ -441,6 +474,7 @@ class ModalPresenter : Subscriber, Trackable {
             ],
             SettingsSections.currencies: currencySettings,
             SettingsSections.other: [
+                /*
                 Setting(title: S.Settings.shareData, callback: {
                     settingsNav.pushViewController(ShareDataViewController(), animated: true)
                 }),
@@ -448,7 +482,7 @@ class ModalPresenter : Subscriber, Trackable {
                     if let url = URL(string: C.reviewLink) {
                         UIApplication.shared.openURL(url)
                     }
-                }),
+                }),*/
                 Setting(title: S.Settings.about, callback: {
                     settingsNav.pushViewController(AboutViewController(), animated: true)
                 }),

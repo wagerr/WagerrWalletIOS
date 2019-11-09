@@ -159,7 +159,15 @@ class DefaultCurrencyViewController : UITableViewController, Subscriber {
         Store.perform(action: DefaultCurrency.setDefault(rate.code))
     }
 
-
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    {
+        if indexPath.row == 0 {
+            return 0
+        } else {
+            return 50
+        }
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

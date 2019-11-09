@@ -133,6 +133,94 @@ class CoreDatabase {
                      nil, nil, nil)
         if sqlite3_errcode(db) != SQLITE_OK { print(String(cString: sqlite3_errmsg(db))) }
 
+        /* Wagerr Betting transaction tables
+            WGR_MAPPING
+            WGR_EVENT
+            WGR_RESULT
+         
+         */
+        // WGR_MAPPING
+        sqlite3_exec(db, "create table if not exists WGR_MAPPING (" +
+            "Z_PK integer primary key," +
+            "Z_ENT integer," +
+            "Z_OPT integer," +
+            "ZTYPE integer," +
+            "ZVERSION integer," +
+            "ZNAMESPACEID integer," +
+            "ZMAPPINGID integer," +
+            "ZSTRING varchar," +
+            
+            "ZTIMESTAMP integer," +
+            "ZHEIGHT integer," +
+            "ZTXHASH blob)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_MAPPING_ZTXHASH_INDEX " +
+            "on WGR_MAPPING (ZTXHASH)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_MAPPING_ZNAMESPACEID_INDEX " +
+            "on WGR_MAPPING (ZNAMESPACEID)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_MAPPING_ZMAPPINGID_INDEX " +
+            "on WGR_MAPPING (ZMAPPINGID)", nil, nil, nil)
+        if sqlite3_errcode(db) != SQLITE_OK { print(String(cString: sqlite3_errmsg(db))) }
+        
+        // WGR_EVENT
+        sqlite3_exec(db, "create table if not exists WGR_EVENT (" +
+            "Z_PK integer primary key," +
+            "Z_ENT integer," +
+            "Z_OPT integer," +
+            "ZTYPE integer," +
+            "ZVERSION integer," +
+            "ZEVENT_ID integer," +
+            "ZEVENT_TIMESTAMP integer," +
+            "ZSPORT_ID integer," +
+            "ZTOURNAMENT_ID integer," +
+            "ZROUND_ID integer," +
+            "ZHOME_TEAM integer," +
+            "ZAWAY_TEAM integer," +
+            "ZHOME_ODDS integer," +
+            "ZAWAY_ODDS integer," +
+            "ZDRAW_ODDS integer," +
+            "ZENTRY_PRICE integer," +
+            "ZSPREAD_POINTS integer," +
+            "ZSPREAD_HOME_ODDS integer," +
+            "ZSPREAD_AWAY_ODDS integer," +
+            "ZTOTAL_POINTS integer," +
+            "ZTOTAL_OVER_ODDS integer," +
+            "ZTOTAL_UNDER_ODDS integer," +
+
+            "ZLAST_UPDATED integer," +
+            "ZTIMESTAMP integer," +
+            "ZHEIGHT integer," +
+            "ZTXHASH blob)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_EVENT_ZTXHASH_INDEX " +
+            "on WGR_MAPPING (ZTXHASH)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_EVENT_ZEVENT_ID_INDEX " +
+            "on WGR_MAPPING (ZEVENT_ID)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_EVENT_ZEVENT_TIMESTAMP_INDEX " +
+            "on WGR_MAPPING (ZEVENT_TIMESTAMP)", nil, nil, nil)
+        if sqlite3_errcode(db) != SQLITE_OK { print(String(cString: sqlite3_errmsg(db))) }
+        
+        // WGR_RESULT
+        sqlite3_exec(db, "create table if not exists WGR_RESULT (" +
+            "Z_PK integer primary key," +
+            "Z_ENT integer," +
+            "Z_OPT integer," +
+            "ZTYPE integer," +
+            "ZVERSION integer," +
+            "ZEVENT_ID integer," +
+            "ZRESULT_TYPE integer," +
+            "ZHOME_TEAM_SCORE integer," +
+            "ZAWAY_TEAM_SCORE integer," +
+
+            "ZTIMESTAMP integer," +
+            "ZHEIGHT integer," +
+            "ZTXHASH blob)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_RESULT_ZTXHASH_INDEX " +
+            "on WGR_MAPPING (ZTXHASH)", nil, nil, nil)
+        sqlite3_exec(db, "create index if not exists WGR_RESULT_ZEVENT_ID_INDEX " +
+            "on WGR_MAPPING (ZEVENT_ID)", nil, nil, nil)
+        if sqlite3_errcode(db) != SQLITE_OK { print(String(cString: sqlite3_errmsg(db))) }
+        
+        // End WAGERR tables
+        
         // primary keys
         sqlite3_exec(db, "create table if not exists Z_PRIMARYKEY (" +
             "Z_ENT INTEGER PRIMARY KEY," +
@@ -148,6 +236,19 @@ class CoreDatabase {
         sqlite3_exec(db, "insert into Z_PRIMARYKEY (Z_ENT, Z_NAME, Z_SUPER, Z_MAX) " +
             "select 3, 'BRPeerEntity', 0, 0 except " +
             "select 3, Z_NAME, 0, 0 from Z_PRIMARYKEY where Z_NAME = 'BRPeerEntity'", nil, nil, nil)
+
+        // Start WAGERR PKa
+        sqlite3_exec(db, "insert into Z_PRIMARYKEY (Z_ENT, Z_NAME, Z_SUPER, Z_MAX) " +
+            "select 10, 'WGR_Mapping', 0, 0 except " +
+            "select 10, Z_NAME, 0, 0 from Z_PRIMARYKEY where Z_NAME = 'WGR_Mapping'", nil, nil, nil)
+        sqlite3_exec(db, "insert into Z_PRIMARYKEY (Z_ENT, Z_NAME, Z_SUPER, Z_MAX) " +
+            "select 11, 'WGR_Event', 0, 0 except " +
+            "select 11, Z_NAME, 0, 0 from Z_PRIMARYKEY where Z_NAME = 'WGR_Event'", nil, nil, nil)
+        sqlite3_exec(db, "insert into Z_PRIMARYKEY (Z_ENT, Z_NAME, Z_SUPER, Z_MAX) " +
+            "select 12, 'WGR_Result', 0, 0 except " +
+            "select 12, Z_NAME, 0, 0 from Z_PRIMARYKEY where Z_NAME = 'WGR_Result'", nil, nil, nil)
+        // End WAGERR PKs
+
         if sqlite3_errcode(db) != SQLITE_OK { print(String(cString: sqlite3_errmsg(db))) }
 
         var sql: OpaquePointer? = nil
@@ -159,6 +260,9 @@ class CoreDatabase {
             if name == "BRTxMetadataEntity" { txEnt = sqlite3_column_int(sql, 0) }
             else if name == "BRMerkleBlockEntity" { blockEnt = sqlite3_column_int(sql, 0) }
             else if name == "BRPeerEntity" { peerEnt = sqlite3_column_int(sql, 0) }
+            else if name == "WGR_Mapping" { peerEnt = sqlite3_column_int(sql, 0) }
+            else if name == "WGR_Event" { peerEnt = sqlite3_column_int(sql, 0) }
+            else if name == "WGR_Result" { peerEnt = sqlite3_column_int(sql, 0) }
         }
 
         if sqlite3_errcode(db) != SQLITE_DONE { print(String(cString: sqlite3_errmsg(db))) }

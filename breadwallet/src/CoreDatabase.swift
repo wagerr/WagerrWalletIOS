@@ -29,6 +29,9 @@ class CoreDatabase {
     private var txEnt: Int32 = 0
     private var blockEnt: Int32 = 0
     private var peerEnt: Int32 = 0
+    private var mappingEnt: Int32 = 0
+    private var eventEnt: Int32 = 0
+    private var resultEnt: Int32 = 0
     private let queue = DispatchQueue(label: "com.wagerrwallet.corecbqueue")
 
     init(dbPath: String = "BreadWallet.sqlite") {
@@ -260,9 +263,9 @@ class CoreDatabase {
             if name == "BRTxMetadataEntity" { txEnt = sqlite3_column_int(sql, 0) }
             else if name == "BRMerkleBlockEntity" { blockEnt = sqlite3_column_int(sql, 0) }
             else if name == "BRPeerEntity" { peerEnt = sqlite3_column_int(sql, 0) }
-            else if name == "WGR_Mapping" { peerEnt = sqlite3_column_int(sql, 0) }
-            else if name == "WGR_Event" { peerEnt = sqlite3_column_int(sql, 0) }
-            else if name == "WGR_Result" { peerEnt = sqlite3_column_int(sql, 0) }
+            else if name == "WGR_Mapping" { mappingEnt = sqlite3_column_int(sql, 0) }
+            else if name == "WGR_Event" { eventEnt = sqlite3_column_int(sql, 0) }
+            else if name == "WGR_Result" { resultEnt = sqlite3_column_int(sql, 0) }
         }
 
         if sqlite3_errcode(db) != SQLITE_DONE { print(String(cString: sqlite3_errmsg(db))) }

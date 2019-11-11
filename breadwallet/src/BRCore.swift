@@ -364,6 +364,7 @@ protocol BRWalletListener {
     func balanceChanged(_ balance: UInt64)
     func txAdded(_ tx: BRTxRef)
     func txUpdated(_ txHashes: [UInt256], blockHeight: UInt32, timestamp: UInt32)
+    func txBetUpdated(_ txHashes: [BRTransaction], blockHeight: UInt32, timestamp: UInt32)
     func txDeleted(_ txHash: UInt256, notifyUser: Bool, recommendRescan: Bool)
 }
 
@@ -390,6 +391,13 @@ class BRWallet {
             guard let info = info else { return }
             let hashes = [UInt256](UnsafeBufferPointer(start: txHashes, count: txCount))
             Unmanaged<BRWallet>.fromOpaque(info).takeUnretainedValue().listener.txUpdated(hashes,
+                                                                                          blockHeight: blockHeight,
+                                                                                          timestamp: timestamp)
+        },
+        { (info, txHashes, txCount, blockHeight, timestamp) in // txBetUpdated
+            guard let info = info else { return }
+            let hashes = [BRTransaction](UnsafeBufferPointer(start: txHashes, count: txCount))
+            Unmanaged<BRWallet>.fromOpaque(info).takeUnretainedValue().listener.txBetUpdated(hashes,
                                                                                           blockHeight: blockHeight,
                                                                                           timestamp: timestamp)
         },
@@ -452,6 +460,11 @@ class BRWallet {
     // returns an unsigned transaction that sends the specified amount from the wallet to the given address
     func createTransaction(forAmount: UInt64, toAddress: String) -> BRTxRef? {
         return BRWalletCreateTransaction(cPtr, forAmount, toAddress)
+    }
+    
+    // returns an unsigned bet transaction that burns the specified amount for a bet of type and evenID with an outcome
+    func createBetTransaction(forAmount: UInt64, type: Int32, eventID : Int32, outcome : Int32 ) -> BRTxRef? {
+        return BRWalletCreateBetTransaction(cPtr, forAmount, type, eventID, outcome)
     }
     
     // returns an unsigned transaction that satisifes the given transaction outputs

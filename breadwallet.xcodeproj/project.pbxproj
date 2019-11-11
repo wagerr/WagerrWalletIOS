@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */; };
+		06673E902377F25200549005 /* WagerrEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8F2377F25200549005 /* WagerrEntities.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
 		06C0C6C220B360C10047C540 /* x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C020B360C00047C540 /* x11.c */; };
 		06C0C6E020B377250047C540 /* BRCoinAddr.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C620B377240047C540 /* BRCoinAddr.c */; };
@@ -674,6 +676,8 @@
 		063B76E920C282A600B3CB35 /* neoscrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = neoscrypt.c; sourceTree = "<group>"; };
 		063B76EB20C33A3000B3CB35 /* hash9.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash9.c; sourceTree = "<group>"; };
 		063B76EC20C33A3100B3CB35 /* hash9.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash9.h; sourceTree = "<group>"; };
+		06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrOpCodeManager.swift; sourceTree = "<group>"; };
+		06673E8F2377F25200549005 /* WagerrEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrEntities.swift; sourceTree = "<group>"; };
 		06C0C6BE20B360BF0047C540 /* x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x11.h; sourceTree = "<group>"; };
 		06C0C6C020B360C00047C540 /* x11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x11.c; sourceTree = "<group>"; };
 		06C0C6C420B377240047C540 /* BRCoinAddr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRCoinAddr.h; sourceTree = "<group>"; };
@@ -2978,6 +2982,8 @@
 				75A2A79C1DA5934300A983D8 /* LaunchScreen.storyboard */,
 				75A2A79F1DA5934300A983D8 /* Info.plist */,
 				CEDA9EDB1FDE0C56005E8D1B /* countries.plist */,
+				06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */,
+				06673E8F2377F25200549005 /* WagerrEntities.swift */,
 			);
 			path = breadwallet;
 			sourceTree = "<group>";
@@ -4498,6 +4504,7 @@
 				CECCE5A91E0378FB00D99448 /* PinPadViewController.swift in Sources */,
 				CEF3D2DB1E8B55C80070178E /* UISlider+Gradient.swift in Sources */,
 				CE65C66A207D41BB000C99C4 /* CurrencyListMetaData.swift in Sources */,
+				06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */,
 				CE4CA7BC1EE3649100373F11 /* BRActivityView.swift in Sources */,
 				7CBABD9C20181D890077CB55 /* NSMutableAttributedString+Additions.swift in Sources */,
 				CEC6AA421DEFC88F00EE5AFD /* ReceiveViewController.swift in Sources */,
@@ -4593,6 +4600,7 @@
 				22A9A94F1DF61945000F0016 /* BRHTTPRouter.swift in Sources */,
 				CE6DCC271E6108D50044257B /* EnterPhraseCell.swift in Sources */,
 				CE760EDD1E561DF900EFAC2B /* UpdatePinViewController.swift in Sources */,
+				06673E902377F25200549005 /* WagerrEntities.swift in Sources */,
 				22A9A9481DF61945000F0016 /* BRBitID.swift in Sources */,
 				CEBF32F41DDCE12900348FC6 /* AccountFooterView.swift in Sources */,
 				CE9057181DFF0FA8006BA848 /* String+Additions.swift in Sources */,

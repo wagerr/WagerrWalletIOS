@@ -209,6 +209,11 @@ extension BTCWalletManager : BRWalletListener {
         db?.txUpdated(txHashes, blockHeight: blockHeight, timestamp: timestamp)
     }
 
+    func txBetUpdated(_ txHashes: [BRTransaction], blockHeight: UInt32, timestamp: UInt32) {
+        // parse and store
+        //db?.txUpdated(txHashes, blockHeight: blockHeight, timestamp: timestamp)
+    }
+    
     func txDeleted(_ txHash: UInt256, notifyUser: Bool, recommendRescan: Bool) {
         if notifyUser {
             if recommendRescan {

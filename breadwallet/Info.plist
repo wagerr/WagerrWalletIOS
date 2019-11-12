@@ -13,6 +13,8 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>Wagerr Payment Request</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>wagerr.paymentrequest</string>
@@ -23,6 +25,8 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>Wagerr Payment</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>wagerr.payment</string>
@@ -33,6 +37,8 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>Wagerr Payment ACK</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>wagerr.paymentack</string>
@@ -50,7 +56,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.3.1</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -96,11 +102,13 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>279</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
@@ -110,6 +118,8 @@
 	<string>Used to scan barcodes</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Used for user authentication</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Used to determine where you are - never recorded or shared with anyone</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Used to determine where you are - never recorded or shared with anyone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -148,6 +158,8 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UISupportsDocumentBrowser</key>
+	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>UTImportedTypeDeclarations</key>

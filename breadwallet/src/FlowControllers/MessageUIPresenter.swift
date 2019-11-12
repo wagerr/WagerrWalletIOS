@@ -3,7 +3,7 @@
 //  breadwallet
 //
 //  Created by Adrian Corscadden on 2016-12-11.
-//  Copyright © 2016 breadwallet LLC. All rights reserved.
+//  Copyright © 2016-2019 Breadwinner AG. All rights reserved.
 //
 
 import UIKit
@@ -13,41 +13,59 @@ class MessageUIPresenter: NSObject, Trackable {
 
     weak var presenter: UIViewController?
 
-    func presentMailCompose(uri: String, image: UIImage) {
-        presentMailCompose(string: uri, image: image)
-    }
+    /** Allows the user to share a wallet address and QR code image using the iOS system share action sheet. */
+    func presentShareSheet(text: String, image: UIImage) {
+        let shareItems = [text, image] as [Any]
+        let shareVC = UIActivityViewController(activityItems: shareItems, applicationActivities: nil)
 
-    func presentMailCompose(bitcoinURL: String, image: UIImage) {
-        presentMailCompose(string: bitcoinURL, image: image)
+        shareVC.excludedActivityTypes = shareAddressExclusions
+        present(shareVC)
     }
-
+    
+    // Returns (name, data) pairs for the available logfile attachments.
+    private func getLogAttachments() -> [(String, Data)] {
+        var attachments: [(String, Data)] = [(String, Data)]()
+        
+        // We include the previous log since it may provide clues about crashes etc. affecting
+        // the current run of the app.
+        if let previousLogData = try? Data(contentsOf: C.previousLogFilePath) {
+            attachments.append(("brd_logs_previous.txt", previousLogData))
+        }
+        
+        if let currentLogData = try? Data(contentsOf: C.logFilePath) {
+            attachments.append(("brd_logs_current.txt", currentLogData))
+        }
+        
+        return attachments
+    }
+    
+    // Displays an email compose view controller, attaching the available console logs.
     func presentEmailLogs() {
         guard MFMailComposeViewController.canSendMail() else { showEmailUnavailableAlert(); return }
-        guard let logData = try? Data(contentsOf: C.logFilePath) else { showErrorMessage(S.ErrorMessages.noLogsFound); return }
+        
+        let attachments = getLogAttachments()
+        guard !attachments.isEmpty else { showErrorMessage(S.ErrorMessages.noLogsFound); return }
+        
         originalTitleTextAttributes = UINavigationBar.appearance().titleTextAttributes
         UINavigationBar.appearance().titleTextAttributes = nil
+        
         let emailView = MFMailComposeViewController()
+        
         emailView.setToRecipients([C.iosEmail])
         emailView.setSubject("BRD Logs")
         emailView.setMessageBody("BRD Logs", isHTML: false)
-        emailView.addAttachmentData(logData, mimeType: "text/plain", fileName: "brd_logs.txt")
-        emailView.mailComposeDelegate = self
-        present(emailView)
-    }
-
-    private func presentMailCompose(string: String, image: UIImage) {
-        guard MFMailComposeViewController.canSendMail() else { showEmailUnavailableAlert(); return }
-        originalTitleTextAttributes = UINavigationBar.appearance().titleTextAttributes
-        UINavigationBar.appearance().titleTextAttributes = nil
-        let emailView = MFMailComposeViewController()
-        emailView.setMessageBody(string, isHTML: false)
-        if let data = UIImagePNGRepresentation(image) {
-            emailView.addAttachmentData(data, mimeType: "image/png", fileName: "bitcoinqr.png")
+        
+        for attachment in attachments {
+            let filename = attachment.0
+            let data = attachment.1
+            emailView.addAttachmentData(data, mimeType: "text/plain", fileName: filename)
         }
+        
         emailView.mailComposeDelegate = self
+        
         present(emailView)
     }
-
+    
     func presentFeedbackCompose() {
         guard MFMailComposeViewController.canSendMail() else { showEmailUnavailableAlert(); return }
         originalTitleTextAttributes = UINavigationBar.appearance().titleTextAttributes
@@ -69,29 +87,16 @@ class MessageUIPresenter: NSObject, Trackable {
         present(emailView)
     }
 
-    func presentMessageCompose(uri: String, image: UIImage) {
-        presentMessage(string: uri, image: image)
+    // MARK: - Private
+
+    // Filters out the sharing options that don't make sense for sharing a wallet
+    // address and QR code. `saveToCameraRoll` is excluded because it crashes
+    // without adding `NSPhotoLibraryAddUsageDescription` to the plist.
+    private var shareAddressExclusions: [UIActivity.ActivityType] {
+        return [.airDrop, .openInIBooks, .addToReadingList, .saveToCameraRoll, .assignToContact]
     }
 
-    func presentMessageCompose(bitcoinURL: String, image: UIImage) {
-        presentMessage(string: bitcoinURL, image: image)
-    }
-
-    private func presentMessage(string: String, image: UIImage) {
-        guard MFMessageComposeViewController.canSendText() else { showMessageUnavailableAlert(); return }
-        originalTitleTextAttributes = UINavigationBar.appearance().titleTextAttributes
-        UINavigationBar.appearance().titleTextAttributes = nil
-        let textView = MFMessageComposeViewController()
-        textView.body = string
-        if let data = UIImagePNGRepresentation(image) {
-            textView.addAttachmentData(data, typeIdentifier: "public.image", filename: "bitcoinqr.png")
-        }
-        textView.messageComposeDelegate = self
-        saveEvent("receive.presentMessage")
-        present(textView)
-    }
-
-    fileprivate var originalTitleTextAttributes: [NSAttributedStringKey: Any]?
+    private var originalTitleTextAttributes: [NSAttributedString.Key: Any]?
 
     private func present(_ viewController: UIViewController) {
         presenter?.view.isFrameChangeBlocked = true

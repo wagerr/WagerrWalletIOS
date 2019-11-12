@@ -65,7 +65,7 @@ class AmountViewController : UIViewController, Trackable {
 
     private let isPinPadExpandedAtLaunch: Bool
     private let isRequesting: Bool
-    var minimumFractionDigits = 0
+    var minimumFractionDigits = 2
     private var hasTrailingDecimal = false
     private var pinPadHeight: NSLayoutConstraint?
     private var feeSelectorHeight: NSLayoutConstraint?

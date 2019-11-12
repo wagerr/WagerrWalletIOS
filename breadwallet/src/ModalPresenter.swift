@@ -270,35 +270,16 @@ class ModalPresenter : Subscriber, Trackable {
         case .send(let currency):
             return makeSendView(currency: currency)
         case .receive(let currency):
-            return receiveView(currency: currency, isRequestAmountVisible: (currency.urlSchemes != nil))
+            return makeReceiveView(currency: currency, isRequestAmountVisible: (currency.urlSchemes?[0] != nil))
         case .loginScan:
             return nil //The scan view needs a custom presentation
         case .loginAddress:
-            return receiveView(currency: Currencies.btc, isRequestAmountVisible: false)
-        case .requestAmount(let currency):
-            guard let walletManager = walletManagers[currency.code] else { return nil }
-            var address: String?
-            switch currency.code {
-            case Currencies.btc.code:
-                address = walletManager.wallet?.receiveAddress
-            case Currencies.bch.code:
-                address = walletManager.wallet?.receiveAddress.bCashAddr
-            case Currencies.eth.code:
-                address = (walletManager as? EthWalletManager)?.address
-            default:
-                if currency is ERC20Token {
-                    address = (walletManager as? EthWalletManager)?.address
-                }
-            }
-            guard let receiveAddress = address else { return nil }
-            let requestVc = RequestAmountViewController(currency: currency, receiveAddress: receiveAddress)
-            requestVc.presentEmail = { [weak self] bitcoinURL, image in
+            return makeReceiveView(currency: Currencies.btc, isRequestAmountVisible: false)
+        case .requestAmount(let currency, let address):
+            let requestVc = RequestAmountViewController(currency: currency, receiveAddress: address)
+            requestVc.shareAddress = { [weak self] uri, qrCode in
                 self?.messagePresenter.presenter = self?.topViewController
-                self?.messagePresenter.presentMailCompose(bitcoinURL: bitcoinURL, image: image)
-            }
-            requestVc.presentText = { [weak self] bitcoinURL, image in
-                self?.messagePresenter.presenter = self?.topViewController
-                self?.messagePresenter.presentMessageCompose(bitcoinURL: bitcoinURL, image: image)
+                self?.messagePresenter.presentShareSheet(text: uri, image: qrCode)
             }
             return ModalViewController(childViewController: requestVc)
         case .buy(let currency):
@@ -348,6 +329,20 @@ class ModalPresenter : Subscriber, Trackable {
         return root
     }
 
+    
+    private func makeReceiveView(currency: CurrencyDef, isRequestAmountVisible: Bool, isBTCLegacy: Bool = false) -> UIViewController? {
+        let receiveVC = ReceiveViewController(currency: currency, isRequestAmountVisible: isRequestAmountVisible, isBTCLegacy: isBTCLegacy)
+        let root = ModalViewController(childViewController: receiveVC)
+        
+        receiveVC.shareAddress = { [weak self, weak root] address, qrCode in
+            guard let `self` = self, let root = root else { return }
+            self.messagePresenter.presenter = root
+            self.messagePresenter.presentShareSheet(text: address, image: qrCode)
+        }
+        
+        return root
+    }
+    /*
     private func receiveView(currency: CurrencyDef, isRequestAmountVisible: Bool) -> UIViewController? {
         let receiveVC = ReceiveViewController(currency: currency, isRequestAmountVisible: isRequestAmountVisible)
         let root = ModalViewController(childViewController: receiveVC)
@@ -363,7 +358,7 @@ class ModalPresenter : Subscriber, Trackable {
         }
         return root
     }
-
+*/
     private func presentLoginScan() {
         //TODO:BCH URL support
         guard let top = topViewController else { return }

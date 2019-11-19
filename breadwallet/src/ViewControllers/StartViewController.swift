@@ -33,7 +33,7 @@ class StartViewController : UIViewController {
     private var faq: UIButton
 
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         setData()
         addSubviews()
         addConstraints()

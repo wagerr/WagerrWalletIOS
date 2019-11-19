@@ -119,8 +119,8 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
     }
 
     private func setStyle() {
-        view.backgroundColor = .white
-        address.textColor = .grayTextTint
+        view.backgroundColor = .whiteBackground
+        address.textColor = .darkText
         address.textAlignment = .center
         address.adjustsFontSizeToFitWidth = true
         address.minimumScaleFactor = 0.7
@@ -144,7 +144,7 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
     private func setReceiveAddress() {
         guard let addressText = currency.state?.receiveAddress else { return }
         address.text = currency.matches(Currencies.bch) ? addressText.bCashAddr : addressText
-        qrCode.image = UIImage.qrCode(data: "\(address.text!)".data(using: .utf8)!, color: CIColor(color: .black))?
+        qrCode.image = UIImage.qrCode(data: "\(address.text!)".data(using: .utf8)!, color: CIColor(color: .primaryText))?
             .resize(CGSize(width: qrSize, height: qrSize))!
     }
 

@@ -105,7 +105,7 @@ class RequestAmountViewController : UIViewController {
     }
 
     private func setData() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         address.textAlignment = .center
         address.adjustsFontSizeToFitWidth = true
         address.minimumScaleFactor = 0.7

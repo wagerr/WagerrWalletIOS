@@ -64,7 +64,7 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         view.addSubview(addressCell)
         view.addSubview(memoCell)
         view.addSubview(sendButton)
@@ -164,8 +164,8 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
         let balanceText = balanceAmount.description
         let balanceOutput = String(format: S.Send.balance, balanceText)
         var feeOutput = ""
-        var color: UIColor = .grayTextTint
-        var feeColor: UIColor = .grayTextTint
+        var color: UIColor = .darkText
+        var feeColor: UIColor = .darkText
         
         if let amount = amount, amount.rawValue > UInt256(0) {
             if let fee = sender.fee(forAmount: amount.rawValue) {

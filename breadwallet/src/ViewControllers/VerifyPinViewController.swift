@@ -35,7 +35,7 @@ class VerifyPinViewController : UIViewController, ContentBoxPresenter {
     private let titleLabel = UILabel(font: .customBold(size: 17.0), color: .darkText)
     private let body = UILabel(font: .customBody(size: 14.0), color: .darkText)
     private let pinView: PinView
-    private let toolbar = UIView(color: .whiteTint)
+    private let toolbar = UIView(color: .whiteBackground)
     private let cancel = UIButton(type: .system)
     private let bodyText: String
     private let pinLength: Int
@@ -91,7 +91,7 @@ class VerifyPinViewController : UIViewController, ContentBoxPresenter {
     }
 
     private func setupSubviews() {
-        contentBox.backgroundColor = .white
+        contentBox.backgroundColor = .tableCellBackground
         contentBox.layer.cornerRadius = 8.0
         contentBox.layer.borderWidth = 1.0
         contentBox.layer.borderColor = UIColor.secondaryShadow.cgColor
@@ -125,7 +125,7 @@ class VerifyPinViewController : UIViewController, ContentBoxPresenter {
             self?.dismiss(animated: true, completion: nil)
         }
         cancel.setTitle(S.Button.cancel, for: .normal)
-        view.backgroundColor = .clear
+        view.backgroundColor = .tableCellBackground
     }
 
     private func authenticationFailed() {

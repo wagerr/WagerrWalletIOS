@@ -76,7 +76,7 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 60.0
         tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.backgroundColor = .whiteTint
+        tableView.backgroundColor = .whiteBackground
         
         emptyMessage.textAlignment = .center
         emptyMessage.text = S.TransactionDetails.emptyMessage

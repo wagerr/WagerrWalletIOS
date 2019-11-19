@@ -64,7 +64,7 @@ class ManageWalletViewController : UIViewController, ModalPresentable, Subscribe
     }
 
     private func setData() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         textField.textColor = .darkText
         textField.font = .customBody(size: 14.0)
         textField.returnKeyType = .done

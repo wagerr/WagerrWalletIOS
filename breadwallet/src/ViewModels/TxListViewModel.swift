@@ -55,7 +55,7 @@ struct TxListViewModel: TxViewModel {
                           currency: tx.currency,
                           rate: isBtcSwapped ? rate : nil,
                           negative: (tx.direction == .sent)).description
-        let color: UIColor = (tx.direction == .received) ? .receivedGreen : .darkGray
+        let color: UIColor = (tx.direction == .received) ? .receivedGreen : .darkText
         
         return NSMutableAttributedString(string: text,
                                          attributes: [.foregroundColor: color])

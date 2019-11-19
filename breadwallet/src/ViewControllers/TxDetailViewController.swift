@@ -138,7 +138,7 @@ class TxDetailViewController: UIViewController, Subscriber {
         container.layer.cornerRadius = C.Sizes.roundedCornerRadius
         container.layer.masksToBounds = true
         
-        footer.backgroundColor = .white
+        footer.backgroundColor = .whiteBackground
         separator.backgroundColor = .secondaryShadow
         detailsButton.setTitleColor(.blueButtonText, for: .normal)
         detailsButton.setTitleColor(.blueButtonText, for: .selected)

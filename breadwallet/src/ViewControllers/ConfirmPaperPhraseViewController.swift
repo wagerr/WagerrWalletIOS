@@ -51,9 +51,9 @@ class ConfirmPaperPhraseViewController : UIViewController {
     }
 
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         label.text = S.ConfirmPaperPhrase.label
-        label.textColor = .white
+        label.textColor = .headerText
         
         addSubviews()
         addConstraints()
@@ -66,7 +66,7 @@ class ConfirmPaperPhraseViewController : UIViewController {
         }
 
         let faqButton = UIButton.buildFaqButton(articleId: ArticleIds.confirmPhrase)
-        faqButton.tintColor = .white
+        faqButton.tintColor = .primaryText
         navigationItem.rightBarButtonItems = [UIBarButtonItem.negativePadding, UIBarButtonItem(customView: faqButton)]
     }
 

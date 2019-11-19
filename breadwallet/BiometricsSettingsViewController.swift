@@ -87,7 +87,7 @@ class BiometricsSettingsViewController : UIViewController, Subscriber {
 
     private func setData() {
         
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         title = LAContext.biometricType() == .face ? S.FaceIDSettings.title : S.TouchIdSettings.title
         label.text = LAContext.biometricType() == .face ? S.FaceIDSettings.label : S.TouchIdSettings.label
         switchLabel.text = LAContext.biometricType() == .face ? S.FaceIDSettings.switchLabel : S.TouchIdSettings.switchLabel
@@ -122,7 +122,7 @@ class BiometricsSettingsViewController : UIViewController, Subscriber {
         let negativePadding = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         negativePadding.width = -16.0
         let faqButton = UIButton.buildFaqButton(articleId: ArticleIds.enableTouchId)
-        faqButton.tintColor = .white
+        faqButton.tintColor = .primaryText
         navigationItem.rightBarButtonItems = [negativePadding, UIBarButtonItem(customView: faqButton)]
     }
 

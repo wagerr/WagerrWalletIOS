@@ -70,7 +70,7 @@ class ModalHeaderView : UIView {
                 close.constraint(.width, constant: buttonSize) ])
         }
 
-        backgroundColor = .white
+        backgroundColor = .whiteBackground
 
         setColors()
     }
@@ -95,9 +95,9 @@ class ModalHeaderView : UIView {
             border.backgroundColor = .secondaryShadow
         case .transaction:
             titleLabel.font = .customBody(size: 16.0)
-            titleLabel.textColor = .darkGray
-            close.tintColor = .lightGray
-            faq?.tintColor = .lightGray
+            titleLabel.textColor = .darkText
+            close.tintColor = .darkText
+            faq?.tintColor = .darkText
             border.backgroundColor = .clear
         }
     }

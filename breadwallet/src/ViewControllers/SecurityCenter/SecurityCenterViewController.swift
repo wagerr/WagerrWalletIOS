@@ -82,7 +82,7 @@ class SecurityCenterViewController : UIViewController, Subscriber {
     }
 
     private func setupSubviewProperties() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         header.closeCallback = {
             self.dismiss(animated: true, completion: nil)
         }

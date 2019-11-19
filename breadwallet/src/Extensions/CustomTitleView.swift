@@ -50,7 +50,7 @@ extension CustomTitleView {
 
     func addCustomTitle() {
         let titleView = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 40))
-        titleView.backgroundColor = .clear
+        titleView.backgroundColor = .whiteBackground
         titleView.clipsToBounds = true
         label.text = customTitle
         titleView.addSubview(label)

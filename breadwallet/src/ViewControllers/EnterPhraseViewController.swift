@@ -119,7 +119,7 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
     }
 
     private func setData() {
-        view.backgroundColor = .secondaryButton
+        view.backgroundColor = .whiteBackground
         errorLabel.text = S.RecoverWallet.invalid
         errorLabel.isHidden = true
         errorLabel.textAlignment = .center

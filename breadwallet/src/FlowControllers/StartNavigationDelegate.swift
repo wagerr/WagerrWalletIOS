@@ -19,7 +19,7 @@ class StartNavigationDelegate : NSObject, UINavigationControllerDelegate {
                 NSAttributedStringKey.font: UIFont.customBold(size: 17.0)
             ]
             navigationController.setClearNavbar()
-            navigationController.navigationBar.barTintColor = .clear
+            navigationController.navigationBar.barTintColor = .whiteBackground
         }
 
         if viewController is EnterPhraseViewController {
@@ -30,7 +30,7 @@ class StartNavigationDelegate : NSObject, UINavigationControllerDelegate {
             ]
             navigationController.setClearNavbar()
             navigationController.navigationBar.isTranslucent = false
-            navigationController.navigationBar.barTintColor = .whiteTint
+            navigationController.navigationBar.barTintColor = .whiteBackground
         }
 
         if viewController is UpdatePinViewController {

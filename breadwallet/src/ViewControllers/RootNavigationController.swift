@@ -73,7 +73,7 @@ class RootNavigationController : UINavigationController {
     }
 
     func setLightStyle() {
-        navigationBar.tintColor = .white
+        navigationBar.tintColor = .whiteBackground
     }
 
     func setDarkStyle() {

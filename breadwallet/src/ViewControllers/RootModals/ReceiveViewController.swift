@@ -19,18 +19,20 @@ typealias PresentShare = (String, UIImage) -> Void
 class ReceiveViewController : UIViewController, Subscriber, Trackable {
 
     //MARK - Public
-    var presentEmail: PresentShare?
-    var presentText: PresentShare?
+    // Invoked with a wallet address and optional QR code image. This var is set by the
+    // ModalPresenter when the ReceiveViewController is created.
+    var shareAddress: PresentShare?
 
-    init(currency: CurrencyDef, isRequestAmountVisible: Bool) {
-        self.currency = currency
-        self.isRequestAmountVisible = isRequestAmountVisible
-        super.init(nibName: nil, bundle: nil)
+      init(currency: CurrencyDef, isRequestAmountVisible: Bool, isBTCLegacy: Bool = false) {
+          self.currency = currency
+          self.isRequestAmountVisible = isRequestAmountVisible
+          self.isBTCLegacy = isBTCLegacy
+          super.init(nibName: nil, bundle: nil)
     }
 
     //MARK - Private
     private let currency: CurrencyDef
-    
+    private let isBTCLegacy: Bool
     private let qrCode = UIImageView()
     private let address = UILabel(font: .customBody(size: 14.0))
     private let addressPopout = InViewAlert(type: .primary)
@@ -50,10 +52,11 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
         setStyle()
         addActions()
         setupCopiedMessage()
-        setupShareButtons()
+        /*
         Store.subscribe(self, selector: { $0[self.currency]?.receiveAddress != $1[self.currency]?.receiveAddress }, callback: { _ in
             self.setReceiveAddress()
         })
+        */
     }
 
     private func addSubviews() {
@@ -116,8 +119,8 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
     }
 
     private func setStyle() {
-        view.backgroundColor = .white
-        address.textColor = .grayTextTint
+        view.backgroundColor = .whiteBackground
+        address.textColor = .darkText
         address.textAlignment = .center
         address.adjustsFontSizeToFitWidth = true
         address.minimumScaleFactor = 0.7
@@ -141,7 +144,7 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
     private func setReceiveAddress() {
         guard let addressText = currency.state?.receiveAddress else { return }
         address.text = currency.matches(Currencies.bch) ? addressText.bCashAddr : addressText
-        qrCode.image = UIImage.qrCode(data: "\(address.text!)".data(using: .utf8)!, color: CIColor(color: .black))?
+        qrCode.image = UIImage.qrCode(data: "\(address.text!)".data(using: .utf8)!, color: CIColor(color: .primaryText))?
             .resize(CGSize(width: qrSize, height: qrSize))!
     }
 
@@ -153,7 +156,7 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
             guard let `self` = self, let modalTransitionDelegate = self.parent?.transitioningDelegate as? ModalTransitionDelegate else { return }
             modalTransitionDelegate.reset()
             self.dismiss(animated: true, completion: {
-                Store.perform(action: RootModalActions.Present(modal: .requestAmount(currency: self.currency)))
+                Store.perform(action: RootModalActions.Present(modal: .requestAmount(currency: self.currency, address: self.address.text ?? "")))
             })
         }
         share.addTarget(self, action: #selector(ReceiveViewController.shareTapped), for: .touchUpInside)
@@ -167,33 +170,9 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
         addressPopout.contentView = copiedMessage
     }
 
-    private func setupShareButtons() {
-        let container = UIView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        let email = ShadowButton(title: S.Receive.emailButton, type: .tertiary)
-        let text = ShadowButton(title: S.Receive.textButton, type: .tertiary)
-        container.addSubview(email)
-        container.addSubview(text)
-        email.constrain([
-            email.constraint(.leading, toView: container, constant: C.padding[2]),
-            email.constraint(.top, toView: container, constant: buttonPadding),
-            email.constraint(.bottom, toView: container, constant: -buttonPadding),
-            email.trailingAnchor.constraint(equalTo: container.centerXAnchor, constant: -C.padding[1]) ])
-        text.constrain([
-            text.constraint(.trailing, toView: container, constant: -C.padding[2]),
-            text.constraint(.top, toView: container, constant: buttonPadding),
-            text.constraint(.bottom, toView: container, constant: -buttonPadding),
-            text.leadingAnchor.constraint(equalTo: container.centerXAnchor, constant: C.padding[1]) ])
-        sharePopout.contentView = container
-        email.addTarget(self, action: #selector(ReceiveViewController.emailTapped), for: .touchUpInside)
-        text.addTarget(self, action: #selector(ReceiveViewController.textTapped), for: .touchUpInside)
-    }
-
     @objc private func shareTapped() {
-        toggle(alertView: sharePopout, shouldAdjustPadding: true)
-        if addressPopout.isExpanded {
-            toggle(alertView: addressPopout, shouldAdjustPadding: false)
-        }
+           guard let text = address.text, let image = qrCode.image else { return }
+           shareAddress?(text, image)
     }
 
     @objc private func addressTapped() {
@@ -204,14 +183,6 @@ class ReceiveViewController : UIViewController, Subscriber, Trackable {
         if sharePopout.isExpanded {
             toggle(alertView: sharePopout, shouldAdjustPadding: true)
         }
-    }
-
-    @objc private func emailTapped() {
-        presentEmail?(address.text!, qrCode.image!)
-    }
-
-    @objc private func textTapped() {
-        presentText?(address.text!, qrCode.image!)
     }
 
     private func toggle(alertView: InViewAlert, shouldAdjustPadding: Bool, shouldShrinkAfter: Bool = false) {

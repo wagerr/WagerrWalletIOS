@@ -51,7 +51,7 @@ class TxMemoCell: TxDetailRowCell {
         super.setupStyle()
 
         textView.font = .customBody(size: 14.0)
-        textView.textColor = .darkGray
+        textView.textColor = .darkText
         textView.textAlignment = .right
         textView.isScrollEnabled = false
         textView.returnKeyType = .done

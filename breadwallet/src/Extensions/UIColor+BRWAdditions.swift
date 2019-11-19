@@ -16,23 +16,48 @@ extension UIColor {
     }
 
     static var primaryText: UIColor {
-        return .white
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorPrimaryText")!
+        } else {
+            return .white
+        }
     }
 
     static var secondaryButton: UIColor {
-        return UIColor(red: 245.0/255.0, green: 247.0/255.0, blue: 250.0/255.0, alpha: 1.0)
+        return .systemGray
     }
 
+    static var tertiaryButton: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorTableBackground")!
+        } else {
+            return .systemGray
+        }
+        
+    }
+    
     static var secondaryBorder: UIColor {
-        return UIColor(red: 213.0/255.0, green: 218.0/255.0, blue: 224.0/255.0, alpha: 1.0)
+        if #available(iOS 13.0, *) {
+            return .systemFill
+        } else {
+            return .systemGray
+        }
     }
 
     static var darkText: UIColor {
-        return UIColor(red: 35.0/255.0, green: 37.0/255.0, blue: 38.0/255.0, alpha: 1.0)
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorDarkText")!
+        } else {
+            return UIColor(red: 35.0/255.0, green: 37.0/255.0, blue: 38.0/255.0, alpha: 1.0)
+        }
     }
 
     static var darkLine: UIColor {
-        return UIColor(red: 36.0/255.0, green: 35.0/255.0, blue: 38.0/255.0, alpha: 1.0)
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorDarkText")!
+        } else {
+            return UIColor(red: 35.0/255.0, green: 37.0/255.0, blue: 38.0/255.0, alpha: 1.0)
+        }
     }
 
     static var secondaryShadow: UIColor {
@@ -61,7 +86,7 @@ extension UIColor {
     }
 
     static var grayText: UIColor {
-        return UIColor(white: 136.0/255.0, alpha: 1.0)
+        return .systemGray
     }
 
     static var grayTextTint: UIColor {
@@ -140,12 +165,40 @@ extension UIColor {
         return UIColor(red: 84.0/255.0, green: 104.0/255.0, blue: 117.0/255.0, alpha: 1.0)
     }
     
+    // moving to semantic colors
+    static var tableCellText: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorDarkText")!
+        } else {
+            return UIColor(red: 84.0/255.0, green: 104.0/255.0, blue: 117.0/255.0, alpha: 1.0)
+        }
+    }
+    
+    // moving to semantic colors
+    static var headerText: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorHeaderText")!
+        } else {
+            return UIColor(red: 84.0/255.0, green: 104.0/255.0, blue: 117.0/255.0, alpha: 1.0)
+        }
+    }
+    
     static var lightGray: UIColor {
         return UIColor(red: 179.0/255.0, green: 192.0/255.0, blue: 200.0/255.0, alpha: 1.0)
     }
     
     static var mediumGray: UIColor {
         return UIColor(red: 120.0/255.0, green: 143.0/255.0, blue: 158.0/255.0, alpha: 1.0)
+    }
+    
+    // semantic color
+    static var sectionHeader: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorSectionHeaderText")!
+        } else {
+            return UIColor(red: 120.0/255.0, green: 143.0/255.0, blue: 158.0/255.0, alpha: 1.0)
+        }
+        
     }
     
     static var receivedGreen: UIColor {
@@ -161,15 +214,38 @@ extension UIColor {
     }
     
     static var grayBackground: UIColor {
-        return UIColor(red: 224.0/255.0, green: 229.0/255.0, blue: 232.0/255.0, alpha: 1.0)
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorTableBackground")!
+        } else {
+            return UIColor(red: 224.0/255.0, green: 229.0/255.0, blue: 232.0/255.0, alpha: 1.0)
+        }
+    }
+    
+    // moving to semantic colors
+    static var tableCellBackground: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorTableBackground")!
+        } else {
+            return UIColor(red: 224.0/255.0, green: 229.0/255.0, blue: 232.0/255.0, alpha: 1.0)
+        }
     }
     
     static var whiteBackground: UIColor {
-        return UIColor(red: 249.0/255.0, green: 251.0/255.0, blue: 254.0/255.0, alpha: 1.0)
+        if #available(iOS 13.0, *) {
+            return .systemBackground
+        } else {
+            return UIColor(red: 249.0/255.0, green: 251.0/255.0, blue: 254.0/255.0, alpha: 1.0)
+        }
+        
     }
+
     
     static var separator: UIColor {
-        return UIColor(red: 236.0/255.0, green: 236.0/255.0, blue: 236.0/255.0, alpha: 1.0)
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorSeparator")!
+        } else {
+            return UIColor(red: 236.0/255.0, green: 236.0/255.0, blue: 236.0/255.0, alpha: 1.0)
+        }
     }
 }
 

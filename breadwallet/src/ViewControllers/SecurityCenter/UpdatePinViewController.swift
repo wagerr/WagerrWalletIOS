@@ -33,8 +33,8 @@ class UpdatePinViewController : UIViewController, Subscriber {
     }
 
     //MARK: - Private
-    private let header = UILabel.wrapping(font: .customBold(size: 26.0), color: .darkText)
-    private let instruction = UILabel.wrapping(font: .customBody(size: 14.0), color: .darkText)
+    private let header = UILabel.wrapping(font: .customBold(size: 26.0), color: .headerText)
+    private let instruction = UILabel.wrapping(font: .customBody(size: 14.0), color: .headerText)
     private let caption = UILabel.wrapping(font: .customBody(size: 13.0), color: .secondaryGrayText)
     private var pinView: PinView
     private let pinPad = PinPadViewController(style: .white, keyboardType: .pinPad, maxDigits: 0)
@@ -137,7 +137,7 @@ class UpdatePinViewController : UIViewController, Subscriber {
 
     private func setData() {
         caption.text = S.UpdatePin.caption
-        view.backgroundColor = .whiteTint
+        view.backgroundColor = .whiteBackground
         header.text = isCreatingPin ? S.UpdatePin.createTitle : S.UpdatePin.updateTitle
         instruction.text = isCreatingPin ? S.UpdatePin.createInstruction : S.UpdatePin.enterCurrent
         pinPad.ouputDidUpdate = { [weak self] text in

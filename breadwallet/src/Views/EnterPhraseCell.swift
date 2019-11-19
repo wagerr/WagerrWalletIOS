@@ -97,8 +97,8 @@ class EnterPhraseCell : UICollectionViewCell {
         textField.addTarget(self, action: #selector(EnterPhraseCell.textChanged(textField:)), for: .editingChanged)
 
         label.textAlignment = .center
-        previousField.tintColor = .secondaryGrayText
-        nextField.tintColor = .secondaryGrayText
+        previousField.tintColor = .darkText
+        nextField.tintColor = .darkText
         done.setTitle(S.RecoverWallet.done, for: .normal)
     }
 

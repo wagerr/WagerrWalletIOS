@@ -12,6 +12,9 @@ import sqlite3
 
 internal let SQLITE_STATIC = unsafeBitCast(0, to: sqlite3_destructor_type.self)
 internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+internal let SQLITE_MAX_LENGTH = 1000000000
+internal let FLAGSLEN_MAX = 1000
+
 
 enum WalletManagerError: Error {
     case sqliteError(errorCode: Int32, description: String)
@@ -434,7 +437,8 @@ class CoreDatabase {
                 sqlite3_bind_int(sql2, 6, Int32(bitPattern: b.pointee.version))
                 sqlite3_bind_int(sql2, 7, timestampResult.0)
                 sqlite3_bind_blob(sql2, 8, [b.pointee.blockHash], Int32(MemoryLayout<UInt256>.size), SQLITE_TRANSIENT)
-                sqlite3_bind_blob(sql2, 9, [b.pointee.flags], Int32(b.pointee.flagsLen), SQLITE_TRANSIENT)
+                // faulty clients send corrupted flagLen number and crash the wallet, fall back to 1...
+                sqlite3_bind_blob(sql2, 9, [b.pointee.flags], Int32(b.pointee.flagsLen) < FLAGSLEN_MAX ? Int32(b.pointee.flagsLen):1, SQLITE_TRANSIENT)
                 sqlite3_bind_blob(sql2, 10, [b.pointee.hashes], Int32(MemoryLayout<UInt256>.size*b.pointee.hashesCount),
                                   SQLITE_TRANSIENT)
                 sqlite3_bind_blob(sql2, 11, [b.pointee.merkleRoot], Int32(MemoryLayout<UInt256>.size), SQLITE_TRANSIENT)

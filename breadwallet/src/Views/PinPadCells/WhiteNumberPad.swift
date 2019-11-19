@@ -22,19 +22,19 @@ class WhiteNumberPad : GenericPinPadCell {
 
         if isHighlighted {
             backgroundColor = .secondaryShadow
-            topLabel.textColor = .darkText
-            centerLabel.textColor = .darkText
-            sublabel.textColor = .darkText
+            topLabel.textColor = .grayText
+            centerLabel.textColor = .grayText
+            sublabel.textColor = .grayText
         } else {
             if text == "" || text == deleteKeyIdentifier {
-                backgroundColor = .whiteTint
+                backgroundColor = .whiteBackground
                 imageView.image = imageView.image?.withRenderingMode(.alwaysTemplate)
-                imageView.tintColor = .grayTextTint
+                imageView.tintColor = .grayText
             } else {
-                backgroundColor = .whiteTint
-                topLabel.textColor = .grayTextTint
-                centerLabel.textColor = .grayTextTint
-                sublabel.textColor = .grayTextTint
+                backgroundColor = .whiteBackground
+                topLabel.textColor = .grayText
+                centerLabel.textColor = .grayText
+                sublabel.textColor = .grayText
             }
         }
     }

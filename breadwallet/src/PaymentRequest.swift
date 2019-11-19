@@ -143,7 +143,26 @@ struct PaymentRequest {
             }
         }.resume()
     }
-
+    
+    static func requestString(withAddress address: String, forAmount amount: Amount) -> String {
+        
+        //Create URI for address
+        let amountString = amount.amount.string(decimals: amount.currency.commonUnit.decimals)
+        guard let uriString = amount.currency.addressURI(address) else { return "" }
+        guard let uri = URL(string: uriString) else { return "" }
+        
+        //Append amount query item
+        guard var components = URLComponents(url: uri, resolvingAgainstBaseURL: false) else { return "" }
+        let amountItem = URLQueryItem(name: "amount", value: amountString)
+        if components.queryItems != nil {
+            components.queryItems?.append(amountItem)
+        } else {
+            components.queryItems = [amountItem]
+        }
+        
+        return components.url?.absoluteString ?? ""
+    }
+    
     static func requestString(withAddress address: String, forAmount amount: UInt256, currency: CurrencyDef) -> String {
         let amountString = amount.string(decimals: currency.commonUnit.decimals)
         guard let uri = currency.addressURI(address) else { return "" }

@@ -54,7 +54,7 @@ class RecoverWalletIntroViewController : UIViewController {
     }
 
     private func setData() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         label.numberOfLines = 0
         label.lineBreakMode = .byWordWrapping
         label.text = S.RecoverWallet.intro

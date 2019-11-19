@@ -16,8 +16,9 @@ private let largeSharePadding: CGFloat = 20.0
 
 class RequestAmountViewController : UIViewController {
 
-    var presentEmail: PresentShare?
-    var presentText: PresentShare?
+    // Invoked with a wallet address and optional QR code image. This var is set by the
+    // ModalPresenter when the RequestAmountViewController is created.
+    var shareAddress: PresentShare?
 
     init(currency: CurrencyDef, receiveAddress: String) {
         self.currency = currency
@@ -50,7 +51,6 @@ class RequestAmountViewController : UIViewController {
         setData()
         addActions()
         setupCopiedMessage()
-        setupShareButtons()
     }
 
     private func addSubviews() {
@@ -105,7 +105,7 @@ class RequestAmountViewController : UIViewController {
     }
 
     private func setData() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         address.textAlignment = .center
         address.adjustsFontSizeToFitWidth = true
         address.minimumScaleFactor = 0.7
@@ -143,35 +143,6 @@ class RequestAmountViewController : UIViewController {
         addressPopout.contentView = copiedMessage
     }
 
-    private func setupShareButtons() {
-        let container = UIView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        let email = ShadowButton(title: S.Receive.emailButton, type: .tertiary)
-        let text = ShadowButton(title: S.Receive.textButton, type: .tertiary)
-        container.addSubview(email)
-        container.addSubview(text)
-        email.constrain([
-            email.constraint(.leading, toView: container, constant: C.padding[2]),
-            email.constraint(.top, toView: container, constant: buttonPadding),
-            email.constraint(.bottom, toView: container, constant: -buttonPadding),
-            email.trailingAnchor.constraint(equalTo: container.centerXAnchor, constant: -C.padding[1]) ])
-        text.constrain([
-            text.constraint(.trailing, toView: container, constant: -C.padding[2]),
-            text.constraint(.top, toView: container, constant: buttonPadding),
-            text.constraint(.bottom, toView: container, constant: -buttonPadding),
-            text.leadingAnchor.constraint(equalTo: container.centerXAnchor, constant: C.padding[1]) ])
-        sharePopout.contentView = container
-        email.addTarget(self, action: #selector(RequestAmountViewController.emailTapped), for: .touchUpInside)
-        text.addTarget(self, action: #selector(RequestAmountViewController.textTapped), for: .touchUpInside)
-    }
-
-    @objc private func shareTapped() {
-        toggle(alertView: sharePopout, shouldAdjustPadding: true)
-        if addressPopout.isExpanded {
-            toggle(alertView: addressPopout, shouldAdjustPadding: false)
-        }
-    }
-
     @objc private func addressTapped() {
         guard let text = address.text else { return }
         UIPasteboard.general.string = text
@@ -181,18 +152,14 @@ class RequestAmountViewController : UIViewController {
         }
     }
 
-    @objc private func emailTapped() {
-        guard let amount = amount else { return showErrorMessage(S.RequestAnAmount.noAmount) }
-        let text = PaymentRequest.requestString(withAddress: receiveAddress, forAmount: amount.rawValue, currency: currency)
-        presentEmail?(text, qrCode.image!)
+    @objc private func shareTapped() {
+           guard let amount = amount else { return showErrorMessage(S.RequestAnAmount.noAmount) }
+        let text = PaymentRequest.requestString(withAddress: receiveAddress, forAmount: amount )
+           if let image = qrCode.image {
+               shareAddress?(text, image)
+           }
     }
-
-    @objc private func textTapped() {
-        guard let amount = amount else { return showErrorMessage(S.RequestAnAmount.noAmount) }
-        let text = PaymentRequest.requestString(withAddress: receiveAddress, forAmount: amount.rawValue, currency: currency)
-        presentText?(text, qrCode.image!)
-    }
-
+    
     private func toggle(alertView: InViewAlert, shouldAdjustPadding: Bool, shouldShrinkAfter: Bool = false) {
         share.isEnabled = false
         address.isUserInteractionEnabled = false

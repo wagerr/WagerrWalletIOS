@@ -26,7 +26,7 @@ class StartPaperPhraseViewController : UIViewController {
     private let callback: () -> Void
 
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         explanation.text = S.StartPaperPhrase.body
         addSubviews()
         addConstraints()

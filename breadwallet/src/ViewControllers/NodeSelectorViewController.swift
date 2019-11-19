@@ -65,7 +65,7 @@ class NodeSelectorViewController : UIViewController, Trackable {
     }
 
     private func setInitialData() {
-        view.backgroundColor = .whiteTint
+        view.backgroundColor = .whiteBackground
         titleLabel.text = S.NodeSelector.title
         titleLabel.textAlignment = .right
         nodeLabel.text = S.NodeSelector.nodeLabel

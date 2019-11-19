@@ -52,11 +52,11 @@ class WritePaperPhraseViewController: UIViewController {
     }
 
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         
         label.text = S.WritePaperPhrase.instruction
         label.textAlignment = .center
-        label.textColor = .white
+        label.textColor = .headerText
 
         stepLabel.text = String(format: S.WritePaperPhrase.step, 1, phraseViews.count)
         stepLabel.textAlignment = .center
@@ -71,7 +71,7 @@ class WritePaperPhraseViewController: UIViewController {
         }
 
         let faqButton = UIButton.buildFaqButton(articleId: ArticleIds.writePhrase)
-        faqButton.tintColor = .white
+        faqButton.tintColor = .primaryText
         navigationItem.rightBarButtonItems = [UIBarButtonItem.negativePadding, UIBarButtonItem(customView: faqButton)]
     }
 

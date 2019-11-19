@@ -12,9 +12,9 @@ class MenuCell : UITableViewCell {
     
     static let cellIdentifier = "MenuCell"
     
-    private let container = UIView(color: .grayBackground)
+    private let container = UIView(color: .tableCellBackground)
     private let iconView = UIImageView()
-    private let label = UILabel(font: .customBody(size: 16.0), color: .darkGray)
+    private let label = UILabel(font: .customBody(size: 16.0), color: .tableCellText)
     private let arrow = UIImageView(image: #imageLiteral(resourceName: "RightArrow").withRenderingMode(.alwaysTemplate))
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -72,8 +72,8 @@ class MenuCell : UITableViewCell {
         container.clipsToBounds = true
         
         contentView.backgroundColor = .whiteBackground
-        iconView.tintColor = .darkGray
-        arrow.tintColor = .darkGray
+        iconView.tintColor = .tableCellText
+        arrow.tintColor = .tableCellText
     }
 
     required init?(coder aDecoder: NSCoder) {

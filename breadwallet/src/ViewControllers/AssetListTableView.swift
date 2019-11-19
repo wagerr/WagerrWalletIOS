@@ -167,7 +167,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         guard let header = view as? UITableViewHeaderFooterView,
             let label = header.textLabel else { return }
         label.text = label.text?.capitalized
-        label.textColor = .mediumGray
+        label.textColor = .darkText
         label.font = .customBody(size: 12.0)
         header.tintColor = tableView.backgroundColor
     }

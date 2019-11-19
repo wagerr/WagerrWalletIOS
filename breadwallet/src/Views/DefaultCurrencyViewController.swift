@@ -38,7 +38,7 @@ class DefaultCurrencyViewController : UITableViewController, Subscriber {
     }
 
     private let bitcoinLabel = UILabel(font: .customBold(size: 14.0), color: .grayTextTint)
-    private let bitcoinSwitch = UISegmentedControl(items: ["Bits (\(S.Symbols.bits))", "WGR"])
+    private let bitcoinSwitch = UISegmentedControl(items: ["Bits (mWGR)", "WGR"])
     private let rateLabel = UILabel(font: .customBody(size: 16.0), color: .darkText)
     private var header: UIView?
 
@@ -106,7 +106,7 @@ class DefaultCurrencyViewController : UITableViewController, Subscriber {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if let header = self.header { return header }
 
-        let header = UIView(color: .whiteTint)
+        let header = UIView(color: .whiteBackground)
         let rateLabelTitle = UILabel(font: .customBold(size: 14.0), color: .grayTextTint)
 
         header.addSubview(rateLabelTitle)

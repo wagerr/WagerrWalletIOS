@@ -52,7 +52,7 @@ class SettingsViewController : UITableViewController, CustomTitleView {
     private let sections: [SettingsSections]
     private let rows: [SettingsSections: [Setting]]
     private let cellIdentifier = "CellIdentifier"
-    let titleLabel = UILabel(font: .customBold(size: 28.0), color: .darkGray)
+    let titleLabel = UILabel(font: .customBold(size: 28.0), color: .headerText)
     let customTitle: String
 
     override func viewDidLoad() {
@@ -90,9 +90,9 @@ class SettingsViewController : UITableViewController, CustomTitleView {
         if let setting = rows[sections[indexPath.section]]?[indexPath.row] {
             cell.textLabel?.text = setting.title
             cell.textLabel?.font = .customBody(size: 16.0)
-            cell.textLabel?.textColor = .darkGray
+            cell.textLabel?.textColor = .tableCellText
 
-            let label = UILabel(font: .customMedium(size: 16.0), color: .darkGray)
+            let label = UILabel(font: .customMedium(size: 16.0), color: .tableCellText)
             label.text = setting.accessoryText?()
             label.sizeToFit()
             cell.accessoryView = label
@@ -103,7 +103,7 @@ class SettingsViewController : UITableViewController, CustomTitleView {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 47))
         view.backgroundColor = .whiteBackground
-        let label = UILabel(font: .customMedium(size: 12.0), color: .mediumGray)
+        let label = UILabel(font: .customMedium(size: 12.0), color: .sectionHeader)
         view.addSubview(label)
         label.text = sections[section].title
         let separator = UIView()

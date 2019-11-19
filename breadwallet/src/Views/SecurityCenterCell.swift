@@ -63,7 +63,7 @@ class SecurityCenterCell : UIControl {
             if isHighlighted {
                 backgroundColor = .secondaryButton
             } else {
-                backgroundColor = .white
+                backgroundColor = .whiteBackground
             }
         }
     }

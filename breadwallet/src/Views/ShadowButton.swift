@@ -157,7 +157,7 @@ class ShadowButton: UIControl {
         switch type {
         case .primary:
             container.backgroundColor = .primaryButton
-            label.textColor = .primaryText
+            label.textColor = .white
             container.layer.borderColor = nil
             container.layer.borderWidth = 0.0
             shadowView.layer.shadowColor = UIColor.black.cgColor
@@ -165,15 +165,15 @@ class ShadowButton: UIControl {
             imageView?.tintColor = .white
         case .secondary:
             container.backgroundColor = .secondaryButton
-            label.textColor = .darkText
+            label.textColor = .white
             container.layer.borderColor = UIColor.secondaryBorder.cgColor
             container.layer.borderWidth = 1.0
             shadowView.layer.shadowColor = UIColor.black.cgColor
             shadowView.layer.shadowOpacity = 0.15
             imageView?.tintColor = .darkText
         case .tertiary:
-            container.backgroundColor = .secondaryButton
-            label.textColor = .grayTextTint
+            container.backgroundColor = .tertiaryButton
+            label.textColor = .primaryText
             container.layer.borderColor = UIColor.secondaryBorder.cgColor
             container.layer.borderWidth = 1.0
             shadowView.layer.shadowColor = UIColor.black.cgColor

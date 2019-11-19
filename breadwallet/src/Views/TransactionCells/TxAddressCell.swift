@@ -39,7 +39,7 @@ class TxAddressCell: TxDetailRowCell {
         addressButton.titleLabel?.minimumScaleFactor = 0.7
         addressButton.titleLabel?.lineBreakMode = .byTruncatingMiddle
         addressButton.titleLabel?.textAlignment = .right
-        addressButton.tintColor = .darkGray
+        addressButton.tintColor = .darkText
         
         addressButton.tap = strongify(self) { myself in
             myself.addressButton.tempDisable()

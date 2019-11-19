@@ -97,7 +97,7 @@ class StartImportViewController : UIViewController {
     }
 
     private func setInitialData() {
-        view.backgroundColor = .white
+        view.backgroundColor = .whiteBackground
         illustration.contentMode = .scaleAspectFill
         message.text = S.Import.importMessage
         leftCaption.text = S.Import.leftCaption

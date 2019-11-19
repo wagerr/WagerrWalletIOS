@@ -20,8 +20,8 @@ class AboutViewController : UIViewController {
     private let reddit = AboutCell(text: S.About.reddit)
     private let telegram = AboutCell(text: S.About.telegram)
     private let privacy = UIButton(type: .system)
-    private let footer = UILabel(font: .customBody(size: 13.0), color: .secondaryGrayText)
-    private let footer2 = UILabel(font: .customBody(size: 13.0), color: .secondaryGrayText)
+    private let footer = UILabel(font: .customBody(size: 13.0), color: .darkText)
+    private let footer2 = UILabel(font: .customBody(size: 13.0), color: .darkText)
     override func viewDidLoad() {
         addSubviews()
         addConstraints()
@@ -87,7 +87,7 @@ class AboutViewController : UIViewController {
     }
 
     private func setData() {
-        view.backgroundColor = .whiteTint
+        view.backgroundColor = .whiteBackground
         titleLabel.text = S.About.title
         privacy.setTitle(S.About.privacy, for: .normal)
         privacy.titleLabel?.font = UIFont.customBody(size: 13.0)

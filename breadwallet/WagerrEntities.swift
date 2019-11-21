@@ -18,20 +18,18 @@ enum MappingNamespaceType : Int32 {
 
 class BetMapping    {
     var blockheight : UInt64;
-    var timestamp : Int32;
+    var timestamp : TimeInterval;
     var txHash : String;
     var version : Int32
-    var type : BetTransactionType
     var namespaceID : MappingNamespaceType
     var mappingID : UInt32
     var description : String;
 
-    init(blockheight : UInt64 , timestamp : Int32 , txHash : String, version : Int32, type : BetTransactionType, namespaceID : MappingNamespaceType, mappingID : UInt32, description : String )   {
+    init(blockheight : UInt64 , timestamp : TimeInterval , txHash : String, version : Int32, namespaceID : MappingNamespaceType, mappingID : UInt32, description : String )   {
         self.blockheight = blockheight
         self.timestamp = timestamp
         self.txHash = txHash
         self.version = version
-        self.type = type
         self.namespaceID = namespaceID
         self.mappingID = mappingID
         self.description = description

@@ -148,8 +148,6 @@ class CoreDatabase {
         // WGR_MAPPING
         sqlite3_exec(db, "create table if not exists WGR_MAPPING (" +
             "Z_PK integer primary key," +
-            "Z_ENT integer," +
-            "Z_OPT integer," +
             "ZTYPE integer," +
             "ZVERSION integer," +
             "ZNAMESPACEID integer," +
@@ -158,7 +156,7 @@ class CoreDatabase {
             
             "ZTIMESTAMP integer," +
             "ZHEIGHT integer," +
-            "ZTXHASH blob)", nil, nil, nil)
+            "ZTXHASH varchar)", nil, nil, nil)
         sqlite3_exec(db, "create index if not exists WGR_MAPPING_ZTXHASH_INDEX " +
             "on WGR_MAPPING (ZTXHASH)", nil, nil, nil)
         sqlite3_exec(db, "create index if not exists WGR_MAPPING_ZNAMESPACEID_INDEX " +
@@ -170,8 +168,6 @@ class CoreDatabase {
         // WGR_EVENT
         sqlite3_exec(db, "create table if not exists WGR_EVENT (" +
             "Z_PK integer primary key," +
-            "Z_ENT integer," +
-            "Z_OPT integer," +
             "ZTYPE integer," +
             "ZVERSION integer," +
             "ZEVENT_ID integer," +
@@ -195,20 +191,18 @@ class CoreDatabase {
             "ZLAST_UPDATED integer," +
             "ZTIMESTAMP integer," +
             "ZHEIGHT integer," +
-            "ZTXHASH blob)", nil, nil, nil)
+            "ZTXHASH varchar)", nil, nil, nil)
         sqlite3_exec(db, "create index if not exists WGR_EVENT_ZTXHASH_INDEX " +
-            "on WGR_MAPPING (ZTXHASH)", nil, nil, nil)
+            "on WGR_EVENT(ZTXHASH)", nil, nil, nil)
         sqlite3_exec(db, "create index if not exists WGR_EVENT_ZEVENT_ID_INDEX " +
-            "on WGR_MAPPING (ZEVENT_ID)", nil, nil, nil)
+            "on WGR_EVENT (ZEVENT_ID)", nil, nil, nil)
         sqlite3_exec(db, "create index if not exists WGR_EVENT_ZEVENT_TIMESTAMP_INDEX " +
-            "on WGR_MAPPING (ZEVENT_TIMESTAMP)", nil, nil, nil)
+            "on WGR_EVENT (ZEVENT_TIMESTAMP)", nil, nil, nil)
         if sqlite3_errcode(db) != SQLITE_OK { print(String(cString: sqlite3_errmsg(db))) }
         
         // WGR_RESULT
         sqlite3_exec(db, "create table if not exists WGR_RESULT (" +
             "Z_PK integer primary key," +
-            "Z_ENT integer," +
-            "Z_OPT integer," +
             "ZTYPE integer," +
             "ZVERSION integer," +
             "ZEVENT_ID integer," +
@@ -218,11 +212,11 @@ class CoreDatabase {
 
             "ZTIMESTAMP integer," +
             "ZHEIGHT integer," +
-            "ZTXHASH blob)", nil, nil, nil)
+            "ZTXHASH varchar)", nil, nil, nil)
         sqlite3_exec(db, "create index if not exists WGR_RESULT_ZTXHASH_INDEX " +
-            "on WGR_MAPPING (ZTXHASH)", nil, nil, nil)
+            "on WGR_RESULT (ZTXHASH)", nil, nil, nil)
         sqlite3_exec(db, "create index if not exists WGR_RESULT_ZEVENT_ID_INDEX " +
-            "on WGR_MAPPING (ZEVENT_ID)", nil, nil, nil)
+            "on WGR_RESULT (ZEVENT_ID)", nil, nil, nil)
         if sqlite3_errcode(db) != SQLITE_OK { print(String(cString: sqlite3_errmsg(db))) }
         
         // End WAGERR tables
@@ -620,4 +614,147 @@ class CoreDatabase {
             }
         }
     }
+    
+    // Wagerr specific
+    func saveBetMapping(_ ent: BetMapping) {
+        queue.async {
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.mappingEnt)", -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            guard sqlite3_step(sql) == SQLITE_ROW else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+            
+            let pk = sqlite3_column_int(sql, 0)
+            var sql2: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
+                "(Z_PK, ZTYPE, ZVERSION, ZNAMESPACEID, ZMAPPINGID, ZSTRING, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
+                "values (\(pk + 1), \(ent.type), \(ent.version), \(ent.namespaceID), \(ent.mappingID) , '\(ent.description)', \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+            defer { sqlite3_finalize(sql2) }
+            
+            guard sqlite3_step(sql2) == SQLITE_DONE else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(pk + 1) " +
+                "where Z_ENT = \(self.mappingEnt) and Z_MAX = \(pk)", nil, nil, nil)
+
+            guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+            self.setDBFileAttributes()
+        }
+    }
+
+    func saveBetEvent(_ ent: BetEventDatabaseModel) {
+        queue.async {
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.eventEnt)", -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            guard sqlite3_step(sql) == SQLITE_ROW else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+            
+            let pk = sqlite3_column_int(sql, 0)
+            var sql2: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
+                "(Z_PK, ZTYPE, ZVERSION, ZEVENT_ID, ZEVENT_TIMESTAMP, ZSPORT_ID, ZTOURNAMENT_ID, ZROUND_ID, ZHOME_TEAM, ZAWAY_TEAM, ZHOME_ODDS, ZAWAY_ODDS, ZDRAW_ODDS, ZENTRY_PRICE, ZSPREAD_POINTS, ZSPREAD_HOME_ODDS, ZSPREAD_AWAY_ODDS, ZTOTAL_POINTS, ZTOTAL_OVER_ODDS, ZTOTAL_UNDER_ODDS, ZLAST_UPDATED, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
+                "values (\(pk + 1), \(ent.type), \(ent.version), \(ent.eventID), \(ent.eventTimestamp) , \(ent.sportID), \(ent.tournamentID), \(ent.roundID) , \(ent.homeTeamID), \(ent.awayTeamID), \(ent.homeOdds) , \(ent.awayOdds), \(ent.drawOdds), \(ent.entryPrice) , \(ent.spreadPoints), \(ent.spreadHomeOdds), \(ent.spreadAwayOdds), \(ent.totalPoints) , \(ent.overOdds), \(ent.underOdds), \(ent.lastUpdated), \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+            defer { sqlite3_finalize(sql2) }
+            
+            guard sqlite3_step(sql2) == SQLITE_DONE else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(pk + 1) " +
+                "where Z_ENT = \(self.eventEnt) and Z_MAX = \(pk)", nil, nil, nil)
+
+            guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+            self.setDBFileAttributes()
+        }
+    }
+
+    func saveBetResult(_ ent: BetResult) {
+        queue.async {
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.resultEnt)", -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            guard sqlite3_step(sql) == SQLITE_ROW else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+
+            let pk = sqlite3_column_int(sql, 0)
+            var sql2: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
+                "(Z_PK, ZTYPE, ZVERSION, ZEVENT_ID, ZRESULT_TYPE, ZHOME_TEAM_SCORE, ZAWAY_TEAM_SCORE, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
+                "values (\(pk + 1), \(ent.type), \(ent.version), \(ent.eventID), \(ent.resultType) , \(ent.homeScore), \(ent.awayScore), \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+            defer { sqlite3_finalize(sql2) }
+            
+            guard sqlite3_step(sql2) == SQLITE_DONE else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(pk + 1) " +
+                "where Z_ENT = \(self.resultEnt) and Z_MAX = \(pk)", nil, nil, nil)
+
+            guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+            self.setDBFileAttributes()
+        }
+    }
+    
+    func loadMappingsByNamespaceId( mappingID : Int32 ,  callback: @escaping ([BetMapping?])->Void) {
+        queue.async {
+            var mappings = [BetMapping?]()
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select * from WGR_MAPPING where ZNAMESPACEID = \(mappingID)", -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            while sqlite3_step(sql) == SQLITE_ROW {
+                /*
+                let len = Int(sqlite3_column_bytes(sql, 0))
+                let buf = sqlite3_column_blob(sql, 0).assumingMemoryBound(to: UInt8.self)
+                guard len >= MemoryLayout<UInt32>.size*2 else { return DispatchQueue.main.async { callback(transactions) }}
+                var off = len - MemoryLayout<UInt32>.size*2
+                guard let tx = BRTransactionParse(buf, off) else { return DispatchQueue.main.async { callback(transactions) }}
+                tx.pointee.blockHeight =
+                    UnsafeRawPointer(buf).advanced(by: off).assumingMemoryBound(to: UInt32.self).pointee.littleEndian
+                off = off + MemoryLayout<UInt32>.size
+                let timestamp = UnsafeRawPointer(buf).advanced(by: off).assumingMemoryBound(to: UInt32.self).pointee.littleEndian
+                tx.pointee.timestamp = (timestamp == 0) ? timestamp : timestamp + UInt32(NSTimeIntervalSince1970)
+                transactions.append(tx)
+ */
+            }
+
+            if sqlite3_errcode(self.db) != SQLITE_DONE { print(String(cString: sqlite3_errmsg(self.db))) }
+            DispatchQueue.main.async {
+                callback(mappings)
+            }
+        }
+    }
+
 }

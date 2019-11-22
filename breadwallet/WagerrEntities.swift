@@ -20,12 +20,12 @@ class BetMapping    {
     var blockheight : UInt64;
     var timestamp : TimeInterval;
     var txHash : String;
-    var version : Int32
+    var version : UInt32
     var namespaceID : MappingNamespaceType
     var mappingID : UInt32
     var description : String;
 
-    init(blockheight : UInt64 , timestamp : TimeInterval , txHash : String, version : Int32, namespaceID : MappingNamespaceType, mappingID : UInt32, description : String )   {
+    init(blockheight : UInt64 , timestamp : TimeInterval , txHash : String, version : UInt32, namespaceID : MappingNamespaceType, mappingID : UInt32, description : String )   {
         self.blockheight = blockheight
         self.timestamp = timestamp
         self.txHash = txHash
@@ -45,36 +45,36 @@ enum EventMultipliers  {
 
 class BetEventDatabaseModel  {
     var blockheight : UInt64
-    var timestamp : Int32
-    var lastUpdated : Int32
+    var timestamp : TimeInterval
+    var lastUpdated : TimeInterval
     var txHash : String
-    var version : Int32
+    var version : UInt32
     var type : BetTransactionType
     var eventID : UInt64
-    var eventTimestamp : Int32
+    var eventTimestamp : TimeInterval
 
-    var sportID : Int32
-    var tournamentID : Int32
-    var roundID : Int32
+    var sportID : UInt32
+    var tournamentID : UInt32
+    var roundID : UInt32
 
-    var homeTeamID : Int32
-    var awayTeamID : Int32
+    var homeTeamID : UInt32
+    var awayTeamID : UInt32
 
-    var homeOdds : Int32
-    var awayOdds : Int32
-    var drawOdds : Int32
+    var homeOdds : UInt32
+    var awayOdds : UInt32
+    var drawOdds : UInt32
 
-    var entryPrice : Int32
+    var entryPrice : UInt32
 
-    var spreadPoints : Int32
-    var spreadHomeOdds : Int32
-    var spreadAwayOdds : Int32
+    var spreadPoints : UInt32
+    var spreadHomeOdds : UInt32
+    var spreadAwayOdds : UInt32
 
-    var totalPoints : Int32
-    var overOdds : Int32
-    var underOdds : Int32
+    var totalPoints : UInt32
+    var overOdds : UInt32
+    var underOdds : UInt32
     
-    init(blockheight: UInt64, timestamp: Int32, lastUpdated: Int32, txHash: String, version: Int32, type: BetTransactionType, eventID: UInt64, eventTimestamp: Int32, sportID: Int32, tournamentID: Int32, roundID: Int32, homeTeamID: Int32, awayTeamID: Int32, homeOdds: Int32, awayOdds: Int32, drawOdds: Int32, entryPrice: Int32, spreadPoints: Int32, spreadHomeOdds: Int32, spreadAwayOdds: Int32, totalPoints: Int32, overOdds: Int32, underOdds: Int32) {
+    init(blockheight: UInt64, timestamp: TimeInterval, lastUpdated: TimeInterval, txHash: String, version: UInt32, type: BetTransactionType, eventID: UInt64, eventTimestamp: TimeInterval, sportID: UInt32, tournamentID: UInt32, roundID: UInt32, homeTeamID: UInt32, awayTeamID: UInt32, homeOdds: UInt32, awayOdds: UInt32, drawOdds: UInt32, entryPrice: UInt32, spreadPoints: UInt32, spreadHomeOdds: UInt32, spreadAwayOdds: UInt32, totalPoints: UInt32, overOdds: UInt32, underOdds: UInt32) {
         self.blockheight = blockheight
         self.timestamp = timestamp
         self.lastUpdated = lastUpdated
@@ -112,11 +112,11 @@ class BetEventViewModel : BetEventDatabaseModel {
 
     // results
     var resultType : BetResultType
-    var homeScore : Int32
-    var awayScore : Int32
+    var homeScore : UInt32
+    var awayScore : UInt32
     
-    init(blockheight: UInt64, timestamp: Int32, lastUpdated: Int32, txHash: String, version: Int32, type: BetTransactionType, eventID: UInt64, eventTimestamp: Int32, sportID: Int32, tournamentID: Int32, roundID: Int32, homeTeamID: Int32, awayTeamID: Int32, homeOdds: Int32, awayOdds: Int32, drawOdds: Int32, entryPrice: Int32, spreadPoints: Int32, spreadHomeOdds: Int32, spreadAwayOdds: Int32, totalPoints: Int32, overOdds: Int32, underOdds: Int32,
-        txSport: String, txTournament: String, txRound: String, txHomeTeam: String, txAwayTeam: String, resultType: BetResultType, homeScore: Int32, awayScore: Int32) {
+    init(blockheight: UInt64, timestamp: TimeInterval, lastUpdated: TimeInterval, txHash: String, version: UInt32, type: BetTransactionType, eventID: UInt64, eventTimestamp: TimeInterval, sportID: UInt32, tournamentID: UInt32, roundID: UInt32, homeTeamID: UInt32, awayTeamID: UInt32, homeOdds: UInt32, awayOdds: UInt32, drawOdds: UInt32, entryPrice: UInt32, spreadPoints: UInt32, spreadHomeOdds: UInt32, spreadAwayOdds: UInt32, totalPoints: UInt32, overOdds: UInt32, underOdds: UInt32,
+        txSport: String, txTournament: String, txRound: String, txHomeTeam: String, txAwayTeam: String, resultType: BetResultType, homeScore: UInt32, awayScore: UInt32) {
         
         self.txSport = txSport
         self.txTournament = txTournament
@@ -140,16 +140,16 @@ enum BetResultType : Int32 {
 class BetResult {
     
     var blockheight : UInt64;
-    var timestamp : Int32;
+    var timestamp : TimeInterval;
     var txHash : String;
-    var version : Int32
+    var version : UInt32
     var type : BetTransactionType
     var eventID : UInt64
     var resultType : BetResultType
-    var homeScore : Int32
-    var awayScore : Int32
+    var homeScore : UInt32
+    var awayScore : UInt32
 
-    init(blockheight: UInt64, timestamp: Int32, txHash: String, version: Int32, type: BetTransactionType, eventID: UInt64, resultType: BetResultType, homeScore: Int32, awayScore: Int32) {
+    init(blockheight: UInt64, timestamp: TimeInterval, txHash: String, version: UInt32, type: BetTransactionType, eventID: UInt64, resultType: BetResultType, homeScore: UInt32, awayScore: UInt32) {
         self.blockheight = blockheight
         self.timestamp = timestamp
         self.txHash = txHash
@@ -161,4 +161,44 @@ class BetResult {
         self.awayScore = awayScore
     }
     
+}
+
+enum BetType : Int32 {
+    case PEERLESS = 0x03
+    case CHAINLOTTO = 0x07
+    case UNKNOWN = -1
+}
+
+enum BetOutcome : Int32 {
+     case MONEY_LINE_HOME_WIN = 0x01
+     case MONEY_LINE_AWAY_WIN = 0x02
+     case MONEY_LINE_DRAW = 0x03
+     case SPREADS_HOME = 0x04
+     case SPREADS_AWAY = 0x05
+     case TOTAL_OVER = 0x06
+     case TOTAL_UNDER = 0x07
+     case UNKNOWN = -1
+}
+
+class BetEntity {
+    
+    var blockheight : UInt64;
+    var timestamp : TimeInterval;
+    var txHash : String;
+    var version : UInt32
+    var type : BetType
+    var eventID : UInt64
+    var outcome : BetOutcome
+    var amount : UInt64
+
+    init(blockheight: UInt64, timestamp: TimeInterval, txHash: String, version: UInt32, type: BetType, eventID: UInt64, outcome: BetOutcome, amount: UInt64) {
+        self.blockheight = blockheight
+        self.timestamp = timestamp
+        self.txHash = txHash
+        self.version = version
+        self.type = type
+        self.eventID = eventID
+        self.outcome = outcome
+        self.amount = amount
+    }
 }

@@ -21,6 +21,16 @@ private struct OpcodesPosition {
     static let VERSION = 3
     static let BTX = 4
     static let NAMESPACE = 5
+    static let EVENTID = 5
+}
+
+private struct OpcodesLength {
+    static let PEERLESS_LENGHT = 37
+    static let RESULT_LENGHT = 10
+    static let UPDATEODDS_LENGHT = 19
+    static let SPREADS_LENGHT = 17
+    static let TOTALS_LENGHT = 17
+    static let PEERLESS_BET = 8
 }
 
 enum BetTransactionType : Int8 {
@@ -35,6 +45,13 @@ enum BetTransactionType : Int8 {
     case EVENT_PEERLESS_SPREAD = 0x09
     case EVENT_PEERLESS_TOTAL = 0x0a
     case UNKNOWN = -1
+}
+
+// buffer handler helper
+private class PositionPointer   {
+    private(set) var pos : Int;
+    init(_ pos : Int )       {   self.pos = pos;}
+    func Up(_ inc : Int )    {   self.pos += inc; }
 }
 
 class WagerrOpCodeManager   {
@@ -149,22 +166,153 @@ class WagerrOpCodeManager   {
         }
         var mappingID : UInt32 = 0;
         let end : Int = Int(opLength+2);
-        var pos : Int = Int(OpcodesPosition.NAMESPACE + 1);
+        let pos = PositionPointer( Int(OpcodesPosition.NAMESPACE + 1) );
         let len : Int = (namespaceType == MappingNamespaceType.TEAM_NAME) ? 4 : 2;
-        mappingID = getBuffer( Array( script[pos...pos+len]) );
-        pos+=len;
+        mappingID = getBuffer( script, pos, len );
         
-        let description = String( bytes: Array(script[pos...end]), encoding: .isoLatin1 ) ?? "";
-        mappingEntity = BetMapping(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: Int32(version), namespaceID: namespaceType, mappingID: mappingID, description: description );
+        let description = String( bytes: Array(script[pos.pos...end]), encoding: .isoLatin1 ) ?? "";
+        mappingEntity = BetMapping(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: UInt32(version), namespaceID: namespaceType, mappingID: mappingID, description: description );
         callback(mappingEntity);
     }
     
-    func getBuffer(_ buf : [UInt8] ) -> UInt32 {
+    func getPeerlessEventEntity( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    {
+        let betEntity : BetEventDatabaseModel?;
+        
+        let txHash : String = tx.txHash.description;
+        let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
+        if (opLength < OpcodesLength.PEERLESS_LENGHT )    {
+            callback(nil);
+        }
+        let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
+        let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
+        let eventID = getBuffer( script, pos );
+        let eventTimestamp = Time(getBuffer( script, pos ));
+        let sportID = getBuffer( script, pos);
+        let tournamentID = getBuffer( script, pos);
+        let roundID = getBuffer( script, pos);
+        let homeTeamID = getBuffer( script, pos);
+        let awayTeamID = getBuffer( script, pos);
+        let homeOdds = getBuffer( script, pos);
+        let awayOdds = getBuffer( script, pos);
+        let drawOdds = getBuffer( script, pos);
+        
+        betEntity = BetEventDatabaseModel(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, lastUpdated: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetTransactionType.EVENT_PEERLESS, eventID: UInt64(eventID), eventTimestamp: eventTimestamp, sportID: sportID, tournamentID: tournamentID, roundID: roundID, homeTeamID: homeTeamID, awayTeamID: awayTeamID, homeOdds: homeOdds, awayOdds: awayOdds, drawOdds: drawOdds, entryPrice: 0, spreadPoints: 0, spreadHomeOdds: 0, spreadAwayOdds: 0, totalPoints: 0, overOdds: 0, underOdds: 0 );
+        callback(betEntity);
+    }
+    
+    func getPeerlessResult( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetResult?)->Void )
+    {
+        let betResult : BetResult?;
+        
+        let txHash : String = tx.txHash.description;
+        let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
+        if (opLength < OpcodesLength.RESULT_LENGHT )    {
+            callback(nil);
+        }
+        let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
+        let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
+        let eventID = getBuffer( script, pos );
+        let resultType = BetResultType(rawValue: Int32(script[pos.pos]))!;
+        pos.Up(1);
+        let homeTeamScore = getBuffer( script, pos, 2);
+        let awayTeamScore = getBuffer( script, pos, 2);
+        
+        betResult = BetResult(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetTransactionType.RESULT_PEERLESS, eventID: UInt64(eventID), resultType: resultType, homeScore: homeTeamScore, awayScore: awayTeamScore );
+        callback(betResult);
+    }
+    
+    func getPeerlessBet( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, amount: UInt64, callback: @escaping (BetEntity?)->Void )
+    {
+        let betEntity : BetEntity;
+        
+        let txHash : String = tx.txHash.description;
+        let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
+        if (opLength < OpcodesLength.PEERLESS_BET )    {
+            callback(nil);
+        }
+        let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
+        let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
+        let eventID = getBuffer( script, pos );
+        let outcome = BetOutcome(rawValue: Int32(script[pos.pos]))!;
+        
+        betEntity = BetEntity(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetType.PEERLESS, eventID: UInt64(eventID), outcome: outcome, amount: amount );
+        callback(betEntity);
+    }
+    
+    func getUpdateOdds( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    {
+        let betEntity : BetEventDatabaseModel?;
+        
+        let txHash : String = tx.txHash.description;
+        let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
+        if (opLength < OpcodesLength.UPDATEODDS_LENGHT )    {
+            callback(nil);
+        }
+        let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
+        let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
+        let eventID = getBuffer( script, pos );
+        let homeOdds = getBuffer( script, pos);
+        let awayOdds = getBuffer( script, pos);
+        let drawOdds = getBuffer( script, pos);
+        
+        betEntity = BetEventDatabaseModel(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, lastUpdated: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetTransactionType.UPDATE_PEERLESS, eventID: UInt64(eventID), eventTimestamp: 0, sportID: 0, tournamentID: 0, roundID: 0, homeTeamID: 0, awayTeamID: 0, homeOdds: homeOdds, awayOdds: awayOdds, drawOdds: drawOdds, entryPrice: 0, spreadPoints: 0, spreadHomeOdds: 0, spreadAwayOdds: 0, totalPoints: 0, overOdds: 0, underOdds: 0 );
+        callback(betEntity);
+    }
+    
+    func getSpreadsMarkets( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    {
+        let betEntity : BetEventDatabaseModel?;
+        
+        let txHash : String = tx.txHash.description;
+        let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
+        if (opLength < OpcodesLength.SPREADS_LENGHT )    {
+            callback(nil);
+        }
+        let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
+        let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
+        let eventID = getBuffer( script, pos );
+        let spreadPoints = getBuffer( script, pos, 2 );
+        let homeOdds = getBuffer( script, pos);
+        let awayOdds = getBuffer( script, pos);
+        
+        betEntity = BetEventDatabaseModel(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, lastUpdated: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetTransactionType.EVENT_PEERLESS_SPREAD, eventID: UInt64(eventID), eventTimestamp: 0, sportID: 0, tournamentID: 0, roundID: 0, homeTeamID: 0, awayTeamID: 0, homeOdds: 0, awayOdds: 0, drawOdds: 0, entryPrice: 0, spreadPoints: spreadPoints, spreadHomeOdds: homeOdds, spreadAwayOdds: awayOdds, totalPoints: 0, overOdds: 0, underOdds: 0 );
+        callback(betEntity);
+    }
+    
+    func getTotalsMarkets( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    {
+        let betEntity : BetEventDatabaseModel?;
+        
+        let txHash : String = tx.txHash.description;
+        let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
+        if (opLength < OpcodesLength.TOTALS_LENGHT )    {
+            callback(nil);
+        }
+        let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
+        let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
+        let eventID = getBuffer( script, pos );
+        let totalPoints = getBuffer( script, pos, 2);
+        let overOdds = getBuffer( script, pos);
+        let underOdds = getBuffer( script, pos);
+        
+        betEntity = BetEventDatabaseModel(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, lastUpdated: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetTransactionType.EVENT_PEERLESS, eventID: UInt64(eventID), eventTimestamp: 0, sportID: 0, tournamentID: 0, roundID: 0, homeTeamID: 0, awayTeamID: 0, homeOdds: 0, awayOdds: 0, drawOdds: 0, entryPrice: 0, spreadPoints: 0, spreadHomeOdds: 0, spreadAwayOdds: 0, totalPoints: totalPoints, overOdds: overOdds, underOdds: underOdds );
+        callback(betEntity);
+    }
+    
+
+    func Time(_ t : UInt32 ) -> TimeInterval {
+        return (t > UInt32(NSTimeIntervalSince1970)) ? TimeInterval(t - UInt32(NSTimeIntervalSince1970)) : 0
+    }
+    
+    fileprivate func getBuffer(_ script : UnsafeMutableBufferPointer<UInt8>,_ pos : PositionPointer,_ len : Int = 4 ) -> UInt32 {
+        let buf = Array( script[pos.pos...pos.pos+len]);
         assert( buf.count > MemoryLayout<UInt32>.size );
-        var value : UInt32 = 0
-        let data = NSData(bytes: buf, length: buf.count)
-        data.getBytes(&value, length: buf.count)
-        value = UInt32(littleEndian: value)
+        var value : UInt32 = 0;
+        let data = NSData(bytes: buf, length: buf.count);
+        data.getBytes(&value, length: buf.count);
+        value = UInt32(littleEndian: value);
+        pos.Up(buf.count);
         return value;
     }
 }

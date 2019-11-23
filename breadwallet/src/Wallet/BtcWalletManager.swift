@@ -192,6 +192,7 @@ extension BTCWalletManager : BRPeerManagerListener, Trackable {
 }
 
 extension BTCWalletManager : BRWalletListener {
+    
     func balanceChanged(_ balance: UInt64) {
         DispatchQueue.main.async { [weak self] in
             guard let myself = self else { return }
@@ -209,9 +210,15 @@ extension BTCWalletManager : BRWalletListener {
         db?.txUpdated(txHashes, blockHeight: blockHeight, timestamp: timestamp)
     }
 
-    func txBetUpdated(_ txHashes: [BRTransaction], blockHeight: UInt32, timestamp: UInt32) {
+    func txBetUpdated(_ betTxs: UnsafeBufferPointer<BRTransaction>, blockHeight: UInt32, timestamp: UInt32) {
         // parse and store
-        //db?.txUpdated(txHashes, blockHeight: blockHeight, timestamp: timestamp)
+        let opCodeManager = WagerrOpCodeManager();
+        for tx in betTxs {
+            let txRef = BRTxRef.allocate(capacity: 1)
+            defer { txRef.deallocate() }
+            txRef.initialize(to: tx)
+            _ = opCodeManager.decodeBetTransaction( txRef , db: self.db!)
+        }
     }
     
     func txDeleted(_ txHash: UInt256, notifyUser: Bool, recommendRescan: Bool) {

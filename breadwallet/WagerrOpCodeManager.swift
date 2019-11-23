@@ -2,8 +2,8 @@
 //  WagerrOpCodeManager.swift
 //  breadwallet
 //
-//  Created by F.J. Ortiz on 10/11/2019.
-//  Copyright © 2019 breadwallet LLC. All rights reserved.
+//  Created by MIP on 10/11/2019.
+//  Copyright © 2019 Wagerr Ltd. All rights reserved.
 //
 
 import Foundation
@@ -33,20 +33,6 @@ private struct OpcodesLength {
     static let PEERLESS_BET = 8
 }
 
-enum BetTransactionType : Int8 {
-    case MAPPING = 0x01
-    case EVENT_PEERLESS = 0x02
-    case BET_PEERLESS = 0x03
-    case RESULT_PEERLESS = 0x04
-    case UPDATE_PEERLESS = 0x05
-    case EVENT_CHAIN_LOTTO = 0x06
-    case BET_CHAIN_LOTTO = 0x07
-    case RESULT_CHAIN_LOTTO = 0x08
-    case EVENT_PEERLESS_SPREAD = 0x09
-    case EVENT_PEERLESS_TOTAL = 0x0a
-    case UNKNOWN = -1
-}
-
 // buffer handler helper
 private class PositionPointer   {
     private(set) var pos : Int;
@@ -56,9 +42,9 @@ private class PositionPointer   {
 
 class WagerrOpCodeManager   {
     
-    func getEventIdFromCoreTx(_ tx : BRTxRef) -> BetEventDatabaseModel      {
-        var ret : BetEventDatabaseModel
-        let betAmount : Int64
+    func getEventIdFromCoreTx(_ tx : BRTxRef) -> BetEntity?      {
+        var ret : BetEntity?
+        let betAmount : UInt64 = 0
         //var betOutput : BRTxOutput
 
         for output in tx.outputs    {
@@ -72,13 +58,17 @@ class WagerrOpCodeManager   {
                 let txType : BetTransactionType = BetTransactionType(rawValue: Int8(type))!
                 switch (txType) {
                     case .BET_PEERLESS:
-                        ret = getPeerlessBet(tx, script, betAmount);
+                        getPeerlessBet(tx, script, betAmount) { betEntity in
+                            ret = betEntity;
+                        };
                         break;
-
+/*
                     case .BET_CHAIN_LOTTO:
-                        ret = getChainGamesBetEntity(tx, script, betAmount);
+                        getChainGamesBetEntity(tx, script, betAmount){ betEntity in
+                            ret = betEntity;
+                        };
                         break;
-                    
+  */
                     default:
                         break;
                 }
@@ -87,7 +77,7 @@ class WagerrOpCodeManager   {
         return ret
     }
     
-    func decodeBetTransaction(_ tx : BRTxRef ) -> Bool {
+    func decodeBetTransaction(_ tx : BRTxRef, db : CoreDatabase ) -> Bool {
         let isBetTx = false;
         
         for output in tx.outputs    {
@@ -97,48 +87,55 @@ class WagerrOpCodeManager   {
             let opcode = script[OpcodesPosition.OPCODE] & 0xFF;
             let test = script[OpcodesPosition.SMOKE_TEST] & 0xFF;
             if (opcode == OpcodeBytes.OP_RETURN && test == OpcodeBytes.SMOKE_TEST) {       // found wagerr bet tx!
-                let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
                 let type = script[OpcodesPosition.BTX] & 0xFF;
                 let txType : BetTransactionType = BetTransactionType(rawValue: Int8(type))!
                 switch (txType) {
                     case .MAPPING:
-                        let betMappingEntity = getMappingEntity(tx, script);
+                        getMappingEntity(tx, script) { betMapping in
+                            if (betMapping != nil)    {
+                                betMapping?.SaveToDB(db)
+                            }
+                        };
                         break;
 
                     case .EVENT_PEERLESS:
-                        let betEventEntity = getPeerlessEventEntity(tx, script);
-                        break;
-
-                    case .BET_PEERLESS:
-                        betEntity = getPeerlessBet(tx, script, betAmount);
+                        getPeerlessEventEntity(tx, script) { betEvent in
+                            if (betEvent != nil)    {
+                                betEvent?.SaveToDB(db)
+                            }
+                        };
                         break;
 
                     case .RESULT_PEERLESS:
-                        betResultEntity = getPeerlessResult(tx,script);
+                        getPeerlessResult(tx, script) { betResult in
+                            if (betResult != nil)    {
+                                betResult?.SaveToDB(db)
+                            }
+                        };
                         break;
 
                     case .UPDATE_PEERLESS:
-                        betEventEntity = getPeerlessUpdateOddsEntity(tx, script);
-                        updateEntity = true;
+                        getUpdateOdds(tx, script) { betEvent in
+                            if (betEvent != nil)    {
+                                betEvent?.SaveToDB(db)
+                            }
+                        };
                         break;
-
-                    case .EVENT_CHAIN_LOTTO:
-                        betEventEntity = getChainGamesLottoEventEntity(tx, script);
-                        break;
-
-                    case .BET_CHAIN_LOTTO:
-                        betEntity = getChainGamesBetEntity(tx, script, betAmount);
-                        break;
-
-                    case .RESULT_CHAIN_LOTTO:
-                        betResultEntity = getChainGamesLottoResult(tx, script);
 
                     case .EVENT_PEERLESS_SPREAD:
-                        betEventEntity = getPeerlessSpreadsMarket(tx, script);
+                        getSpreadsMarkets(tx, script) { betEvent in
+                            if (betEvent != nil)    {
+                                betEvent?.SaveToDB(db)
+                            }
+                        };
                         break;
 
                     case .EVENT_PEERLESS_TOTAL:
-                        betEventEntity = getPeerlessTotalsMarket(tx, script);
+                        getTotalsMarkets(tx, script) { betEvent in
+                            if (betEvent != nil)    {
+                                betEvent?.SaveToDB(db)
+                            }
+                        };
                         break;
                     
                     default:
@@ -149,7 +146,7 @@ class WagerrOpCodeManager   {
         return isBetTx;
     }
 
-    func getMappingEntity( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetMapping?)->Void )
+    func getMappingEntity(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetMapping?)->Void )
     {
         let mappingEntity : BetMapping?;
         
@@ -170,12 +167,12 @@ class WagerrOpCodeManager   {
         let len : Int = (namespaceType == MappingNamespaceType.TEAM_NAME) ? 4 : 2;
         mappingID = getBuffer( script, pos, len );
         
-        let description = String( bytes: Array(script[pos.pos...end]), encoding: .isoLatin1 ) ?? "";
+        let description = String( bytes: Array(script[pos.pos...end-1]), encoding: .isoLatin1 ) ?? "";
         mappingEntity = BetMapping(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: UInt32(version), namespaceID: namespaceType, mappingID: mappingID, description: description );
         callback(mappingEntity);
     }
     
-    func getPeerlessEventEntity( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    func getPeerlessEventEntity(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
     {
         let betEntity : BetEventDatabaseModel?;
         
@@ -188,9 +185,9 @@ class WagerrOpCodeManager   {
         let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
         let eventID = getBuffer( script, pos );
         let eventTimestamp = Time(getBuffer( script, pos ));
-        let sportID = getBuffer( script, pos);
-        let tournamentID = getBuffer( script, pos);
-        let roundID = getBuffer( script, pos);
+        let sportID = getBuffer( script, pos, 2);
+        let tournamentID = getBuffer( script, pos, 2);
+        let roundID = getBuffer( script, pos, 2);
         let homeTeamID = getBuffer( script, pos);
         let awayTeamID = getBuffer( script, pos);
         let homeOdds = getBuffer( script, pos);
@@ -201,7 +198,7 @@ class WagerrOpCodeManager   {
         callback(betEntity);
     }
     
-    func getPeerlessResult( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetResult?)->Void )
+    func getPeerlessResult(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetResult?)->Void )
     {
         let betResult : BetResult?;
         
@@ -222,14 +219,14 @@ class WagerrOpCodeManager   {
         callback(betResult);
     }
     
-    func getPeerlessBet( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, amount: UInt64, callback: @escaping (BetEntity?)->Void )
+    func getPeerlessBet(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>,_ amount: UInt64, completion: @escaping (BetEntity?)->Void )
     {
         let betEntity : BetEntity;
         
         let txHash : String = tx.txHash.description;
         let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
         if (opLength < OpcodesLength.PEERLESS_BET )    {
-            callback(nil);
+            completion(nil);
         }
         let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
         let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
@@ -237,10 +234,10 @@ class WagerrOpCodeManager   {
         let outcome = BetOutcome(rawValue: Int32(script[pos.pos]))!;
         
         betEntity = BetEntity(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetType.PEERLESS, eventID: UInt64(eventID), outcome: outcome, amount: amount );
-        callback(betEntity);
+        completion(betEntity);
     }
     
-    func getUpdateOdds( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    func getUpdateOdds(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
     {
         let betEntity : BetEventDatabaseModel?;
         
@@ -260,7 +257,7 @@ class WagerrOpCodeManager   {
         callback(betEntity);
     }
     
-    func getSpreadsMarkets( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    func getSpreadsMarkets(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
     {
         let betEntity : BetEventDatabaseModel?;
         
@@ -280,7 +277,7 @@ class WagerrOpCodeManager   {
         callback(betEntity);
     }
     
-    func getTotalsMarkets( tx : BRTxRef, script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
+    func getTotalsMarkets(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )
     {
         let betEntity : BetEventDatabaseModel?;
         
@@ -296,7 +293,7 @@ class WagerrOpCodeManager   {
         let overOdds = getBuffer( script, pos);
         let underOdds = getBuffer( script, pos);
         
-        betEntity = BetEventDatabaseModel(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, lastUpdated: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetTransactionType.EVENT_PEERLESS, eventID: UInt64(eventID), eventTimestamp: 0, sportID: 0, tournamentID: 0, roundID: 0, homeTeamID: 0, awayTeamID: 0, homeOdds: 0, awayOdds: 0, drawOdds: 0, entryPrice: 0, spreadPoints: 0, spreadHomeOdds: 0, spreadAwayOdds: 0, totalPoints: totalPoints, overOdds: overOdds, underOdds: underOdds );
+        betEntity = BetEventDatabaseModel(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, lastUpdated: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetTransactionType.EVENT_PEERLESS_TOTAL, eventID: UInt64(eventID), eventTimestamp: 0, sportID: 0, tournamentID: 0, roundID: 0, homeTeamID: 0, awayTeamID: 0, homeOdds: 0, awayOdds: 0, drawOdds: 0, entryPrice: 0, spreadPoints: 0, spreadHomeOdds: 0, spreadAwayOdds: 0, totalPoints: totalPoints, overOdds: overOdds, underOdds: underOdds );
         callback(betEntity);
     }
     
@@ -306,8 +303,8 @@ class WagerrOpCodeManager   {
     }
     
     fileprivate func getBuffer(_ script : UnsafeMutableBufferPointer<UInt8>,_ pos : PositionPointer,_ len : Int = 4 ) -> UInt32 {
-        let buf = Array( script[pos.pos...pos.pos+len]);
-        assert( buf.count > MemoryLayout<UInt32>.size );
+        let buf = Array( script[pos.pos...pos.pos+len-1]);
+        assert( buf.count <= MemoryLayout<UInt32>.size );
         var value : UInt32 = 0;
         let data = NSData(bytes: buf, length: buf.count);
         data.getBytes(&value, length: buf.count);

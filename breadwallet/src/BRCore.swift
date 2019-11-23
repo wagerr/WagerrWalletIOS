@@ -364,7 +364,7 @@ protocol BRWalletListener {
     func balanceChanged(_ balance: UInt64)
     func txAdded(_ tx: BRTxRef)
     func txUpdated(_ txHashes: [UInt256], blockHeight: UInt32, timestamp: UInt32)
-    func txBetUpdated(_ txHashes: [BRTransaction], blockHeight: UInt32, timestamp: UInt32)
+    func txBetUpdated(_ betTxs: UnsafeBufferPointer<BRTransaction>, blockHeight: UInt32, timestamp: UInt32)
     func txDeleted(_ txHash: UInt256, notifyUser: Bool, recommendRescan: Bool)
 }
 
@@ -396,8 +396,8 @@ class BRWallet {
         },
         { (info, txHashes, txCount, blockHeight, timestamp) in // txBetUpdated
             guard let info = info else { return }
-            let hashes = [BRTransaction](UnsafeBufferPointer(start: txHashes, count: txCount))
-            Unmanaged<BRWallet>.fromOpaque(info).takeUnretainedValue().listener.txBetUpdated(hashes,
+            let betTxs = UnsafeBufferPointer(start: txHashes, count: txCount)
+            Unmanaged<BRWallet>.fromOpaque(info).takeUnretainedValue().listener.txBetUpdated(betTxs,
                                                                                           blockHeight: blockHeight,
                                                                                           timestamp: timestamp)
         },

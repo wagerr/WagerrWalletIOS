@@ -148,7 +148,6 @@ class CoreDatabase {
         // WGR_MAPPING
         sqlite3_exec(db, "create table if not exists WGR_MAPPING (" +
             "Z_PK integer primary key," +
-            "ZTYPE integer," +
             "ZVERSION integer," +
             "ZNAMESPACEID integer," +
             "ZMAPPINGID integer," +
@@ -631,12 +630,12 @@ class CoreDatabase {
             let pk = sqlite3_column_int(sql, 0)
             var sql2: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
-                "(Z_PK, ZTYPE, ZVERSION, ZNAMESPACEID, ZMAPPINGID, ZSTRING, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
-                "values (\(pk + 1), \(ent.type), \(ent.version), \(ent.namespaceID), \(ent.mappingID) , '\(ent.description)', \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+                "(Z_PK, ZVERSION, ZNAMESPACEID, ZMAPPINGID, ZSTRING, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
+                "values (\(pk + 1), \(ent.version), \(ent.namespaceID.rawValue), \(ent.mappingID) , '\(ent.description)', \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
             defer { sqlite3_finalize(sql2) }
             
             guard sqlite3_step(sql2) == SQLITE_DONE else {
-                print(String(cString: sqlite3_errmsg(self.db)))
+                print("SQLITE error saveBetMapping: " + String(cString: sqlite3_errmsg(self.db)))
                 return
             }
 
@@ -655,33 +654,64 @@ class CoreDatabase {
 
     func saveBetEvent(_ ent: BetEventDatabaseModel) {
         queue.async {
-            var sql: OpaquePointer? = nil
-            sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.eventEnt)", -1, &sql, nil)
-            defer { sqlite3_finalize(sql) }
+            var sql0: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select ZEVENT_ID from WGR_EVENT where ZEVENT_ID = \(ent.eventID)", -1, &sql0, nil)
+            defer { sqlite3_finalize(sql0) }
 
-            guard sqlite3_step(sql) == SQLITE_ROW else {
-                print(String(cString: sqlite3_errmsg(self.db)))
-                sqlite3_exec(self.db, "rollback", nil, nil, nil)
-                return
+            if sqlite3_step(sql0) == SQLITE_ROW {   // event exists... update data
+                var sql2: OpaquePointer? = nil
+                sqlite3_prepare_v2(self.db, "update or rollback WGR_EVENT " +
+                    " set ZEVENT_TIMESTAMP = \(ent.eventTimestamp), ZSPORT_ID = \(ent.sportID), ZTOURNAMENT_ID = \(ent.tournamentID), ZROUND_ID = \(ent.roundID), ZHOME_TEAM = \(ent.homeTeamID), ZAWAY_TEAM = \(ent.awayTeamID), ZLAST_UPDATED = \(ent.lastUpdated), ZTIMESTAMP = \(ent.timestamp), ZHEIGHT = \(ent.blockheight), ZTXHASH = '\(ent.txHash)' WHERE ZEVENT_ID = \(ent.eventID)", -1, &sql2, nil)
+                defer { sqlite3_finalize(sql2) }
+                
+                guard sqlite3_step(sql2) == SQLITE_DONE else {
+                    print("SQLITE error saveBetEvent (update): " + String(cString: sqlite3_errmsg(self.db)))
+                    return
+                }
+            }
+            else    {   // new event, insert
+                var sql: OpaquePointer? = nil
+                sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.eventEnt)", -1, &sql, nil)
+                defer { sqlite3_finalize(sql) }
+
+                guard sqlite3_step(sql) == SQLITE_ROW else {
+                    print(String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                    return
+                }
+                
+                let pk = sqlite3_column_int(sql, 0)
+                var sql2: OpaquePointer? = nil
+                sqlite3_prepare_v2(self.db, "insert or rollback into WGR_EVENT " +
+                    "(Z_PK, ZTYPE, ZVERSION, ZEVENT_ID, ZEVENT_TIMESTAMP, ZSPORT_ID, ZTOURNAMENT_ID, ZROUND_ID, ZHOME_TEAM, ZAWAY_TEAM, ZHOME_ODDS, ZAWAY_ODDS, ZDRAW_ODDS, ZENTRY_PRICE, ZSPREAD_POINTS, ZSPREAD_HOME_ODDS, ZSPREAD_AWAY_ODDS, ZTOTAL_POINTS, ZTOTAL_OVER_ODDS, ZTOTAL_UNDER_ODDS, ZLAST_UPDATED, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
+                    "values (\(pk + 1), \(ent.type.rawValue), \(ent.version), \(ent.eventID), \(ent.eventTimestamp) , \(ent.sportID), \(ent.tournamentID), \(ent.roundID) , \(ent.homeTeamID), \(ent.awayTeamID), \(ent.homeOdds) , \(ent.awayOdds), \(ent.drawOdds), \(ent.entryPrice) , \(ent.spreadPoints), \(ent.spreadHomeOdds), \(ent.spreadAwayOdds), \(ent.totalPoints) , \(ent.overOdds), \(ent.underOdds), \(ent.lastUpdated), \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+                defer { sqlite3_finalize(sql2) }
+                
+                guard sqlite3_step(sql2) == SQLITE_DONE else {
+                    print("SQLITE error saveBetEvent (insert): " + String(cString: sqlite3_errmsg(self.db)))
+                    return
+                }
+
+                sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(pk + 1) " +
+                    "where Z_ENT = \(self.eventEnt) and Z_MAX = \(pk)", nil, nil, nil)
+
+                guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                    print(String(cString: sqlite3_errmsg(self.db)))
+                    return
+                }
             }
             
-            let pk = sqlite3_column_int(sql, 0)
-            var sql2: OpaquePointer? = nil
-            sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
-                "(Z_PK, ZTYPE, ZVERSION, ZEVENT_ID, ZEVENT_TIMESTAMP, ZSPORT_ID, ZTOURNAMENT_ID, ZROUND_ID, ZHOME_TEAM, ZAWAY_TEAM, ZHOME_ODDS, ZAWAY_ODDS, ZDRAW_ODDS, ZENTRY_PRICE, ZSPREAD_POINTS, ZSPREAD_HOME_ODDS, ZSPREAD_AWAY_ODDS, ZTOTAL_POINTS, ZTOTAL_OVER_ODDS, ZTOTAL_UNDER_ODDS, ZLAST_UPDATED, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
-                "values (\(pk + 1), \(ent.type), \(ent.version), \(ent.eventID), \(ent.eventTimestamp) , \(ent.sportID), \(ent.tournamentID), \(ent.roundID) , \(ent.homeTeamID), \(ent.awayTeamID), \(ent.homeOdds) , \(ent.awayOdds), \(ent.drawOdds), \(ent.entryPrice) , \(ent.spreadPoints), \(ent.spreadHomeOdds), \(ent.spreadAwayOdds), \(ent.totalPoints) , \(ent.overOdds), \(ent.underOdds), \(ent.lastUpdated), \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
-            defer { sqlite3_finalize(sql2) }
-            
-            guard sqlite3_step(sql2) == SQLITE_DONE else {
-                print(String(cString: sqlite3_errmsg(self.db)))
-                return
-            }
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+            self.setDBFileAttributes()
+        }
+    }
 
-            sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(pk + 1) " +
-                "where Z_ENT = \(self.eventEnt) and Z_MAX = \(pk)", nil, nil, nil)
+    func updateOdds(_ ent: BetEventDatabaseModel) {
+        queue.async {
+            sqlite3_exec(self.db, "update or rollback WGR_EVENT set ZHOME_ODDS = \(ent.homeOdds), ZAWAY_ODDS = \(ent.awayOdds), ZDRAW_ODDS = \(ent.drawOdds) where ZEVENT_ID = \(ent.eventID)", nil, nil, nil)
 
             guard sqlite3_errcode(self.db) == SQLITE_OK else {
-                print(String(cString: sqlite3_errmsg(self.db)))
+                print("SQLITE error updateOdds: " + String(cString: sqlite3_errmsg(self.db)))
                 return
             }
 
@@ -690,6 +720,34 @@ class CoreDatabase {
         }
     }
 
+    func updateSpreads(_ ent: BetEventDatabaseModel) {
+        queue.async {
+            sqlite3_exec(self.db, "update or rollback WGR_EVENT set ZSPREAD_POINTS = \(ent.spreadPoints), ZSPREAD_HOME_ODDS = \(ent.spreadHomeOdds), ZSPREAD_AWAY_ODDS = \(ent.spreadAwayOdds) where ZEVENT_ID = \(ent.eventID)", nil, nil, nil)
+
+            guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                print("SQLITE error updateSpreads: " + String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+            self.setDBFileAttributes()
+        }
+    }
+    
+    func updateTotals(_ ent: BetEventDatabaseModel) {
+        queue.async {
+            sqlite3_exec(self.db, "update or rollback WGR_EVENT set ZTOTAL_POINTS = \(ent.totalPoints), ZTOTAL_OVER_ODDS = \(ent.overOdds), ZTOTAL_UNDER_ODDS = \(ent.underOdds) where ZEVENT_ID = \(ent.eventID)", nil, nil, nil)
+            
+            guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                print("SQLITE error updateTotals: " + String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+            self.setDBFileAttributes()
+        }
+    }
+    
     func saveBetResult(_ ent: BetResult) {
         queue.async {
             var sql: OpaquePointer? = nil
@@ -704,13 +762,13 @@ class CoreDatabase {
 
             let pk = sqlite3_column_int(sql, 0)
             var sql2: OpaquePointer? = nil
-            sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
+            sqlite3_prepare_v2(self.db, "insert or rollback into WGR_RESULT " +
                 "(Z_PK, ZTYPE, ZVERSION, ZEVENT_ID, ZRESULT_TYPE, ZHOME_TEAM_SCORE, ZAWAY_TEAM_SCORE, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
-                "values (\(pk + 1), \(ent.type), \(ent.version), \(ent.eventID), \(ent.resultType) , \(ent.homeScore), \(ent.awayScore), \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+                "values (\(pk + 1), \(ent.type.rawValue), \(ent.version), \(ent.eventID), \(ent.resultType.rawValue) , \(ent.homeScore), \(ent.awayScore), \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
             defer { sqlite3_finalize(sql2) }
             
             guard sqlite3_step(sql2) == SQLITE_DONE else {
-                print(String(cString: sqlite3_errmsg(self.db)))
+                print("SQLITE error saveResult: " + String(cString: sqlite3_errmsg(self.db)))
                 return
             }
 
@@ -757,4 +815,5 @@ class CoreDatabase {
         }
     }
 
+    func getEventsQuery(  )
 }

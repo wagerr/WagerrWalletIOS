@@ -27,6 +27,7 @@ class HomeScreenViewController : UIViewController, Subscriber, Trackable {
     private var promptHiddenConstraint: NSLayoutConstraint!
 
     var didSelectCurrency : ((CurrencyDef) -> Void)?
+    var didTapBet: (() -> Void)?
     var didTapSecurity: (() -> Void)?
     var didTapSupport: (() -> Void)?
     var didTapSettings: (() -> Void)?
@@ -41,6 +42,7 @@ class HomeScreenViewController : UIViewController, Subscriber, Trackable {
 
     override func viewDidLoad() {
         assetList.didSelectCurrency = didSelectCurrency
+        assetList.didTapBet = didTapBet
         assetList.didTapSecurity = didTapSecurity
         assetList.didTapSupport = didTapSupport
         assetList.didTapSettings = didTapSettings

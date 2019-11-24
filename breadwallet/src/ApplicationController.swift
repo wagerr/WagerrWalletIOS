@@ -360,6 +360,14 @@ class ApplicationController : Subscriber, Trackable {
             nc.pushViewController(accountViewController, animated: true)
         }
         
+        home.didTapBet = {
+            /*
+            guard let walletManager = self.walletManagers[currency.code] else { return }
+            let accountViewController = AccountViewController(currency: currency, walletManager: walletManager)
+            nc.pushViewController(accountViewController, animated: true)
+ */
+        }
+        
         home.didTapSupport = {
             self.modalPresenter?.presentFaq()
         }

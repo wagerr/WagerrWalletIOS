@@ -218,7 +218,7 @@ class BetEntity : BetCore {
     }
 }
 
-enum BetTransactionType : Int8 {
+enum BetTransactionType : Int32 {
     case MAPPING = 0x01
     case EVENT_PEERLESS = 0x02
     case BET_PEERLESS = 0x03

@@ -815,5 +815,93 @@ class CoreDatabase {
         }
     }
 
-    func getEventsQuery(  )
+    func loadEvents(_ eventID : UInt32,_ eventTimestamp : TimeInterval, callback: @escaping ([BetEventViewModel?])->Void) {
+        queue.async {
+            var events = [BetEventViewModel?]()
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, self.getEventsQuery( eventID, eventTimestamp ), -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            while sqlite3_step(sql) == SQLITE_ROW {
+                let event = BetEventViewModel(blockheight: UInt64(bitPattern: sqlite3_column_int64(sql, 20)),
+                    timestamp: TimeInterval(UInt64(bitPattern: sqlite3_column_int64(sql, 21))),
+                    lastUpdated: TimeInterval(UInt64(bitPattern: sqlite3_column_int64(sql, 22))),
+                    txHash: String(cString: sqlite3_column_text(sql, 0)),
+                    version: UInt32(bitPattern: sqlite3_column_int(sql, 2)),
+                    type: BetTransactionType( rawValue: Int32(bitPattern: UInt32(sqlite3_column_int(sql, 1))) )!,
+                    eventID: UInt64(bitPattern: sqlite3_column_int64(sql, 3)),
+                    eventTimestamp: TimeInterval(UInt64(bitPattern: sqlite3_column_int64(sql, 4))),
+                    sportID: UInt32(bitPattern: sqlite3_column_int(sql, 5)),
+                    tournamentID: UInt32(bitPattern: sqlite3_column_int(sql, 6)),
+                    roundID: UInt32(bitPattern: sqlite3_column_int(sql, 7)),
+                    homeTeamID: UInt32(bitPattern: sqlite3_column_int(sql, 8)),
+                    awayTeamID: UInt32(bitPattern: sqlite3_column_int(sql, 9)),
+                    homeOdds: UInt32(bitPattern: sqlite3_column_int(sql, 10)),
+                    awayOdds: UInt32(bitPattern: sqlite3_column_int(sql, 11)),
+                    drawOdds: UInt32(bitPattern: sqlite3_column_int(sql, 12)),
+                    entryPrice: UInt32(bitPattern: sqlite3_column_int(sql, 13)),
+                    spreadPoints: UInt32(bitPattern: sqlite3_column_int(sql, 14)),
+                    spreadHomeOdds: UInt32(bitPattern: sqlite3_column_int(sql, 15)),
+                    spreadAwayOdds: UInt32(bitPattern: sqlite3_column_int(sql, 16)),
+                    totalPoints: UInt32(bitPattern: sqlite3_column_int(sql, 17)),
+                    overOdds: UInt32(bitPattern: sqlite3_column_int(sql, 18)),
+                    underOdds: UInt32(bitPattern: sqlite3_column_int(sql, 19)),
+                    txSport: String(cString: sqlite3_column_text(sql, 23)),
+                    txTournament: String(cString: sqlite3_column_text(sql, 24)),
+                    txRound: String(cString: sqlite3_column_text(sql, 25)),
+                    txHomeTeam: String(cString: sqlite3_column_text(sql, 26)),
+                    txAwayTeam: String(cString: sqlite3_column_text(sql, 27)),
+                    resultType: BetResultType( rawValue : Int32(bitPattern: UInt32(sqlite3_column_int(sql, 28))))!,
+                    homeScore: UInt32(bitPattern: sqlite3_column_int(sql, 29)),
+                    awayScore: UInt32(bitPattern: sqlite3_column_int(sql, 30)) );
+                
+                events.append(event)
+            }
+
+            if sqlite3_errcode(self.db) != SQLITE_DONE { print("SQLITE error loadEvents: " + String(cString: sqlite3_errmsg(self.db))) }
+            DispatchQueue.main.async {
+                callback(events)
+            }
+        }
+    }
+
+    
+    func getEventsQuery(_ eventID : UInt32,_ eventTimestamp : TimeInterval ) -> String {
+        
+        var QUERY = "SELECT a.ZTXHASH, a.ZTYPE, a.ZVERSION, a.ZEVENT_ID, a.ZEVENT_TIMESTAMP, a.ZSPORT_ID, a.ZTOURNAMENT_ID, a.ZROUND_ID, a.ZHOME_TEAM, a.ZAWAY_TEAM, a.ZHOME_ODDS, a.ZAWAY_ODDS, a.ZDRAW_ODDS, a.ZENTRY_PRICE, a.ZSPREAD_POINTS, a.ZSPREAD_HOME_ODDS, a.ZSPREAD_AWAY_ODDS, a.ZTOTAL_POINTS, a.ZTOTAL_OVER_ODDS, a.ZTOTAL_UNDER_ODDS, a.ZHEIGHT, a.ZTIMESTAMP, a.ZLAST_UPDATED"
+                // event mappings
+                + ", s.ZSTRING, t.ZSTRING, r.ZSTRING, b.ZSTRING, c.ZSTRING "
+                // event results
+                + ", o.ZRESULT_TYPE, o.ZHOME_TEAM_SCORE, o.ZAWAY_TEAM_SCORE "
+                + " FROM WGR_EVENT a "
+                // sport (s), tournament (t), round (r)
+                + " LEFT OUTER JOIN WGR_MAPPING s ON a.ZSPORT_ID = s.ZMAPPINGID "
+                + " AND s.ZNAMESPACEID = \(MappingNamespaceType.SPORT) "
+                + " LEFT OUTER JOIN WGR_MAPPING t ON a.ZTOURNAMENT_ID = t.ZMAPPINGID "
+                + " AND t.ZNAMESPACEID = \(MappingNamespaceType.TOURNAMENT) "
+                + " LEFT OUTER JOIN WGR_MAPPING r ON a.ZROUND_ID = r.ZMAPPINGID "
+                + " AND r.ZNAMESPACEID = \(MappingNamespaceType.ROUNDS) "
+                // home team (b), away team (c)
+                + " LEFT OUTER JOIN WGR_MAPPING b ON a.ZHOME_TEAM = b.ZMAPPINGID "
+                + " AND b.ZNAMESPACEID = \(MappingNamespaceType.TEAM_NAME) "
+                + " LEFT OUTER JOIN WGR_MAPPING c ON a.ZAWAY_TEAM = c.ZMAPPINGID "
+                + " AND c.ZNAMESPACEID = \(MappingNamespaceType.TEAM_NAME) "
+                // result table (o)
+                + " LEFT OUTER JOIN WGR_RESULT o ON a.ZEVENT_ID = o.ZEVENT_ID ";
+                
+            if ( eventID>0 || eventTimestamp>0 )  {
+                QUERY += " WHERE ";
+            }
+    
+            if (eventID>0)  {
+                QUERY += " AND a.ZEVENT_ID = \(eventID) "
+            }
+
+            if (eventTimestamp>0)   {
+                QUERY += " AND a.ZEVENT_TIMESTAMP > \(eventTimestamp) "
+            }
+            QUERY += " ORDER BY a.ZEVENT_TIMESTAMP ";
+
+        return QUERY;
+    }
 }

@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06086219238A9410002F4E9B /* HomeBetEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086218238A9410002F4E9B /* HomeBetEventCell.swift */; };
+		0608621B238A961E002F4E9B /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0608621A238A961E002F4E9B /* Event.swift */; };
+		0608621D238A9F3F002F4E9B /* EventListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0608621C238A9F3F002F4E9B /* EventListController.swift */; };
+		0608621F238AA0EA002F4E9B /* EventsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0608621E238AA0EA002F4E9B /* EventsHeaderView.swift */; };
+		06086221238AA1C2002F4E9B /* EventsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086220238AA1C2002F4E9B /* EventsTableViewController.swift */; };
+		06086223238AA3B2002F4E9B /* EventSearchHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086222238AA3B2002F4E9B /* EventSearchHeader.swift */; };
+		06086226238AAB8C002F4E9B /* EventListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086225238AAB8C002F4E9B /* EventListCell.swift */; };
 		06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */; };
 		06673E902377F25200549005 /* WagerrEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8F2377F25200549005 /* WagerrEntities.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
@@ -659,6 +666,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		06086218238A9410002F4E9B /* HomeBetEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeBetEventCell.swift; sourceTree = "<group>"; };
+		0608621A238A961E002F4E9B /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		0608621C238A9F3F002F4E9B /* EventListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListController.swift; sourceTree = "<group>"; };
+		0608621E238AA0EA002F4E9B /* EventsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsHeaderView.swift; sourceTree = "<group>"; };
+		06086220238AA1C2002F4E9B /* EventsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsTableViewController.swift; sourceTree = "<group>"; };
+		06086222238AA3B2002F4E9B /* EventSearchHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSearchHeader.swift; sourceTree = "<group>"; };
+		06086225238AAB8C002F4E9B /* EventListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListCell.swift; sourceTree = "<group>"; };
 		063B76E820C282A600B3CB35 /* neoscrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = neoscrypt.h; sourceTree = "<group>"; };
 		063B76E920C282A600B3CB35 /* neoscrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = neoscrypt.c; sourceTree = "<group>"; };
 		063B76EB20C33A3000B3CB35 /* hash9.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash9.c; sourceTree = "<group>"; };
@@ -1521,7 +1535,7 @@
 		7C35E70E200ABA190064808F /* BtcTransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BtcTransaction.swift; sourceTree = "<group>"; };
 		7C35E716200ADF450064808F /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		7C35E718200AF3940064808F /* TxListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxListViewModel.swift; sourceTree = "<group>"; };
-		7C5AC8A5203B93D3001B221E /* TxListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TxListCell.swift; path = src/Views/TransactionCells/TxListCell.swift; sourceTree = "<group>"; };
+		7C5AC8A5203B93D3001B221E /* TxListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxListCell.swift; sourceTree = "<group>"; };
 		7C67B6352056FB13006487BE /* BRAPIClient+Ethereum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "BRAPIClient+Ethereum.swift"; path = "src/Platform/BRAPIClient+Ethereum.swift"; sourceTree = "<group>"; };
 		7C67B6372056FBFA006487BE /* JSONRPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = JSONRPC.swift; path = src/Platform/JSONRPC.swift; sourceTree = "<group>"; };
 		7C67B6392057180E006487BE /* JSONRPCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONRPCTests.swift; sourceTree = "<group>"; };
@@ -1917,6 +1931,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06086224238AAB4E002F4E9B /* EventCells */ = {
+			isa = PBXGroup;
+			children = (
+				06086225238AAB8C002F4E9B /* EventListCell.swift */,
+			);
+			path = EventCells;
+			sourceTree = "<group>";
+		};
 		06C0C6C320B377240047C540 /* coin */ = {
 			isa = PBXGroup;
 			children = (
@@ -3259,6 +3281,8 @@
 				1B1AFF9F1FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift */,
 				7CA238132011A97C00A4A59D /* TxDetailViewController.swift */,
 				CE65C662207B023F000C99C4 /* EditWalletsViewController.swift */,
+				0608621C238A9F3F002F4E9B /* EventListController.swift */,
+				06086220238AA1C2002F4E9B /* EventsTableViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -3326,6 +3350,7 @@
 		CE20C90F1DBE5B5100C8397A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				06086224238AAB4E002F4E9B /* EventCells */,
 				CEF3E8301DE554F1007C0A9E /* AnimatedIcons */,
 				CEC6AA471DEFCFCD00EE5AFD /* Controls */,
 				CE3645461E7B40280079D0CF /* PinPadCells */,
@@ -3373,6 +3398,9 @@
 				CEE20C2C1EA288FA0086F724 /* UpdatingLabel.swift */,
 				CE5E6C931EB7964900A476DB /* WalletDisabledView.swift */,
 				CE1E7A9920938DFD00C86BB7 /* MenuButton.swift */,
+				06086218238A9410002F4E9B /* HomeBetEventCell.swift */,
+				0608621E238AA0EA002F4E9B /* EventsHeaderView.swift */,
+				06086222238AA3B2002F4E9B /* EventSearchHeader.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -3515,13 +3543,13 @@
 		CEBF32F71DDD191300348FC6 /* TransactionCells */ = {
 			isa = PBXGroup;
 			children = (
+				7C5AC8A5203B93D3001B221E /* TxListCell.swift */,
 				7CBF4B6A2008899100E003AA /* TxAddressCell.swift */,
 				7CCD9F6B1FEC1FA300175E64 /* TxAmountCell.swift */,
 				7CE940E51FEB8A5F005A2B53 /* TxDetailRowCell.swift */,
 				7C6ACCB31FEB34470028ABFA /* TxLabelCell.swift */,
 				7C6ACCB51FEB345E0028ABFA /* TxStatusCell.swift */,
 				7CF913BD1FFC7DC30085CB70 /* TxMemoCell.swift */,
-				7C5AC8A5203B93D3001B221E /* TxListCell.swift */,
 			);
 			name = TransactionCells;
 			sourceTree = "<group>";
@@ -3540,6 +3568,7 @@
 				7C35E718200AF3940064808F /* TxListViewModel.swift */,
 				7CBF4B612007DB9200E003AA /* TxViewModel.swift */,
 				7CBA74E52022784D00FBBFA9 /* AssetListViewModel.swift */,
+				0608621A238A961E002F4E9B /* Event.swift */,
 			);
 			name = ViewModels;
 			path = src/ViewModels;
@@ -4369,6 +4398,7 @@
 				CEC6AA3B1DEE4EB000EE5AFD /* CGRect+Additions.swift in Sources */,
 				7C5AC8A6203B93D3001B221E /* TxListCell.swift in Sources */,
 				CE45C1FB1E74F89C002C3847 /* WalletInfo.swift in Sources */,
+				06086226238AAB8C002F4E9B /* EventListCell.swift in Sources */,
 				CEE659E71F65A936001FF29D /* RetryTimer.swift in Sources */,
 				CE90571A1DFF18B2006BA848 /* ScanViewController.swift in Sources */,
 				7C6ACCB61FEB345E0028ABFA /* TxStatusCell.swift in Sources */,
@@ -4387,6 +4417,7 @@
 				2228734D1E916F7C0044BA15 /* BRAPIClient+Features.swift in Sources */,
 				22A9A94D1DF61945000F0016 /* BRHTTPFileMiddleware.swift in Sources */,
 				CE8644251F2C160200033129 /* ConfirmationViewController.swift in Sources */,
+				0608621D238A9F3F002F4E9B /* EventListController.swift in Sources */,
 				7CBA74E820227D1300FBBFA9 /* MenuCell.swift in Sources */,
 				CEBF32F01DDCD30600348FC6 /* AccountViewController.swift in Sources */,
 				CE38D3F420756AB400E01C2B /* EthWalletManager.swift in Sources */,
@@ -4400,6 +4431,7 @@
 				CE4B6C1A1E219CA600CF935B /* WalletCoordinator.swift in Sources */,
 				CE6D0E5C1E14BFA700137DF1 /* KeyboardNotificationInfo.swift in Sources */,
 				CEA05CC31F21B53C00D850F0 /* FeeSelector.swift in Sources */,
+				06086219238A9410002F4E9B /* HomeBetEventCell.swift in Sources */,
 				CE20C8F21DBAF71500C8397A /* ApplicationController.swift in Sources */,
 				CEC4CF071F0C48DD00E5C82E /* StartWipeWalletViewController.swift in Sources */,
 				7528D2981ECF655500925DBC /* PaymentProtocol.swift in Sources */,
@@ -4447,6 +4479,7 @@
 				CE92F9F01DED0C790046B516 /* PresentModalAnimator.swift in Sources */,
 				7C67B6382056FBFA006487BE /* JSONRPC.swift in Sources */,
 				CEAA9E951DC1659F0066731D /* UILabel+BRWAdditions.swift in Sources */,
+				06086221238AA1C2002F4E9B /* EventsTableViewController.swift in Sources */,
 				CEBF292E1EF99E55005C330A /* LightWeightAlert.swift in Sources */,
 				CEBF32EE1DDBC30000348FC6 /* ShadowButton.swift in Sources */,
 				7CBF4B6B2008899100E003AA /* TxAddressCell.swift in Sources */,
@@ -4519,9 +4552,11 @@
 				CE3840E81FD590BD00437C31 /* AssetListTableView.swift in Sources */,
 				22A9A9591DF61945000F0016 /* Extensions.swift in Sources */,
 				22A9A94C1DF61945000F0016 /* BRGeoLocationPlugin.swift in Sources */,
+				06086223238AA3B2002F4E9B /* EventSearchHeader.swift in Sources */,
 				CEAA9EA61DC3246F0066731D /* StartNavigationDelegate.swift in Sources */,
 				7CBF4B6420081BCE00E003AA /* KeyedDecodingContainer+Additions.swift in Sources */,
 				22A9A94B1DF61945000F0016 /* BRCoding.swift in Sources */,
+				0608621B238A961E002F4E9B /* Event.swift in Sources */,
 				22A9A9561DF61945000F0016 /* BRWalletPlugin.swift in Sources */,
 				CE6B829A1FE3A7B6007A41B9 /* UIScrollView+Additions.swift in Sources */,
 				CEF3E8361DE60222007C0A9E /* ModalNavigationController.swift in Sources */,
@@ -4559,6 +4594,7 @@
 				22A9A9571DF61945000F0016 /* BRWebSocket.swift in Sources */,
 				CE4DFB2E1E9C26DA0014009E /* ShareDataViewController.swift in Sources */,
 				CE1E5F261EF083A600BD0F72 /* StartImportViewController.swift in Sources */,
+				0608621F238AA0EA002F4E9B /* EventsHeaderView.swift in Sources */,
 				CE25BF931DFDA7A600BC67B6 /* MessageUIPresenter.swift in Sources */,
 				CE20C90C1DBC59E600C8397A /* StartFlowPresenter.swift in Sources */,
 				CE20C8FC1DBB0F3A00C8397A /* UIColor+BRWAdditions.swift in Sources */,

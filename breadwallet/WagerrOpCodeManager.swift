@@ -55,7 +55,7 @@ class WagerrOpCodeManager   {
             let test = script[OpcodesPosition.SMOKE_TEST] & 0xFF;
             if (opcode == OpcodeBytes.OP_RETURN && test == OpcodeBytes.SMOKE_TEST) {       // found wagerr bet tx!
                 let type = script[OpcodesPosition.BTX] & 0xFF;
-                let txType : BetTransactionType = BetTransactionType(rawValue: Int8(type))!
+                let txType = BetTransactionType(rawValue: Int32(type))!
                 switch (txType) {
                     case .BET_PEERLESS:
                         getPeerlessBet(tx, script, betAmount) { betEntity in
@@ -88,7 +88,7 @@ class WagerrOpCodeManager   {
             let test = script[OpcodesPosition.SMOKE_TEST] & 0xFF;
             if (opcode == OpcodeBytes.OP_RETURN && test == OpcodeBytes.SMOKE_TEST) {       // found wagerr bet tx!
                 let type = script[OpcodesPosition.BTX] & 0xFF;
-                let txType : BetTransactionType = BetTransactionType(rawValue: Int8(type))!
+                let txType : BetTransactionType = BetTransactionType(rawValue: Int32(type))!
                 switch (txType) {
                     case .MAPPING:
                         getMappingEntity(tx, script) { betMapping in

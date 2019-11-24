@@ -128,6 +128,7 @@ struct WalletState {
     let syncState: SyncState
     let balance: UInt256?
     let transactions: [Transaction]
+    let events: [BetEventViewModel]
     let lastBlockTimestamp: UInt32
     let name: String
     let creationDate: Date
@@ -148,6 +149,7 @@ struct WalletState {
                            syncState: .success,
                            balance: nil,
                            transactions: [],
+                           events: [],
                            lastBlockTimestamp: 0,
                            name: S.AccountHeader.defaultWalletName,
                            creationDate: Date.zeroValue(),
@@ -166,6 +168,7 @@ struct WalletState {
                     syncState: SyncState? = nil,
                     balance: UInt256? = nil,
                     transactions: [Transaction]? = nil,
+                    events: [BetEventViewModel]? = nil,
                     lastBlockTimestamp: UInt32? = nil,
                     name: String? = nil,
                     creationDate: Date? = nil,
@@ -184,6 +187,7 @@ struct WalletState {
                            syncState: syncState ?? self.syncState,
                            balance: balance ?? self.balance,
                            transactions: transactions ?? self.transactions,
+                           events: events ?? self.events,
                            lastBlockTimestamp: lastBlockTimestamp ?? self.lastBlockTimestamp,
                            name: name ?? self.name,
                            creationDate: creationDate ?? self.creationDate,

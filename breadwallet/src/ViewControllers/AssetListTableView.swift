@@ -11,6 +11,7 @@ import UIKit
 class AssetListTableView: UITableViewController, Subscriber {
 
     var didSelectCurrency: ((CurrencyDef) -> Void)?
+    var didTapBet: (() -> Void)?
     var didTapSecurity: (() -> Void)?
     var didTapSupport: (() -> Void)?
     var didTapSettings: (() -> Void)?
@@ -77,6 +78,7 @@ class AssetListTableView: UITableViewController, Subscriber {
     
     enum Section: Int {
         case assets
+        case events
         case menu
     }
 
@@ -109,6 +111,8 @@ class AssetListTableView: UITableViewController, Subscriber {
         switch section {
         case .assets:
             return Store.state.displayCurrencies.count  // remove +1 to hide "Manage wallets" menu
+        case .events:
+            return 1
         case .menu:
             return Menu.allItems.count
         }
@@ -119,6 +123,8 @@ class AssetListTableView: UITableViewController, Subscriber {
         switch section {
         case .assets:
             return isAddWalletRow(row: indexPath.row) ? menuHeight : assetHeight
+        case .events:
+            return assetHeight
         case .menu:
             return menuHeight
         }
@@ -143,6 +149,12 @@ class AssetListTableView: UITableViewController, Subscriber {
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeScreenCell.cellIdentifier, for: indexPath) as! HomeScreenCell
             cell.set(viewModel: viewModel)
             return cell
+        case .events:
+            let viewModel = HomeEventViewModel(title: "Sports Betting")
+
+            let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
+            cell.set(viewModel: viewModel)
+            return cell
         case .menu:
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.cellIdentifier, for: indexPath) as! MenuCell
             guard let item = Menu(rawValue: indexPath.row) else { return cell }
@@ -158,6 +170,8 @@ class AssetListTableView: UITableViewController, Subscriber {
         switch section {
         case .assets:
             return S.HomeScreen.portfolio
+        case .events:
+            return S.HomeScreen.betting
         case .menu:
             return S.HomeScreen.admin
         }
@@ -180,6 +194,8 @@ class AssetListTableView: UITableViewController, Subscriber {
         switch section {
         case .assets:
             isAddWalletRow(row: indexPath.row) ? didTapAddWallet?() : didSelectCurrency?(Store.state.displayCurrencies[indexPath.row])
+        case .events:
+            didTapBet?()
         case .menu:
             guard let item = Menu(rawValue: indexPath.row) else { return }
             switch item {

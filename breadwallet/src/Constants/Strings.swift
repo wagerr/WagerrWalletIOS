@@ -191,6 +191,10 @@ enum S {
         static let gasPriceHeader = NSLocalizedString("TransactionDetails.gasPriceHeader", value:"Gas Price", comment: "Tx detail field header")
         static let gasLimitHeader = NSLocalizedString("TransactionDetails.gasLimitHeader", value:"Gas Limit", comment: "Tx detail field header")
     }
+    
+    enum EventDetails {
+        static let emptyMessage = NSLocalizedString("EventDetails.emptyMessage", value:"Sports events will appear here.", comment: "Empty event list message.")
+    }
 
     enum SecurityCenter {
         static let title = NSLocalizedString("SecurityCenter.title", value:"Security Center", comment: "Security Center Title")

@@ -23,7 +23,7 @@ class EventListController : UIViewController, Subscriber {
         self.currency = currency
         self.headerView = EventsHeaderView(currency: currency)
         super.init(nibName: nil, bundle: nil)
-        self.transactionsTableView = TransactionsTableViewController(currency: currency, walletManager: walletManager, didSelectTransaction: didSelectTransaction)
+        self.eventsTableView = EventsTableViewController(currency: currency, walletManager: walletManager, didSelectEvent: didSelectEvent)
 
         if let btcWalletManager = walletManager as? BTCWalletManager {
             headerView.isWatchOnly = btcWalletManager.isWatchOnly
@@ -36,10 +36,10 @@ class EventListController : UIViewController, Subscriber {
     private let walletManager: WalletManager
     private let headerView: EventsHeaderView
     private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
-    private var transactionsTableView: TransactionsTableViewController!
+    private var eventsTableView: EventsTableViewController!
     private var isLoginRequired = false
-    private let searchHeaderview: SearchHeaderView = {
-        let view = SearchHeaderView()
+    private let searchHeaderview: EventSearchHeaderView = {
+        let view = EventSearchHeaderView()
         view.isHidden = true
         return view
     }()
@@ -136,32 +136,32 @@ class EventListController : UIViewController, Subscriber {
     private func setInitialData() {
         searchHeaderview.didCancel = hideSearchHeaderView
         searchHeaderview.didChangeFilters = { [weak self] filters in
-            self?.transactionsTableView.filters = filters
+            self?.eventsTableView.filters = filters
         }
     }
 
     private func addTransactionsView() {
-        view.backgroundColor = .whiteTint
-        addChildViewController(transactionsTableView, layout: {
+        view.backgroundColor = .whiteBackground
+        addChildViewController(eventsTableView, layout: {
             if #available(iOS 11.0, *) {
-                transactionsTableView.view.constrain([
-                    transactionsTableView.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                transactionsTableView.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                transactionsTableView.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-                transactionsTableView.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                eventsTableView.view.constrain([
+                eventsTableView.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                eventsTableView.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                eventsTableView.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                eventsTableView.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
                 ])
             } else {
-                transactionsTableView.view.constrain(toSuperviewEdges: nil)
+                eventsTableView.view.constrain(toSuperviewEdges: nil)
             }
         })
     }
     
-    private func didSelectTransaction(transactions: [Transaction], selectedIndex: Int) -> Void {
-        let transactionDetails = TxDetailViewController(transaction: transactions[selectedIndex])
-        transactionDetails.modalPresentationStyle = .overCurrentContext
-        transactionDetails.transitioningDelegate = transitionDelegate
-        transactionDetails.modalPresentationCapturesStatusBarAppearance = true
-        present(transactionDetails, animated: true, completion: nil)
+    private func didSelectEvent(events: [BetEventViewModel], selectedIndex: Int) -> Void {
+        let eventDetails = EventDetailViewController(event: events[selectedIndex])
+        eventDetails.modalPresentationStyle = .overCurrentContext
+        eventDetails.transitioningDelegate = transitionDelegate
+        eventDetails.modalPresentationCapturesStatusBarAppearance = true
+        present(eventDetails, animated: true, completion: nil)
     }
 
     private func showJailbreakWarnings(isJailbroken: Bool) {
@@ -183,12 +183,12 @@ class EventListController : UIViewController, Subscriber {
     private func showSearchHeaderView() {
         let navBarHeight: CGFloat = 44.0
         self.navigationController?.setNavigationBarHidden(true, animated: false)
-        var contentInset = self.transactionsTableView.tableView.contentInset
-        var contentOffset = self.transactionsTableView.tableView.contentOffset
+        var contentInset = self.eventsTableView.tableView.contentInset
+        var contentOffset = self.eventsTableView.tableView.contentOffset
         contentInset.top += navBarHeight
         contentOffset.y -= navBarHeight
-        self.transactionsTableView.tableView.contentInset = contentInset
-        self.transactionsTableView.tableView.contentOffset = contentOffset
+        self.eventsTableView.tableView.contentInset = contentInset
+        self.eventsTableView.tableView.contentOffset = contentOffset
         UIView.transition(from: self.headerView,
                           to: self.searchHeaderview,
                           duration: C.animationDuration,
@@ -202,9 +202,9 @@ class EventListController : UIViewController, Subscriber {
     private func hideSearchHeaderView() {
         let navBarHeight: CGFloat = 44.0
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        var contentInset = self.transactionsTableView.tableView.contentInset
+        var contentInset = self.eventsTableView.tableView.contentInset
         contentInset.top -= navBarHeight
-        self.transactionsTableView.tableView.contentInset = contentInset
+        self.eventsTableView.tableView.contentInset = contentInset
         UIView.transition(from: self.searchHeaderview,
                           to: self.headerView,
                           duration: C.animationDuration,

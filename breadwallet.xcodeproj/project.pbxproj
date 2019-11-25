@@ -14,6 +14,8 @@
 		06086221238AA1C2002F4E9B /* EventsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086220238AA1C2002F4E9B /* EventsTableViewController.swift */; };
 		06086223238AA3B2002F4E9B /* EventSearchHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086222238AA3B2002F4E9B /* EventSearchHeader.swift */; };
 		06086226238AAB8C002F4E9B /* EventListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086225238AAB8C002F4E9B /* EventListCell.swift */; };
+		06086228238B10A2002F4E9B /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086227238B10A2002F4E9B /* EventDetailViewController.swift */; };
+		0608622A238B11B1002F4E9B /* EventDetailDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086229238B11B1002F4E9B /* EventDetailDatasource.swift */; };
 		06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */; };
 		06673E902377F25200549005 /* WagerrEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8F2377F25200549005 /* WagerrEntities.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
@@ -673,6 +675,8 @@
 		06086220238AA1C2002F4E9B /* EventsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsTableViewController.swift; sourceTree = "<group>"; };
 		06086222238AA3B2002F4E9B /* EventSearchHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSearchHeader.swift; sourceTree = "<group>"; };
 		06086225238AAB8C002F4E9B /* EventListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListCell.swift; sourceTree = "<group>"; };
+		06086227238B10A2002F4E9B /* EventDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
+		06086229238B11B1002F4E9B /* EventDetailDatasource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailDatasource.swift; sourceTree = "<group>"; };
 		063B76E820C282A600B3CB35 /* neoscrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = neoscrypt.h; sourceTree = "<group>"; };
 		063B76E920C282A600B3CB35 /* neoscrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = neoscrypt.c; sourceTree = "<group>"; };
 		063B76EB20C33A3000B3CB35 /* hash9.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash9.c; sourceTree = "<group>"; };
@@ -3283,6 +3287,7 @@
 				CE65C662207B023F000C99C4 /* EditWalletsViewController.swift */,
 				0608621C238A9F3F002F4E9B /* EventListController.swift */,
 				06086220238AA1C2002F4E9B /* EventsTableViewController.swift */,
+				06086227238B10A2002F4E9B /* EventDetailViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -3569,6 +3574,7 @@
 				7CBF4B612007DB9200E003AA /* TxViewModel.swift */,
 				7CBA74E52022784D00FBBFA9 /* AssetListViewModel.swift */,
 				0608621A238A961E002F4E9B /* Event.swift */,
+				06086229238B11B1002F4E9B /* EventDetailDatasource.swift */,
 			);
 			name = ViewModels;
 			path = src/ViewModels;
@@ -4440,6 +4446,7 @@
 				CEA362681E00EE320061FC0E /* CameraGuideView.swift in Sources */,
 				CE03EC741EF256AC0038E3A8 /* SimpleUTXO.swift in Sources */,
 				CEBF32F61DDCEAF900348FC6 /* TransactionsTableViewController.swift in Sources */,
+				06086228238B10A2002F4E9B /* EventDetailViewController.swift in Sources */,
 				CE124CFC1E68932C00DFA146 /* FeeUpdater.swift in Sources */,
 				CEE20C381EA5B4680086F724 /* Strings.swift in Sources */,
 				CE25BF8D1DF3B8A500BC67B6 /* InViewAlert.swift in Sources */,
@@ -4583,6 +4590,7 @@
 				22122B721F0B8996000E9AB9 /* BRAPIClient+Events.swift in Sources */,
 				CE4B6C201E233C2C00CF935B /* UITableView+Additions.swift in Sources */,
 				CE760EDC1E561DF900EFAC2B /* SecurityCenterViewController.swift in Sources */,
+				0608622A238B11B1002F4E9B /* EventDetailDatasource.swift in Sources */,
 				CEEC70861E94397D00EF788E /* UserDefaults+Additions.swift in Sources */,
 				22A9A9501DF61945000F0016 /* BRHTTPServer.swift in Sources */,
 				CE1E7A9A20938DFD00C86BB7 /* MenuButton.swift in Sources */,

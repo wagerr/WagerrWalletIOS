@@ -247,6 +247,31 @@ extension UIColor {
             return UIColor(red: 236.0/255.0, green: 236.0/255.0, blue: 236.0/255.0, alpha: 1.0)
         }
     }
+    
+    // Wagerr colors
+    static var colorHome: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorHome")!
+        } else {
+            return UIColor(red: 236.0/255.0, green: 0, blue: 0, alpha: 1.0)
+        }
+    }
+    
+    static var colorDraw: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorDraw")!
+        } else {
+            return UIColor(red: 128.0/255.0, green: 128/255.0, blue: 128/255.0, alpha: 1.0)
+        }
+    }
+    
+    static var colorAway: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorAway")!
+        } else {
+            return UIColor(red: 20.0/255.0, green: 20.0/255.0, blue: 20.0/255.0, alpha: 1.0)
+        }
+    }
 }
 
 extension UIColor {

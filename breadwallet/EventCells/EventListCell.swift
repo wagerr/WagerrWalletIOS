@@ -13,13 +13,13 @@ class EventListCell: UITableViewCell {
     // MARK: - Views
     
     private let timestamp = UILabel(font: .customBody(size: 16.0), color: .darkText)
-    private let descriptionLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
-    private let amount = UILabel(font: .customBold(size: 18.0))
+    private var headerLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
+    private let homeTeamLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
+    private let awayTeamLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
+    private let homeResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
+    private let awayResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
+    private let oddsLabel = UILabel(font: .customBold(size: 18.0))
     private let separator = UIView(color: .separatorGray)
-    private let statusIndicator = TxStatusIndicator(width: 44.0)
-    private let failedIndicator = UIButton(type: .system)
-    private var pendingConstraints = [NSLayoutConstraint]()
-    private var completeConstraints = [NSLayoutConstraint]()
     
     // MARK: Vars
     
@@ -36,31 +36,12 @@ class EventListCell: UITableViewCell {
         self.viewModel = viewModel
         
         timestamp.text = viewModel.shortTimestamp
-        descriptionLabel.text = viewModel.shortDescription
-        amount.attributedText = viewModel.amount(isBtcSwapped: isBtcSwapped, rate: rate)
-        
-        statusIndicator.status = viewModel.status
-        
-        switch viewModel.status {
-        case .invalid:
-            failedIndicator.isHidden = false
-            statusIndicator.isHidden = true
-            timestamp.isHidden = true
-            NSLayoutConstraint.deactivate(completeConstraints)
-            NSLayoutConstraint.activate(pendingConstraints)
-        case .complete:
-            failedIndicator.isHidden = true
-            statusIndicator.isHidden = true
-            timestamp.isHidden = false
-            NSLayoutConstraint.deactivate(pendingConstraints)
-            NSLayoutConstraint.activate(completeConstraints)
-        default:
-            failedIndicator.isHidden = true
-            statusIndicator.isHidden = false
-            timestamp.isHidden = true
-            NSLayoutConstraint.deactivate(completeConstraints)
-            NSLayoutConstraint.activate(pendingConstraints)
-        }
+        headerLabel.text = viewModel.eventDescription
+        homeTeamLabel.attributedText = viewModel.txAttrHomeTeam
+        awayTeamLabel.attributedText = viewModel.txAttrAwayTeam
+        oddsLabel.attributedText = viewModel.oddsDescription
+        homeResultLabel.attributedText = viewModel.txAttrHomeResult
+        awayResultLabel.attributedText = viewModel.txAttrAwayResult
     }
     
     // MARK: - Private
@@ -73,57 +54,51 @@ class EventListCell: UITableViewCell {
     
     private func addSubviews() {
         contentView.addSubview(timestamp)
-        contentView.addSubview(descriptionLabel)
-        contentView.addSubview(statusIndicator)
-        contentView.addSubview(failedIndicator)
-        contentView.addSubview(amount)
+        contentView.addSubview(headerLabel)
+        contentView.addSubview(homeTeamLabel)
+        contentView.addSubview(awayTeamLabel)
+        contentView.addSubview(oddsLabel)
+        contentView.addSubview(homeResultLabel)
+        contentView.addSubview(awayResultLabel)
         contentView.addSubview(separator)
     }
     
     private func addConstraints() {
         timestamp.constrain([
             timestamp.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[2]),
-            timestamp.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[2])])
-        descriptionLabel.constrain([
-            descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -C.padding[2]),
-            descriptionLabel.trailingAnchor.constraint(equalTo: timestamp.trailingAnchor)])
-        pendingConstraints = [
-            descriptionLabel.centerYAnchor.constraint(equalTo: statusIndicator.centerYAnchor),
-            descriptionLabel.leadingAnchor.constraint(equalTo: statusIndicator.trailingAnchor, constant: C.padding[1]),
-            descriptionLabel.heightAnchor.constraint(equalToConstant: 48.0)]
-        completeConstraints = [
-            descriptionLabel.topAnchor.constraint(equalTo: timestamp.bottomAnchor),
-            descriptionLabel.leadingAnchor.constraint(equalTo: timestamp.leadingAnchor),]
-        statusIndicator.constrain([
-            statusIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            statusIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[2]),
-            statusIndicator.widthAnchor.constraint(equalToConstant: statusIndicator.width),
-            statusIndicator.heightAnchor.constraint(equalToConstant: statusIndicator.height)])
-        failedIndicator.constrain([
-            failedIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            failedIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[2]),
-            failedIndicator.widthAnchor.constraint(equalToConstant: statusIndicator.width),
-            failedIndicator.heightAnchor.constraint(equalToConstant: 20.0)])
-        amount.constrain([
-            amount.topAnchor.constraint(equalTo: contentView.topAnchor),
-            amount.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            amount.leadingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor, constant: C.padding[6]),
-            amount.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
+            timestamp.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: C.padding[2])])
+        headerLabel.constrain([
+            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -C.padding[2]),
+            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: -C.padding[2]),
+            headerLabel.trailingAnchor.constraint(lessThanOrEqualTo: timestamp.leadingAnchor)])
+        homeTeamLabel.constrain([
+            homeTeamLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: -C.padding[2]),
+            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: -C.padding[2])])
+        awayTeamLabel.constrain([
+            awayTeamLabel.topAnchor.constraint(equalTo: homeTeamLabel.bottomAnchor, constant: -C.padding[2]),
+            awayTeamLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: -C.padding[2])])
+        homeResultLabel.constrain([
+            homeResultLabel.topAnchor.constraint(equalTo: homeTeamLabel.topAnchor),
+            homeResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[2])])
+        awayResultLabel.constrain([
+            awayResultLabel.topAnchor.constraint(equalTo: awayTeamLabel.topAnchor),
+            awayResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[2])])
+        oddsLabel.constrain([
+             oddsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -C.padding[2]),
+             oddsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
         separator.constrainBottomCorners(height: 0.5)
     }
     
     private func setupStyle() {
         selectionStyle = .none
-        amount.textAlignment = .right
-        amount.setContentHuggingPriority(.required, for: .horizontal)
+        headerLabel.numberOfLines = 2
+        headerLabel.textAlignment = .left
+        headerLabel.lineBreakMode = .byWordWrapping
+        homeTeamLabel.textAlignment = .left
+        headerLabel.lineBreakMode = .byTruncatingTail
+        awayTeamLabel.textAlignment = .left
+        awayTeamLabel.lineBreakMode = .byTruncatingTail
         timestamp.setContentHuggingPriority(.required, for: .vertical)
-        descriptionLabel.lineBreakMode = .byTruncatingTail
-        
-        failedIndicator.setTitle(S.Transaction.failed, for: .normal)
-        failedIndicator.titleLabel?.font = .customBold(size: 12.0)
-        failedIndicator.setTitleColor(.white, for: .normal)
-        failedIndicator.backgroundColor = .failedRed
-        failedIndicator.layer.cornerRadius = 3
     }
     
     required init?(coder aDecoder: NSCoder) {

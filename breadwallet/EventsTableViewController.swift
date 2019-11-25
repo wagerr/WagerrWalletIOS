@@ -79,7 +79,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
         tableView.backgroundColor = .whiteBackground
         
         emptyMessage.textAlignment = .center
-        emptyMessage.text = S.TransactionDetails.emptyMessage
+        emptyMessage.text = S.EventDetails.emptyMessage
         
         setContentInset()
 
@@ -153,7 +153,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
         if hasExtraSection && indexPath.section == 0 {
             return headerCell(tableView: tableView, indexPath: indexPath)
         } else {
-            return transactionCell(tableView: tableView, indexPath: indexPath)
+            return eventCell(tableView: tableView, indexPath: indexPath)
         }
     }
 
@@ -180,7 +180,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
 
     private func reload() {
         tableView.reloadData()
-        if transactions.count == 0 {
+        if events.count == 0 {
             if emptyMessage.superview == nil {
                 tableView.addSubview(emptyMessage)
                 emptyMessage.constrain([

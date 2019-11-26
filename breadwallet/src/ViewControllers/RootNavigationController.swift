@@ -53,7 +53,8 @@ class RootNavigationController : UINavigationController {
     }
 
     func attemptShowWelcomeView() {
-        if !UserDefaults.hasShownWelcome {
+        //if !UserDefaults.hasShownWelcome {
+        if (false)  {   // disable
             let welcome = WelcomeViewController()
             welcome.transitioningDelegate = welcomeTransitingDelegate
             welcome.modalPresentationStyle = .overFullScreen

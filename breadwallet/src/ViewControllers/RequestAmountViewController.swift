@@ -131,7 +131,7 @@ class RequestAmountViewController : UIViewController {
     private func setQrCode(){
         guard let amount = amount else { return }
         let request = PaymentRequest.requestString(withAddress: receiveAddress, forAmount: amount.rawValue, currency: currency)
-        qrCode.image = UIImage.qrCode(data: request.data(using: .utf8)!, color: CIColor(color: .black))?
+        qrCode.image = UIImage.qrCode(data: request.data(using: .utf8)!, color: CIColor(color: .primaryText))?
             .resize(qrSize)!
     }
 

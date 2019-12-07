@@ -188,7 +188,7 @@ class StartImportViewController : UIViewController {
         let pubKeyLength = key.pubKey()?.count ?? 0
         walletManager.wallet?.feePerKb = fees.regular
         let fee = wallet.feeForTxSize(tx.size + 34 + (pubKeyLength - 34)*tx.inputs.count)
-        balanceActivity.dismiss(animated: true, completion: {
+        //balanceActivity.dismiss(animated: true, completion: {
             guard outputs.count > 0 && balance > 0 else {
                 return self.showErrorMessage(S.Import.Error.empty)
             }
@@ -210,7 +210,7 @@ class StartImportViewController : UIViewController {
                 self.bHandle = true
                 return
             })
-        })
+        //})
     }
 
     private func publish(tx: UnsafeMutablePointer<BRTransaction>, balance: UInt64, fee: UInt64, key: BRKey) {

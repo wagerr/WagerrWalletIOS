@@ -32,6 +32,8 @@ class StartImportViewController : UIViewController {
     private let importingActivity = BRActivityViewController(message: S.Import.importing)
     private let unlockingActivity = BRActivityViewController(message: S.Import.unlockingActivity)
 
+    private var bHandle = true
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addSubviews()
@@ -155,14 +157,17 @@ class StartImportViewController : UIViewController {
     }
 
     private func checkBalance(key: BRKey) {
-        present(balanceActivity, animated: true, completion: {
+        //present(balanceActivity, animated: true, completion: {
             var key = key
             guard let address = key.address() else { return }
             self.walletManager.apiClient?.fetchUTXOS(address: address, currency: self.currency, completion: { data in
                 guard let data = data else { return }
-                self.handleData(data: data, key: key)
+                if (self.bHandle)    {
+                    self.handleData(data: data, key: key)
+                    self.bHandle = false
+                }
             })
-        })
+        //})
     }
 
     private func handleData(data: [[String: Any]], key: BRKey) {
@@ -183,7 +188,7 @@ class StartImportViewController : UIViewController {
         let pubKeyLength = key.pubKey()?.count ?? 0
         walletManager.wallet?.feePerKb = fees.regular
         let fee = wallet.feeForTxSize(tx.size + 34 + (pubKeyLength - 34)*tx.inputs.count)
-        balanceActivity.dismiss(animated: true, completion: {
+        //balanceActivity.dismiss(animated: true, completion: {
             guard outputs.count > 0 && balance > 0 else {
                 return self.showErrorMessage(S.Import.Error.empty)
             }
@@ -201,15 +206,18 @@ class StartImportViewController : UIViewController {
             alert.addAction(UIAlertAction(title: S.Import.importButton, style: .default, handler: { _ in
                 self.publish(tx: tx, balance: balance, fee: fee, key: key)
             }))
-            self.present(alert, animated: true, completion: nil)
-        })
+            self.present(alert, animated: true, completion: { () -> Void in
+                self.bHandle = true
+                return
+            })
+        //})
     }
 
     private func publish(tx: UnsafeMutablePointer<BRTransaction>, balance: UInt64, fee: UInt64, key: BRKey) {
         guard let wallet = walletManager.wallet else { return }
         guard let script = BRAddress(string: wallet.receiveAddress)?.scriptPubKey else { return }
         guard walletManager.peerManager?.connectionStatus != BRPeerStatusDisconnected else { return }
-        present(importingActivity, animated: true, completion: {
+        //present(importingActivity, animated: true, completion: {
             tx.addOutput(amount: balance - fee, script: script)
             var keys = [key]
             let _ = tx.sign(forkId: (self.currency as! Wagerr).forkId, keys: &keys)
@@ -221,17 +229,17 @@ class StartImportViewController : UIViewController {
                 }
                 self.walletManager.peerManager?.publishTx(tx, completion: { [weak self] success, error in
                     guard let myself = self else { return }
-                    myself.importingActivity.dismiss(animated: true, completion: {
-                        DispatchQueue.main.async {
+                    //myself.importingActivity.dismiss(animated: true, completion: {
+                    //    DispatchQueue.main.async {
                             if let error = error {
                                 myself.showErrorMessage(error.localizedDescription)
                                 return
                             }
                             myself.showSuccess()
-                        }
-                    })
+                      //  }
+                    //})
                 })
-        })
+        //})
     }
 
     private func showSuccess() {

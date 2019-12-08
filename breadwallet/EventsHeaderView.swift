@@ -29,6 +29,9 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
     private var regularConstraints: [NSLayoutConstraint] = []
     private var swappedConstraints: [NSLayoutConstraint] = []
     
+    private var sportPickerTextField : UITextField!
+    private var tournamentPickerTextField : UITextField!
+    
     // MARK: Properties
     private let currency: CurrencyDef
     private var hasInitialized = false
@@ -39,7 +42,7 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
             UIView.crossfade(balanceLabel, syncIndicator, toRight: isSyncIndicatorVisible, duration: 0.3)
         }
     }
-
+    
     var isWatchOnly: Bool = false {
         didSet {
             if E.isTestnet || isWatchOnly {
@@ -270,6 +273,11 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
         })
     }
 
+    func updatePickers()    {
+        sportPickerTextField.loadDropdownData(salutations)
+        tournamentPickerTextField.loadDropdownData(salutations)
+    }
+    
     func setBalances() {
         guard let rate = exchangeRate else { return }
         

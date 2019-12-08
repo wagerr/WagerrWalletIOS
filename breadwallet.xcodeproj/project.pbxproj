@@ -19,6 +19,7 @@
 		06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */; };
 		06673E902377F25200549005 /* WagerrEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8F2377F25200549005 /* WagerrEntities.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
+		06A3D905239DB5CC00518AD8 /* EventsPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */; };
 		06C0C6C220B360C10047C540 /* x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C020B360C00047C540 /* x11.c */; };
 		06C0C6E120B377250047C540 /* keccak.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C820B377250047C540 /* keccak.c */; };
 		06C0C6E220B377250047C540 /* aes_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6CA20B377250047C540 /* aes_helper.c */; };
@@ -683,6 +684,7 @@
 		063B76EC20C33A3100B3CB35 /* hash9.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash9.h; sourceTree = "<group>"; };
 		06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrOpCodeManager.swift; sourceTree = "<group>"; };
 		06673E8F2377F25200549005 /* WagerrEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrEntities.swift; sourceTree = "<group>"; };
+		06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPickerView.swift; sourceTree = "<group>"; };
 		06C0C6BE20B360BF0047C540 /* x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x11.h; sourceTree = "<group>"; };
 		06C0C6C020B360C00047C540 /* x11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x11.c; sourceTree = "<group>"; };
 		06C0C6C420B377240047C540 /* BRCoinAddr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BRCoinAddr.h; sourceTree = "<group>"; };
@@ -1941,6 +1943,14 @@
 				06086225238AAB8C002F4E9B /* EventListCell.swift */,
 			);
 			path = EventCells;
+			sourceTree = "<group>";
+		};
+		06A3D903239DB56700518AD8 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */,
+			);
+			path = Events;
 			sourceTree = "<group>";
 		};
 		06C0C6C320B377240047C540 /* coin */ = {
@@ -3355,6 +3365,7 @@
 		CE20C90F1DBE5B5100C8397A /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				06A3D903239DB56700518AD8 /* Events */,
 				06086224238AAB4E002F4E9B /* EventCells */,
 				CEF3E8301DE554F1007C0A9E /* AnimatedIcons */,
 				CEC6AA471DEFCFCD00EE5AFD /* Controls */,
@@ -4395,6 +4406,7 @@
 				CE0A68211FB651DA00EF31CD /* CoreDatabase.swift in Sources */,
 				CEBF29301EF9D76F005C330A /* Environment.swift in Sources */,
 				7C67B6362056FB13006487BE /* BRAPIClient+Ethereum.swift in Sources */,
+				06A3D905239DB5CC00518AD8 /* EventsPickerView.swift in Sources */,
 				CEC6AA4D1DF0741100EE5AFD /* ModalDisplayable.swift in Sources */,
 				CED811E11EB302DA003A8D1E /* WatchData.swift in Sources */,
 				CEE0EF521EBD14B60018DB36 /* PinTransitioningDelegate.swift in Sources */,

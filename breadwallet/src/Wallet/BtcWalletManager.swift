@@ -19,6 +19,7 @@ class BTCWalletManager : WalletManager {
     var wallet: BRWallet?
     private let progressUpdateInterval: TimeInterval = 0.5
     private let updateDebounceInterval: TimeInterval = 0.4
+    private let updateEventInterval: TimeInterval = 1
     private var progressTimer: Timer?
     private var lastBlockHeightKey: String {
         return "LastBlockHeightKey-\(currency.code)"
@@ -29,6 +30,8 @@ class BTCWalletManager : WalletManager {
     }
     private var retryTimer: RetryTimer?
     private var updateTimer: Timer?
+    private var eventUpdateTimer: Timer?
+
     var kvStore: BRReplicatedKVStore? {
         didSet { requestTxUpdate() }
     }
@@ -47,6 +50,11 @@ class BTCWalletManager : WalletManager {
                 Store.perform(action: WalletChange(self.currency).set(self.currency.state!.mutate(receiveAddress: wallet.receiveAddress)))
             }
             callback(self.wallet != nil)
+        }
+        if (self.currency.code == Currencies.btc.code )    {
+            db?.loadEvents(0, Date(timeIntervalSinceNow: 12 * 60.0).timeIntervalSinceReferenceDate, callback: { events in
+                Store.perform(action: WalletChange(self.currency).setEvents(events as! [BetEventViewModel]))
+            })
         }
     }
 
@@ -219,6 +227,9 @@ extension BTCWalletManager : BRWalletListener {
             txRef.initialize(to: tx)
             _ = opCodeManager.decodeBetTransaction( txRef , db: self.db!)
         }
+        DispatchQueue.main.async { [weak self] in
+            self?.requestEventUpdate()
+        }
     }
     
     func txDeleted(_ txHash: UInt256, notifyUser: Bool, recommendRescan: Bool) {
@@ -291,6 +302,23 @@ extension BTCWalletManager : BRWalletListener {
         }
     }
 
+    private func requestEventUpdate() {
+        if eventUpdateTimer == nil {
+            eventUpdateTimer = Timer.scheduledTimer(timeInterval: updateEventInterval, target: self, selector: #selector(updateEvents), userInfo: nil, repeats: false)
+        }
+    }
+    
+    @objc private func updateEvents() {
+        eventUpdateTimer?.invalidate()
+        eventUpdateTimer = nil
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let myself = self else { return }
+            myself.db?.loadEvents(0, Date(timeIntervalSinceNow: 12 * 60.0).timeIntervalSinceReferenceDate, callback: { events in
+                    Store.perform(action: WalletChange(myself.currency).setEvents(events as! [BetEventViewModel]))
+            })
+        }
+    }
+    
     func makeTransactionViewModels(transactions: [BRTxRef?], rate: Rate?) -> [Transaction] {
         return transactions.compactMap{ $0 }.sorted {
             if $0.pointee.timestamp == 0 {

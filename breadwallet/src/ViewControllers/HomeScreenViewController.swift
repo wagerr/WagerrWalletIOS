@@ -27,7 +27,7 @@ class HomeScreenViewController : UIViewController, Subscriber, Trackable {
     private var promptHiddenConstraint: NSLayoutConstraint!
 
     var didSelectCurrency : ((CurrencyDef) -> Void)?
-    var didTapBet: (() -> Void)?
+    var didTapBet: ((CurrencyDef) -> Void)?
     var didTapSecurity: (() -> Void)?
     var didTapSupport: (() -> Void)?
     var didTapSettings: (() -> Void)?

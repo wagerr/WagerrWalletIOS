@@ -9,5 +9,6 @@
 import Foundation
 
 struct HomeEventViewModel {
+    var currency : CurrencyDef
     let title: String
 }

@@ -360,12 +360,10 @@ class ApplicationController : Subscriber, Trackable {
             nc.pushViewController(accountViewController, animated: true)
         }
         
-        home.didTapBet = {
-            /*
+        home.didTapBet = { currency in
             guard let walletManager = self.walletManagers[currency.code] else { return }
-            let accountViewController = AccountViewController(currency: currency, walletManager: walletManager)
-            nc.pushViewController(accountViewController, animated: true)
- */
+            let eventListController = EventListController(currency: currency, walletManager: walletManager)
+            nc.pushViewController(eventListController, animated: true)
         }
         
         home.didTapSupport = {

@@ -12,6 +12,7 @@ class HomeBetEventCell : UITableViewCell {
     
     static let cellIdentifier = "BetEventCell"
 
+    private let check = UIImageView(image: #imageLiteral(resourceName: "CircleCheck").withRenderingMode(.alwaysTemplate))
     private let titleLabel = UILabel(font: .customBold(size: 18.0), color: .white)
     private let container = Background()
     
@@ -22,8 +23,10 @@ class HomeBetEventCell : UITableViewCell {
 
     func set( viewModel: HomeEventViewModel ) {
         accessibilityIdentifier = viewModel.title
+        container.currency = viewModel.currency
         titleLabel.text = viewModel.title
         container.setNeedsDisplay()
+        check.tintColor = .white
     }
     
     func refreshAnimations() {
@@ -37,6 +40,7 @@ class HomeBetEventCell : UITableViewCell {
 
     private func addSubviews() {
         contentView.addSubview(container)
+        container.addSubview(check)
         container.addSubview(titleLabel)
     }
 
@@ -45,8 +49,13 @@ class HomeBetEventCell : UITableViewCell {
                                                            left: C.padding[2],
                                                            bottom: -C.padding[1],
                                                            right: -C.padding[2]))
+        check.constrain([
+            check.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: C.padding[2]),
+            check.topAnchor.constraint(equalTo: container.topAnchor, constant: C.padding[2.5])
+        ])
+        
         titleLabel.constrain([
-            titleLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: C.padding[2]),
+            titleLabel.leadingAnchor.constraint(equalTo: check.trailingAnchor, constant: C.padding[2]),
             titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: C.padding[2])
             ])
     }

@@ -154,12 +154,14 @@ class WagerrOpCodeManager   {
         let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
         if (opLength < OpcodesPosition.NAMESPACE+2 )    {
             callback(nil);
+            return
         }
         let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
         let namespace = script[OpcodesPosition.NAMESPACE] & 0xFF;
         let namespaceType : MappingNamespaceType = MappingNamespaceType(rawValue: Int32(namespace))!
         if (namespaceType == MappingNamespaceType.UNKNOWN)  {
             callback(nil)
+            return
         }
         var mappingID : UInt32 = 0;
         let end : Int = Int(opLength+2);
@@ -180,6 +182,7 @@ class WagerrOpCodeManager   {
         let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
         if (opLength < OpcodesLength.PEERLESS_LENGHT )    {
             callback(nil);
+            return
         }
         let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
         let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
@@ -206,6 +209,7 @@ class WagerrOpCodeManager   {
         let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
         if (opLength < OpcodesLength.RESULT_LENGHT )    {
             callback(nil);
+            return
         }
         let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
         let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
@@ -245,6 +249,7 @@ class WagerrOpCodeManager   {
         let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
         if (opLength < OpcodesLength.UPDATEODDS_LENGHT )    {
             callback(nil);
+            return
         }
         let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
         let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
@@ -265,6 +270,7 @@ class WagerrOpCodeManager   {
         let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
         if (opLength < OpcodesLength.SPREADS_LENGHT )    {
             callback(nil);
+            return
         }
         let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
         let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );
@@ -285,6 +291,7 @@ class WagerrOpCodeManager   {
         let opLength = script[OpcodesPosition.LENGTH] & 0xFF;
         if (opLength < OpcodesLength.TOTALS_LENGHT )    {
             callback(nil);
+            return
         }
         let version = script[OpcodesPosition.VERSION] & 0xFF;   // ignore value so far
         let pos = PositionPointer( Int(OpcodesPosition.EVENTID) );

@@ -15,6 +15,15 @@ internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.se
 internal let SQLITE_MAX_LENGTH = 1000000000
 internal let FLAGSLEN_MAX = 1000
 
+extension String {
+    public init?(validatingUTF8 cString: UnsafePointer<UInt8>) {
+        guard let (s, _) = String.decodeCString(cString, as: UTF8.self,
+                                                repairingInvalidCodeUnits: false) else {
+            return nil
+        }
+        self = s
+    }
+}
 
 enum WalletManagerError: Error {
     case sqliteError(errorCode: Int32, description: String)
@@ -823,6 +832,13 @@ class CoreDatabase {
             defer { sqlite3_finalize(sql) }
 
             while sqlite3_step(sql) == SQLITE_ROW {
+                let pk = UInt32(sqlite3_column_int(sql, 31))
+                let txSport = sqlite3_column_text(sql, 23)
+                let txTournament = sqlite3_column_text(sql, 24)
+                let txRound = sqlite3_column_text(sql, 25)
+                let txHomeTeam = sqlite3_column_text(sql, 26)
+                let txAwayTeam = sqlite3_column_text(sql, 27)
+                let resultType = UInt32(sqlite3_column_int(sql, 28))
                 let event = BetEventViewModel(blockheight: UInt64(bitPattern: sqlite3_column_int64(sql, 20)),
                     timestamp: TimeInterval(UInt64(bitPattern: sqlite3_column_int64(sql, 21))),
                     lastUpdated: TimeInterval(UInt64(bitPattern: sqlite3_column_int64(sql, 22))),
@@ -846,12 +862,12 @@ class CoreDatabase {
                     totalPoints: UInt32(bitPattern: sqlite3_column_int(sql, 17)),
                     overOdds: UInt32(bitPattern: sqlite3_column_int(sql, 18)),
                     underOdds: UInt32(bitPattern: sqlite3_column_int(sql, 19)),
-                    txSport: String(cString: sqlite3_column_text(sql, 23)),
-                    txTournament: String(cString: sqlite3_column_text(sql, 24)),
-                    txRound: String(cString: sqlite3_column_text(sql, 25)),
-                    txHomeTeam: String(cString: sqlite3_column_text(sql, 26)),
-                    txAwayTeam: String(cString: sqlite3_column_text(sql, 27)),
-                    resultType: BetResultType( rawValue : Int32(bitPattern: UInt32(sqlite3_column_int(sql, 28))))!,
+                    txSport: (txSport != nil) ? self.utf8Decode2(String(cString: txSport!)) : "",
+                    txTournament: (txTournament != nil) ? self.utf8Decode2(String(cString: txTournament!)) : "",
+                    txRound: (txRound != nil) ? self.utf8Decode2(String(cString: txRound!)) : "",
+                    txHomeTeam: (txHomeTeam != nil) ? self.utf8Decode2(String(cString: txHomeTeam!)) : "",
+                    txAwayTeam: (txAwayTeam != nil) ? self.utf8Decode2(String(cString: txAwayTeam!)) : "",
+                    resultType: BetResultType( rawValue : (resultType != 0) ? Int32(bitPattern: resultType) : -1)!,
                     homeScore: UInt32(bitPattern: sqlite3_column_int(sql, 29)),
                     awayScore: UInt32(bitPattern: sqlite3_column_int(sql, 30)) );
                 
@@ -865,6 +881,36 @@ class CoreDatabase {
         }
     }
 
+    // undo double utf8 encoding
+    func utf8Decode2(_ str : String ) -> String {
+        var bytesIterator = str.utf8.makeIterator()
+        var scalars: [Unicode.Scalar] = []
+        var utf8Decoder = UTF8()
+        Decode: while true {
+            switch utf8Decoder.decode(&bytesIterator) {
+            case .scalarValue(let v): scalars.append(v)
+            case .emptyInput: break Decode
+            case .error:
+                print("Decoding error")
+                break Decode
+            }
+        }
+        let arrBytes = scalars.map { (UInt8)((UInt32)($0)&0xff) }
+        var bytesIterator2 = arrBytes.makeIterator()
+        scalars.removeAll()
+        Decode2: while true {
+            switch utf8Decoder.decode(&bytesIterator2) {
+            case .scalarValue(let v): scalars.append(v)
+            case .emptyInput: break Decode2
+            case .error:
+                print("Decoding error 2")
+                break Decode2
+            }
+        }
+        var ret = ""
+        ret.unicodeScalars.append(contentsOf: scalars)
+        return ret
+    }
     
     func getEventsQuery(_ eventID : UInt32,_ eventTimestamp : TimeInterval ) -> String {
         
@@ -873,24 +919,25 @@ class CoreDatabase {
                 + ", s.ZSTRING, t.ZSTRING, r.ZSTRING, b.ZSTRING, c.ZSTRING "
                 // event results
                 + ", o.ZRESULT_TYPE, o.ZHOME_TEAM_SCORE, o.ZAWAY_TEAM_SCORE "
++ ", a.Z_PK "
                 + " FROM WGR_EVENT a "
                 // sport (s), tournament (t), round (r)
                 + " LEFT OUTER JOIN WGR_MAPPING s ON a.ZSPORT_ID = s.ZMAPPINGID "
-                + " AND s.ZNAMESPACEID = \(MappingNamespaceType.SPORT) "
+            + " AND s.ZNAMESPACEID = \(MappingNamespaceType.SPORT.rawValue) "
                 + " LEFT OUTER JOIN WGR_MAPPING t ON a.ZTOURNAMENT_ID = t.ZMAPPINGID "
-                + " AND t.ZNAMESPACEID = \(MappingNamespaceType.TOURNAMENT) "
+                + " AND t.ZNAMESPACEID = \(MappingNamespaceType.TOURNAMENT.rawValue) "
                 + " LEFT OUTER JOIN WGR_MAPPING r ON a.ZROUND_ID = r.ZMAPPINGID "
-                + " AND r.ZNAMESPACEID = \(MappingNamespaceType.ROUNDS) "
+                + " AND r.ZNAMESPACEID = \(MappingNamespaceType.ROUNDS.rawValue) "
                 // home team (b), away team (c)
                 + " LEFT OUTER JOIN WGR_MAPPING b ON a.ZHOME_TEAM = b.ZMAPPINGID "
-                + " AND b.ZNAMESPACEID = \(MappingNamespaceType.TEAM_NAME) "
+                + " AND b.ZNAMESPACEID = \(MappingNamespaceType.TEAM_NAME.rawValue) "
                 + " LEFT OUTER JOIN WGR_MAPPING c ON a.ZAWAY_TEAM = c.ZMAPPINGID "
-                + " AND c.ZNAMESPACEID = \(MappingNamespaceType.TEAM_NAME) "
+                + " AND c.ZNAMESPACEID = \(MappingNamespaceType.TEAM_NAME.rawValue) "
                 // result table (o)
                 + " LEFT OUTER JOIN WGR_RESULT o ON a.ZEVENT_ID = o.ZEVENT_ID ";
                 
             if ( eventID>0 || eventTimestamp>0 )  {
-                QUERY += " WHERE ";
+                QUERY += " WHERE 1=1 ";
             }
     
             if (eventID>0)  {

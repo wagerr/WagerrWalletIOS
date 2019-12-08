@@ -11,7 +11,7 @@ import UIKit
 let π: CGFloat = .pi
 
 struct Padding {
-    subscript(multiplier: Int) -> CGFloat {
+    subscript(multiplier: CGFloat) -> CGFloat {
         get {
             return CGFloat(multiplier) * 8.0
         }

@@ -55,8 +55,7 @@ class EventDetailViewController: UIViewController, Subscriber {
         self.event = event
         self.viewModel = event
         self.dataSource = EventDetailDataSource(viewModel: viewModel)
-        
-        //self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails, currency: transaction.currency)
+        self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails, currency: event.currency)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -79,8 +78,8 @@ class EventDetailViewController: UIViewController, Subscriber {
             guard let oldTransactions = $0[self.viewModel.currency]?.transactions else { return false }
             guard let newTransactions = $1[self.viewModel.currency]?.transactions else { return false }
             return oldTransactions != newTransactions }, callback: { [unowned self] in
-            guard let tx = $0[self.viewModel.currency]?.transactions.first(where: { $0.hash == self.viewModel.transactionHash }) else { return }
-            self.transaction = tx
+            guard let event = $0[self.viewModel.currency]?.events.first(where: { $0.eventID == self.viewModel.eventID }) else { return }
+            self.event = event
         })
     }
     
@@ -166,8 +165,8 @@ class EventDetailViewController: UIViewController, Subscriber {
     }
     
     private func reload() {
-        viewModel = TxDetailViewModel(tx: transaction)
-        dataSource = TxDetailDataSource(viewModel: viewModel)
+        viewModel = event
+        dataSource = EventDetailDataSource(viewModel: viewModel)
         tableView.dataSource = dataSource
         tableView.reloadData()
     }
@@ -206,7 +205,7 @@ class EventDetailViewController: UIViewController, Subscriber {
 }
 
 //MARK: - Keyboard Handler
-extension TxDetailViewController {
+extension EventDetailViewController {
     fileprivate func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)

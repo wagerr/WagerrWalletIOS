@@ -11,12 +11,13 @@ import UIKit
 class AssetListTableView: UITableViewController, Subscriber {
 
     var didSelectCurrency: ((CurrencyDef) -> Void)?
-    var didTapBet: (() -> Void)?
+    var didTapBet: ((CurrencyDef) -> Void)?
     var didTapSecurity: (() -> Void)?
     var didTapSupport: (() -> Void)?
     var didTapSettings: (() -> Void)?
     var didTapAddWallet: (() -> Void)?
     private let assetHeight: CGFloat = 85.0
+    private let bettingHeight: CGFloat = 65.0
     private let menuHeight: CGFloat = 53.0
     private let manageWalletContent = (S.TokenList.manageTitle, #imageLiteral(resourceName: "PlaylistPlus"))
 
@@ -29,6 +30,7 @@ class AssetListTableView: UITableViewController, Subscriber {
     override func viewDidLoad() {
         tableView.backgroundColor = .whiteBackground
         tableView.register(HomeScreenCell.self, forCellReuseIdentifier: HomeScreenCell.cellIdentifier)
+        tableView.register(HomeBetEventCell.self, forCellReuseIdentifier: HomeBetEventCell.cellIdentifier)
         tableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.cellIdentifier)
         tableView.separatorStyle = .none
         
@@ -102,7 +104,7 @@ class AssetListTableView: UITableViewController, Subscriber {
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -124,7 +126,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             return isAddWalletRow(row: indexPath.row) ? menuHeight : assetHeight
         case .events:
-            return assetHeight
+            return bettingHeight
         case .menu:
             return menuHeight
         }
@@ -145,16 +147,16 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             let currency = Store.state.displayCurrencies[indexPath.row]
             let viewModel = AssetListViewModel(currency: currency)
-
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeScreenCell.cellIdentifier, for: indexPath) as! HomeScreenCell
             cell.set(viewModel: viewModel)
             return cell
+            
         case .events:
-            let viewModel = HomeEventViewModel(title: "Sports Betting")
-
+            let viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
             cell.set(viewModel: viewModel)
             return cell
+            
         case .menu:
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.cellIdentifier, for: indexPath) as! MenuCell
             guard let item = Menu(rawValue: indexPath.row) else { return cell }
@@ -195,7 +197,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             isAddWalletRow(row: indexPath.row) ? didTapAddWallet?() : didSelectCurrency?(Store.state.displayCurrencies[indexPath.row])
         case .events:
-            didTapBet?()
+            didTapBet?( Currencies.btc )
         case .menu:
             guard let item = Menu(rawValue: indexPath.row) else { return }
             switch item {

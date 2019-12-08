@@ -65,27 +65,27 @@ class EventListCell: UITableViewCell {
     
     private func addConstraints() {
         timestamp.constrain([
-            timestamp.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[2]),
-            timestamp.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: C.padding[2])])
+            timestamp.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[1]/2),
+            timestamp.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
         headerLabel.constrain([
-            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: -C.padding[2]),
-            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: -C.padding[2]),
+            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[1]/2),
+            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[1]),
             headerLabel.trailingAnchor.constraint(lessThanOrEqualTo: timestamp.leadingAnchor)])
         homeTeamLabel.constrain([
-            homeTeamLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: -C.padding[2]),
-            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: -C.padding[2])])
+            homeTeamLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: C.padding[1]/2),
+            homeTeamLabel.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor, constant: C.padding[1])])
         awayTeamLabel.constrain([
-            awayTeamLabel.topAnchor.constraint(equalTo: homeTeamLabel.bottomAnchor, constant: -C.padding[2]),
-            awayTeamLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: -C.padding[2])])
+            awayTeamLabel.topAnchor.constraint(equalTo: homeTeamLabel.bottomAnchor, constant: C.padding[1]/4),
+            awayTeamLabel.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor, constant: C.padding[1])])
+        oddsLabel.constrain([
+             oddsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -C.padding[1]/2),
+             oddsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
         homeResultLabel.constrain([
             homeResultLabel.topAnchor.constraint(equalTo: homeTeamLabel.topAnchor),
-            homeResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[2])])
+            homeResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])
         awayResultLabel.constrain([
             awayResultLabel.topAnchor.constraint(equalTo: awayTeamLabel.topAnchor),
-            awayResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[2])])
-        oddsLabel.constrain([
-             oddsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -C.padding[2]),
-             oddsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
+            awayResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])
         separator.constrainBottomCorners(height: 0.5)
     }
     

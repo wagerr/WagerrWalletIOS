@@ -115,6 +115,11 @@ struct WalletChange: Trackable {
             guard let state = $0[self.currency] else { return $0 }
             return $0.mutate(walletState: state.mutate(transactions: transactions)) })
     }
+    func setEvents(_ events: [BetEventViewModel]) -> WalletAction {
+        return WalletAction(reduce: {
+            guard let state = $0[self.currency] else { return $0 }
+            return $0.mutate(walletState: state.mutate(events: events)) })
+    }
     func setWalletName(_ name: String) -> WalletAction {
         return WalletAction(reduce: {
             guard let state = $0[self.currency] else { return $0 }

@@ -70,11 +70,11 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.register(TxListCell.self, forCellReuseIdentifier: eventCellIdentifier)
-        tableView.register(TxListCell.self, forCellReuseIdentifier: headerCellIdentifier)
+        tableView.register(EventListCell.self, forCellReuseIdentifier: eventCellIdentifier)
+        tableView.register(EventListCell.self, forCellReuseIdentifier: headerCellIdentifier)
 
         tableView.separatorStyle = .none
-        tableView.estimatedRowHeight = 60.0
+        tableView.estimatedRowHeight = 80.0
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = .whiteBackground
         
@@ -111,9 +111,9 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
         })
         
         Store.subscribe(self, selector: {
-            guard let oldTransactions = $0[self.currency]?.transactions else { return false }
-            guard let newTransactions = $1[self.currency]?.transactions else { return false }
-            return oldTransactions != newTransactions },
+            guard let oldEvents = $0[self.currency]?.events else { return false }
+            guard let newEvents = $1[self.currency]?.events else { return false }
+            return oldEvents != newEvents },
                         callback: { state in
                             self.allEvents = state[self.currency]?.events ?? [BetEventViewModel]()
                             self.reload()
@@ -159,12 +159,16 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if hasExtraSection && section == 1 {
-            return C.padding[2]
+            return C.padding[1]
         } else {
             return 0
         }
     }
-
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat( 70 )
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if hasExtraSection && section == 1 {
             return UIView(color: .clear)

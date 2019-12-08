@@ -53,11 +53,23 @@ class BetMapping : BetCore   {
     }
 }
 
+class BetSport : BetMapping {
+    var id : UInt32 {
+        return mappingID
+    }
+}
+
+class BetTournament : BetMapping {
+    var id : UInt32 {
+        return mappingID
+    }
+}
+
 enum EventMultipliers  {
-    static let ODDS_MULTIPLIER = 10000
-    static let SPREAD_MULTIPLIER = 10
-    static let TOTAL_MULTIPLIER = 10
-    static let RESULT_MULTIPLIER : UInt32 = 10
+    static var ODDS_MULTIPLIER : UInt32 = 10000
+    static var SPREAD_MULTIPLIER : UInt32 = 10
+    static var TOTAL_MULTIPLIER : UInt32 = 10
+    static var RESULT_MULTIPLIER : UInt32 = 10
 }
 
 class BetEventDatabaseModel : BetCore {
@@ -130,35 +142,36 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txHomeOdds : String {
-        return String(format: "%.2f", Float(homeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (homeOdds==0) ? "N/A" : String(format: "%.2f", Float(homeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
     var txAwayOdds : String {
-        return String(format: "%.2f", Float(awayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (awayOdds==0) ? "N/A" : String(format: "%.2f", Float(awayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
     var txDrawOdds : String {
-        return String(format: "%.2f", Float(drawOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (drawOdds==0) ? "N/A" : String(format: "%.2f", Float(drawOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
     var txSpreadPoints : String {
-        return String(format: "%.3f", Float(spreadPoints) / Float(EventMultipliers.SPREAD_MULTIPLIER) )
+        return (spreadPoints==0) ? "N/A" : String(format: "%.3f", Float(spreadPoints) / Float(EventMultipliers.SPREAD_MULTIPLIER) )
     }
     var txHomeSpread : String {
-        return String(format: "%.2f", Float(spreadHomeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (spreadHomeOdds==0) ? "N/A" : String(format: "%.2f", Float(spreadHomeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
     var txAwaySpread : String {
-        return String(format: "%.2f", Float(spreadAwayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (spreadAwayOdds==0) ? "N/A" : String(format: "%.2f", Float(spreadAwayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
     var txTotalPoints : String {
-        return String(format: "%.3f", Float(totalPoints) / Float(EventMultipliers.TOTAL_MULTIPLIER) )
+        return (totalPoints==0) ? "N/A" : String(format: "%.3f", Float(totalPoints) / Float(EventMultipliers.TOTAL_MULTIPLIER) )
     }
     var txOverOdds : String {
-        return String(format: "%.2f", Float(overOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (overOdds==0) ? "N/A" : String(format: "%.2f", Float(overOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
     var txUnderOdds : String {
-        return String(format: "%.2f", Float(underOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (underOdds==0) ? "N/A" : String(format: "%.2f", Float(underOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
 }
 
-class BetEventViewModel : BetEventDatabaseModel {
+class BetEventViewModel : BetEventDatabaseModel, Equatable {
+    
     // mappings
     var txSport : String
     var txTournament : String
@@ -185,17 +198,42 @@ class BetEventViewModel : BetEventDatabaseModel {
         super.init(blockheight: blockheight, timestamp: timestamp, lastUpdated: lastUpdated, txHash: txHash, version: version, type: type, eventID: eventID, eventTimestamp: eventTimestamp, sportID: sportID, tournamentID: tournamentID, roundID: roundID, homeTeamID: homeTeamID, awayTeamID: awayTeamID, homeOdds: homeOdds, awayOdds: awayOdds, drawOdds: drawOdds, entryPrice: entryPrice, spreadPoints: spreadPoints, spreadHomeOdds: spreadHomeOdds, spreadAwayOdds: spreadAwayOdds, totalPoints: totalPoints, overOdds: overOdds, underOdds: underOdds)
     }
     
+    static func ==(lhs: BetEventViewModel, rhs: BetEventViewModel) -> Bool {
+        return lhs.eventID == rhs.eventID
+    }
+
+    static func !=(lhs: BetEventViewModel, rhs: BetEventViewModel) -> Bool {
+        return lhs.eventID != rhs.eventID
+    }
+    
+    var currency: CurrencyDef { return Currencies.btc }     // always WGR
+    
     var shortTimestamp: String {
         let date = Date(timeIntervalSinceReferenceDate: eventTimestamp)
-        return DateFormatter.shortDateFormatter.string(from: date)
+        return DateFormatter.eventDateFormatter.string(from: date)
     }
     var eventDescription: String {
-        return String(format: "%s - %s - %s", txSport, txTournament, txRound)
+        var ret = ""
+        if (!txSport.isEmpty)   { ret.append(txSport) }
+        if (!txTournament.isEmpty)   {
+            if (!ret.isEmpty)   { ret.append(" - ") }
+            ret.append(txTournament)
+        }
+        if (!txRound.isEmpty)   {
+            if (!ret.isEmpty)   { ret.append(" - ") }
+            ret.append(txRound)
+        }
+        //return String(format: "%@ - %@ - %@", txSport, txTournament, txRound)
+        return ret
     }
+    var title : String {
+        return self.eventDescription
+    }
+    
     var oddsDescription: NSAttributedString {
-        let homeAttrs: [NSAttributedString.Key: Any] = [.backgroundColor: UIColor.colorHome]
-        let drawAttrs: [NSAttributedString.Key: Any] = [.backgroundColor: UIColor.colorDraw]
-        let awayAttrs: [NSAttributedString.Key: Any] = [.backgroundColor: UIColor.colorAway]
+        let homeAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.colorHome]
+        let drawAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.colorDraw]
+        let awayAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.colorAway]
         
         let ret = NSMutableAttributedString(string: txHomeOdds, attributes: homeAttrs)
         let separator = NSAttributedString(string: " / ")
@@ -227,17 +265,17 @@ class BetEventViewModel : BetEventDatabaseModel {
         return getAttrAway(txAwayScore)
     }
     private func getAttrHome(_ str : String ) -> NSAttributedString  {
-        let homeAttrs: [NSAttributedString.Key: Any] = [.backgroundColor: UIColor.colorHome]
+        let homeAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.colorHome]
         let ret = NSMutableAttributedString(string: str, attributes: homeAttrs)
         return ret
     }
     private func getAttrAway(_ str : String ) -> NSAttributedString  {
-        let awayAttrs: [NSAttributedString.Key: Any] = [.backgroundColor: UIColor.colorAway]
+        let awayAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.colorAway]
         let ret = NSMutableAttributedString(string: str, attributes: awayAttrs)
         return ret
     }
 }
-
+/*
 class BetEventDetailViewModel : BetEventViewModel   {
     var currency : CurrencyDef
     
@@ -245,7 +283,7 @@ class BetEventDetailViewModel : BetEventViewModel   {
         
     }
 }
-
+*/
 enum BetResultType : Int32 {
     case STANDARD_PAYOUT = 0x01
     case EVENT_REFUND = 0x02

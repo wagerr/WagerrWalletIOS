@@ -12,7 +12,7 @@ import BRCore
 private let largeFontSize: CGFloat = 28.0
 private let smallFontSize: CGFloat = 14.0
 
-class EventsHeaderView : UIView, GradientDrawable, Subscriber {
+class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelegate {
 
     // MARK: - Views
     
@@ -30,7 +30,9 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
     private var swappedConstraints: [NSLayoutConstraint] = []
     
     private var sportPickerTextField : UITextField!
+    private var sports : [ (Int,String) ]
     private var tournamentPickerTextField : UITextField!
+    private var tournaments : [Int: [ (Int,String)] ]
     
     // MARK: Properties
     private let currency: CurrencyDef
@@ -98,11 +100,19 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
             self.secondaryBalance = UpdatingLabel(formatter: NumberFormatter())
             self.primaryBalance = UpdatingLabel(formatter: NumberFormatter())
         }
+        let cgrect = CGRect.init(x: 0.0, y: UIScreen.main.bounds.size.height - 300, width: UIScreen.main.bounds.size.width, height: 300)
+        self.sports = [(Int, String)]()
+        self.tournaments = [Int: [(Int,String)] ]()
+        self.sportPickerTextField = UITextField(frame: cgrect)
+        self.tournamentPickerTextField = UITextField(frame: cgrect)
         super.init(frame: CGRect())
-        
+
+        self.sportPickerTextField.delegate = self
+        self.tournamentPickerTextField.delegate = self
+
         setup()
     }
-
+    
     // MARK: Private
     
     private func setup() {
@@ -135,11 +145,20 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
         
         let gr = UITapGestureRecognizer(target: self, action: #selector(currencySwitchTapped))
         currencyTapView.addGestureRecognizer(gr)
+        
+        sportPickerTextField.backgroundColor = .whiteBackground
+        sportPickerTextField.textColor = .primaryText
+        sportPickerTextField.isUserInteractionEnabled = true
+        tournamentPickerTextField.backgroundColor = .whiteBackground
+        tournamentPickerTextField.textColor = .primaryText
+        tournamentPickerTextField.isUserInteractionEnabled = true
     }
 
     private func addSubviews() {
         addSubview(currencyName)
         addSubview(exchangeRateLabel)
+        addSubview(sportPickerTextField)
+        addSubview(tournamentPickerTextField)
         addSubview(balanceLabel)
         addSubview(primaryBalance)
         addSubview(secondaryBalance)
@@ -157,6 +176,15 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
             ])
         
         exchangeRateLabel.pinTo(viewAbove: currencyName)
+        
+        sportPickerTextField.constrain([
+            sportPickerTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[5]),
+            sportPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[1])
+            ])
+        tournamentPickerTextField.constrain([
+            tournamentPickerTextField.leadingAnchor.constraint(equalTo: sportPickerTextField.leadingAnchor),
+            tournamentPickerTextField.topAnchor.constraint(equalTo: sportPickerTextField.bottomAnchor, constant: C.padding[1])
+            ])
         
         balanceLabel.constrain([
             balanceLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
@@ -186,14 +214,16 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
             primaryBalance.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
             primaryBalance.leadingAnchor.constraint(equalTo: conversionSymbol.trailingAnchor, constant: C.padding[1]),
             conversionSymbol.leadingAnchor.constraint(equalTo: secondaryBalance.trailingAnchor, constant: C.padding[1]),
-            currencyTapView.leadingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor)
+            currencyTapView.leadingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor),
+            tournamentPickerTextField.trailingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor, constant: -C.padding[1])
         ]
 
         swappedConstraints = [
             secondaryBalance.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
             secondaryBalance.leadingAnchor.constraint(equalTo: conversionSymbol.trailingAnchor, constant: C.padding[1]),
             conversionSymbol.leadingAnchor.constraint(equalTo: primaryBalance.trailingAnchor, constant: C.padding[1]),
-            currencyTapView.leadingAnchor.constraint(equalTo: primaryBalance.leadingAnchor)
+            currencyTapView.leadingAnchor.constraint(equalTo: primaryBalance.leadingAnchor),
+            tournamentPickerTextField.trailingAnchor.constraint(equalTo: primaryBalance.leadingAnchor, constant: -C.padding[1])
         ]
 
         NSLayoutConstraint.activate(isBtcSwapped ? self.swappedConstraints : self.regularConstraints)
@@ -273,11 +303,15 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
         })
     }
 
-    func updatePickers()    {
-        sportPickerTextField.loadDropdownData(salutations)
-        tournamentPickerTextField.loadDropdownData(salutations)
+    func updatePickers( sports: [ (Int,String) ], tournaments: [Int: [ (Int, String) ]] )    {
+        self.sports = sports
+        self.tournaments = tournaments
+        sportPickerTextField.loadDropdownData(data: sports, didChangePicker: { (sportID) in
+            self.tournamentPickerTextField.loadDropdownData(data: tournaments[sportID] ?? tournaments[0]!, didChangePicker: { (_) in return } )
+        } )
+        tournamentPickerTextField.loadDropdownData(data: tournaments[sportPickerTextField.getSelectedIndex()] ?? tournaments[0]!, didChangePicker: { (_) in return } )
     }
-    
+
     func setBalances() {
         guard let rate = exchangeRate else { return }
         
@@ -340,6 +374,12 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - textfield delegate
+ /*   func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return false
+    }
+ */
 }
 
 // MARK: -

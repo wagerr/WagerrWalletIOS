@@ -129,8 +129,6 @@ struct WalletState {
     let balance: UInt256?
     let transactions: [Transaction]
     let events: [BetEventViewModel]
-    let sports: [BetSport]
-    let tournaments: [BetTournament]
     let lastBlockTimestamp: UInt32
     let name: String
     let creationDate: Date

@@ -19,7 +19,7 @@ class BTCWalletManager : WalletManager {
     var wallet: BRWallet?
     private let progressUpdateInterval: TimeInterval = 0.5
     private let updateDebounceInterval: TimeInterval = 0.4
-    private let updateEventInterval: TimeInterval = 1
+    private let updateEventInterval: TimeInterval = 5
     private var progressTimer: Timer?
     private var lastBlockHeightKey: String {
         return "LastBlockHeightKey-\(currency.code)"
@@ -303,7 +303,8 @@ extension BTCWalletManager : BRWalletListener {
     }
 
     private func requestEventUpdate() {
-        if eventUpdateTimer == nil {
+        // ignore if not fully synced
+        if eventUpdateTimer == nil && Store.state.wallets[self.currency.code]?.syncState == SyncState.success {
             eventUpdateTimer = Timer.scheduledTimer(timeInterval: updateEventInterval, target: self, selector: #selector(updateEvents), userInfo: nil, repeats: false)
         }
     }

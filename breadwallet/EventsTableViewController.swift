@@ -14,15 +14,17 @@ private let promptDelay: TimeInterval = 0.6
 class EventsTableViewController : UITableViewController, Subscriber, Trackable {
 
     //MARK: - Public
-    init(currency: CurrencyDef, walletManager: WalletManager, didSelectEvent: @escaping ([BetEventViewModel], Int) -> Void) {
+    init(currency: CurrencyDef, walletManager: WalletManager, didSelectEvent: @escaping ([BetEventViewModel], Int) -> Void, didChangeEvents: @escaping ([BetEventViewModel]) -> Void) {
         self.currency = currency
         self.walletManager = walletManager
         self.didSelectEvent = didSelectEvent
+        self.didChangeEvents = didChangeEvents
         self.isBtcSwapped = Store.state.isBtcSwapped
         super.init(nibName: nil, bundle: nil)
     }
 
     let didSelectEvent: ([BetEventViewModel], Int) -> Void
+    let didChangeEvents: ([BetEventViewModel]) -> Void
 
     var filters: [EventFilter] = [] {
         didSet {
@@ -116,6 +118,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
             return oldEvents != newEvents },
                         callback: { state in
                             self.allEvents = state[self.currency]?.events ?? [BetEventViewModel]()
+                            self.didChangeEvents(self.allEvents)
                             self.reload()
         })
     }

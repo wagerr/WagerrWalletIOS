@@ -23,7 +23,7 @@ class EventListController : UIViewController, Subscriber {
         self.currency = currency
         self.headerView = EventsHeaderView(currency: currency)
         super.init(nibName: nil, bundle: nil)
-        self.eventsTableView = EventsTableViewController(currency: currency, walletManager: walletManager, didSelectEvent: didSelectEvent)
+        self.eventsTableView = EventsTableViewController(currency: currency, walletManager: walletManager, didSelectEvent: didSelectEvent, didChangeEvents: didChangeEvents )
 
         if let btcWalletManager = walletManager as? BTCWalletManager {
             headerView.isWatchOnly = btcWalletManager.isWatchOnly
@@ -155,7 +155,38 @@ class EventListController : UIViewController, Subscriber {
             }
         })
     }
+
+    func containsKey(a:[(Int, String)], v:(Int,String)) -> Bool {
+        let (c1, _) = v
+        for (v1, _) in a { if v1 == c1 { return true } }
+        return false
+    }
     
+    private func didChangeEvents(events: [BetEventViewModel]) -> Void {
+        var sports : [(Int, String)] = [(0, "<Select sport>")]
+        let sportsTuples : [(Int, String)] = events.reduce([], { initialValue, collectionElement in
+            let iv : [(Int, String)] = initialValue
+            let tuple = (  Int(collectionElement.sportID), collectionElement.txSport )
+            return containsKey(a:iv, v:tuple) ? iv : iv + [tuple]
+        })
+        let sortedSportsTuples = sportsTuples.sorted { (n1:(Int,String), n2:(Int,String)) -> Bool in return n1.1 < n2.1 }
+        sports.append(contentsOf: sortedSportsTuples)
+        
+        var tournaments = [ Int: [(Int,String)] ]()
+        for (sportID, _) in sports {
+            tournaments[sportID] = [(Int,String)]()
+            tournaments[sportID]?.append((0, "<Select tournament>"))
+            let sportTournaments : [(Int, String)] = events.filter { $0.sportID==sportID }.reduce([], { initialValue, collectionElement in
+                let iv : [(Int, String)] = initialValue
+                let tuple = (  Int(collectionElement.tournamentID), collectionElement.txTournament )
+                return containsKey(a:iv, v:tuple) ? iv : iv + [tuple]
+            })
+            let sortedSportTournaments = sportTournaments.sorted(by: { (n1:(Int,String), n2:(Int,String)) -> Bool in return n1.1 < n2.1 } )
+            tournaments[sportID]?.append(contentsOf: sortedSportTournaments)
+        }
+        headerView.updatePickers(sports: sports, tournaments: tournaments)
+    }
+
     private func didSelectEvent(events: [BetEventViewModel], selectedIndex: Int) -> Void {
         let eventDetails = EventDetailViewController(event: events[selectedIndex])
         eventDetails.modalPresentationStyle = .overCurrentContext

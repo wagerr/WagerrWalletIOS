@@ -138,6 +138,9 @@ class EventListController : UIViewController, Subscriber {
         searchHeaderview.didChangeFilters = { [weak self] filters in
             self?.eventsTableView.filters = filters
         }
+        headerView.didChangeFilters = { [weak self] filters in
+            self?.eventsTableView.filters2 = filters
+        }
     }
 
     private func addTransactionsView() {
@@ -163,7 +166,7 @@ class EventListController : UIViewController, Subscriber {
     }
     
     private func didChangeEvents(events: [BetEventViewModel]) -> Void {
-        var sports : [(Int, String)] = [(0, "<Select sport>")]
+        var sports : [(Int, String)] = [(-1, "<Select sport>")]
         let sportsTuples : [(Int, String)] = events.reduce([], { initialValue, collectionElement in
             let iv : [(Int, String)] = initialValue
             let tuple = (  Int(collectionElement.sportID), collectionElement.txSport )
@@ -175,7 +178,7 @@ class EventListController : UIViewController, Subscriber {
         var tournaments = [ Int: [(Int,String)] ]()
         for (sportID, _) in sports {
             tournaments[sportID] = [(Int,String)]()
-            tournaments[sportID]?.append((0, "<Select tournament>"))
+            tournaments[sportID]?.append((-1, "<Select tournament>"))
             let sportTournaments : [(Int, String)] = events.filter { $0.sportID==sportID }.reduce([], { initialValue, collectionElement in
                 let iv : [(Int, String)] = initialValue
                 let tuple = (  Int(collectionElement.tournamentID), collectionElement.txTournament )

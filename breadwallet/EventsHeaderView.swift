@@ -112,8 +112,24 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
 
         setup()
     }
+    var didChangeFilters: (([EventFilter]) -> Void)?
     
     // MARK: Private
+    fileprivate var filters: [EventSearchFilterType] = [] {
+        didSet {
+            didChangeFilters?(filters.map { $0.filter })
+        }
+    }
+    
+    @discardableResult private func changeFilterType(_ filterType: EventSearchFilterType) -> Bool {
+        if let index = filters.index(of: filterType) {
+            filters[index] = filterType
+        }
+        else    {
+            filters.append(filterType)
+        }
+        return true
+    }
     
     private func setup() {
         addSubviews()
@@ -179,7 +195,7 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
         
         sportPickerTextField.constrain([
             sportPickerTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[5]),
-            sportPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[1])
+            sportPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[2])
             ])
         tournamentPickerTextField.constrain([
             tournamentPickerTextField.leadingAnchor.constraint(equalTo: sportPickerTextField.leadingAnchor),
@@ -215,6 +231,7 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
             primaryBalance.leadingAnchor.constraint(equalTo: conversionSymbol.trailingAnchor, constant: C.padding[1]),
             conversionSymbol.leadingAnchor.constraint(equalTo: secondaryBalance.trailingAnchor, constant: C.padding[1]),
             currencyTapView.leadingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor),
+            sportPickerTextField.trailingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor, constant: -C.padding[1]),
             tournamentPickerTextField.trailingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor, constant: -C.padding[1])
         ]
 
@@ -223,6 +240,7 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
             secondaryBalance.leadingAnchor.constraint(equalTo: conversionSymbol.trailingAnchor, constant: C.padding[1]),
             conversionSymbol.leadingAnchor.constraint(equalTo: primaryBalance.trailingAnchor, constant: C.padding[1]),
             currencyTapView.leadingAnchor.constraint(equalTo: primaryBalance.leadingAnchor),
+            sportPickerTextField.trailingAnchor.constraint(equalTo: primaryBalance.leadingAnchor, constant: -C.padding[1]),
             tournamentPickerTextField.trailingAnchor.constraint(equalTo: primaryBalance.leadingAnchor, constant: -C.padding[1])
         ]
 
@@ -306,10 +324,15 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
     func updatePickers( sports: [ (Int,String) ], tournaments: [Int: [ (Int, String) ]] )    {
         self.sports = sports
         self.tournaments = tournaments
+        let didChangeTournament : (Int) -> Void = { (tournamentID) in
+                self.changeFilterType( .tournament(tournamentID) )
+        }
         sportPickerTextField.loadDropdownData(data: sports, didChangePicker: { (sportID) in
-            self.tournamentPickerTextField.loadDropdownData(data: tournaments[sportID] ?? tournaments[0]!, didChangePicker: { (_) in return } )
+            self.tournamentPickerTextField.loadDropdownData(data: tournaments[sportID] ?? tournaments[0]!, didChangePicker: didChangeTournament)
+            self.changeFilterType( .sport(sportID) )
+            self.changeFilterType( .tournament(-1) )
         } )
-        tournamentPickerTextField.loadDropdownData(data: tournaments[sportPickerTextField.getSelectedIndex()] ?? tournaments[0]!, didChangePicker: { (_) in return } )
+        tournamentPickerTextField.loadDropdownData(data: tournaments[sportPickerTextField.getSelectedIndex()] ?? tournaments[0]!, didChangePicker: didChangeTournament )
     }
 
     func setBalances() {

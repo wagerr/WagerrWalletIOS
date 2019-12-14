@@ -26,13 +26,26 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
     let didSelectEvent: ([BetEventViewModel], Int) -> Void
     let didChangeEvents: ([BetEventViewModel]) -> Void
 
+    func doFilter()    {
+        events = filters2.reduce(allEvents, { $0.filter($1) })
+        events = filters.reduce(events, { $0.filter($1) })
+        tableView.reloadData()
+    }
+    
+    // searchbar filters
     var filters: [EventFilter] = [] {
         didSet {
-            events = filters.reduce(allEvents, { $0.filter($1) })
-            tableView.reloadData()
+            doFilter()
         }
     }
 
+    // pickers filters
+    var filters2: [EventFilter] = [] {
+        didSet {
+            doFilter()
+        }
+    }
+    
     //MARK: - Private
     private let walletManager: WalletManager
     private let currency: CurrencyDef

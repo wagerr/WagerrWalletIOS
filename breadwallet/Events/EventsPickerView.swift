@@ -15,7 +15,7 @@ extension UITextField {
     }
     func getSelectedIndex() -> Int  {
         let evPicker : EventPickerView? = self.inputView as? EventPickerView
-        return evPicker?.selectedIndex ?? 0
+        return evPicker?.selectedIndex ?? -1
     }
 }
 
@@ -51,8 +51,25 @@ class EventPickerView : UIPickerView, UIPickerViewDataSource, UIPickerViewDelega
                 self.pickerTextField.isEnabled = false
             }
         }
+        createToolbar()
     }
  
+    func createToolbar()
+    {
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(self.closePickerView))
+        toolbar.setItems([doneButton], animated: false)
+        toolbar.isUserInteractionEnabled = true
+        pickerTextField.inputAccessoryView = toolbar
+    }
+    
+    @objc func closePickerView()
+    {
+        self.endEditing(true)
+        pickerTextField.resignFirstResponder()
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

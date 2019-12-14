@@ -10,10 +10,16 @@ import UIKit
 
 enum EventSearchFilterType {
 
+    case sport(Int)
+    case tournament(Int)
     case text(String)
 
     var description: String {
         switch self {
+        case .sport(_):
+            return "Sport"
+        case .tournament(_):
+            return "Tournament"
         case .text(_):
             return ""
         }
@@ -21,10 +27,17 @@ enum EventSearchFilterType {
 
     var filter: EventFilter {
         switch self {
+        case .sport(let sportID):
+            return { $0.sportID == sportID || sportID == -1 }
+        case .tournament(let tournamentID):
+            return { $0.tournamentID == tournamentID || tournamentID == -1 }
         case .text(let text):
             return { event in
                 let loweredText = text.lowercased()
                 if event.txHash.lowercased().contains(loweredText) {
+                    return true
+                }
+                if String(event.eventID).lowercased().contains(loweredText) {
                     return true
                 }
                 if event.txSport.lowercased().contains(loweredText) {
@@ -52,8 +65,14 @@ extension EventSearchFilterType : Equatable {}
 
 func ==(lhs: EventSearchFilterType, rhs: EventSearchFilterType) -> Bool {
     switch (lhs, rhs) {
-    case (.text(_), .text(_)):
-        return true
+        case (.sport(_), .sport(_)):
+            return true
+        case (.tournament(_), .tournament(_)):
+            return true
+        case (.text(_), .text(_)):
+            return true
+        default:
+            return false
     }
 }
 
@@ -74,10 +93,6 @@ class EventSearchHeaderView : UIView {
     }
 
     private let searchBar = UISearchBar()
-    private let sent = ShadowButton(title: S.Search.sent, type: .search)
-    private let received = ShadowButton(title: S.Search.received, type: .search)
-    private let pending = ShadowButton(title: S.Search.pending, type: .search)
-    private let complete = ShadowButton(title: S.Search.complete, type: .search)
     private let cancel = UIButton(type: .system)
     fileprivate var filters: [EventSearchFilterType] = [] {
         didSet {
@@ -93,7 +108,6 @@ class EventSearchHeaderView : UIView {
 
     private func setup() {
         addSubviews()
-        addFilterButtons()
         addConstraints()
         setData()
     }
@@ -126,7 +140,7 @@ class EventSearchHeaderView : UIView {
             self?.didCancel?()
         }
     }
-
+    
     @discardableResult private func toggleFilterType(_ filterType: EventSearchFilterType) -> Bool {
         if let index = filters.index(of: filterType) {
             filters.remove(at: index)
@@ -134,40 +148,6 @@ class EventSearchHeaderView : UIView {
         } else {
             filters.append(filterType)
             return true
-        }
-    }
-
-    private func addFilterButtons() {
-        if #available(iOS 9, *) {
-            let stackView = UIStackView()
-            addSubview(stackView)
-            stackView.distribution = .fillProportionally
-            stackView.spacing = C.padding[1]
-            stackView.constrain([
-                stackView.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor),
-                stackView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[1]),
-                stackView.trailingAnchor.constraint(equalTo: cancel.trailingAnchor) ])
-            stackView.addArrangedSubview(sent)
-            stackView.addArrangedSubview(received)
-            stackView.addArrangedSubview(pending)
-            stackView.addArrangedSubview(complete)
-        } else {
-            addSubview(sent)
-            addSubview(received)
-            addSubview(pending)
-            addSubview(complete)
-            sent.constrain([
-                sent.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor),
-                sent.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[1]) ])
-            received.constrain([
-                received.leadingAnchor.constraint(equalTo: sent.trailingAnchor, constant: C.padding[1]),
-                received.topAnchor.constraint(equalTo: sent.topAnchor)])
-            pending.constrain([
-                pending.leadingAnchor.constraint(equalTo: received.trailingAnchor, constant: C.padding[1]),
-                pending.topAnchor.constraint(equalTo: received.topAnchor)])
-            complete.constrain([
-                complete.leadingAnchor.constraint(equalTo: pending.trailingAnchor, constant: C.padding[1]),
-                complete.topAnchor.constraint(equalTo: sent.topAnchor) ])
         }
     }
 

@@ -153,6 +153,11 @@ class BetEventDatabaseModel : BetCore {
     var txSpreadPoints : String {
         return (spreadPoints==0) ? "N/A" : String(format: "%.3f", Float(spreadPoints) / Float(EventMultipliers.SPREAD_MULTIPLIER) )
     }
+    var txSpreadPointsFormatted : String    {
+        let fmt = (spreadHomeOdds>spreadAwayOdds) ? "+%@/-%@" : "-%@/+%@"
+        return String.init(format: fmt, txSpreadPoints, txSpreadPoints)
+    }
+    
     var txHomeSpread : String {
         return (spreadHomeOdds==0) ? "N/A" : String(format: "%.2f", Float(spreadHomeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
     }
@@ -167,6 +172,13 @@ class BetEventDatabaseModel : BetCore {
     }
     var txUnderOdds : String {
         return (underOdds==0) ? "N/A" : String(format: "%.2f", Float(underOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+    }
+    
+    var hasSpreads : Bool   {
+        return (spreadPoints>0)
+    }
+    var hasTotals : Bool   {
+        return (totalPoints>0)
     }
 }
 

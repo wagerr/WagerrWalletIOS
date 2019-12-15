@@ -19,10 +19,10 @@ extension UIColor {
         if #available(iOS 11.0, *) {
             return UIColor(named: "colorPrimaryText")!
         } else {
-            return .white
+            return .black
         }
     }
-
+    
     static var secondaryButton: UIColor {
         return .systemGray
     }
@@ -270,6 +270,20 @@ extension UIColor {
             return UIColor(named: "colorAway")!
         } else {
             return UIColor(red: 20.0/255.0, green: 20.0/255.0, blue: 20.0/255.0, alpha: 1.0)
+        }
+    }
+    static var colorAwayText: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorAwayText")!
+        } else {
+            return .white
+        }
+    }
+    static var colorHomeText: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorHomeText")!
+        } else {
+            return .white
         }
     }
 }

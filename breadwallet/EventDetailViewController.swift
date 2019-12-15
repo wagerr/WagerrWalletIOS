@@ -36,15 +36,15 @@ class EventDetailViewController: UIViewController, Subscriber {
     }
     private var viewModel: BetEventViewModel
     private var dataSource: EventDetailDataSource
-    private var isExpanded: Bool = false
+    private var isExpanded: Bool = true
     
     private var compactContainerHeight: CGFloat {
-        return C.compactContainerHeight
+        return C.expandedContainerHeight
     }
     
     private var expandedContainerHeight: CGFloat {
         let maxHeight = view.frame.height - C.padding[4]
-        let contentHeight = header.frame.height + tableView.contentSize.height + footer.frame.height + separator.frame.height
+        var contentHeight = header.frame.height + tableView.contentSize.height + footer.frame.height + separator.frame.height
         tableView.isScrollEnabled = contentHeight > maxHeight
         return min(maxHeight, contentHeight)
     }
@@ -55,7 +55,7 @@ class EventDetailViewController: UIViewController, Subscriber {
         self.event = event
         self.viewModel = event
         self.dataSource = EventDetailDataSource(viewModel: viewModel)
-        self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails, currency: event.currency)
+        self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -140,13 +140,14 @@ class EventDetailViewController: UIViewController, Subscriber {
         
         footer.backgroundColor = .whiteBackground
         separator.backgroundColor = .secondaryShadow
+        
         detailsButton.setTitleColor(.blueButtonText, for: .normal)
         detailsButton.setTitleColor(.blueButtonText, for: .selected)
         detailsButton.titleLabel?.font = .customBody(size: 16.0)
-        
+
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.estimatedRowHeight = 45.0
+        tableView.estimatedRowHeight = 65.0
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
@@ -159,7 +160,7 @@ class EventDetailViewController: UIViewController, Subscriber {
         
         detailsButton.setTitle(S.TransactionDetails.showDetails, for: .normal)
         detailsButton.setTitle(S.TransactionDetails.hideDetails, for: .selected)
-        detailsButton.addTarget(self, action: #selector(onToggleDetails), for: .touchUpInside)
+        //detailsButton.addTarget(self, action: #selector(onToggleDetails), for: .touchUpInside)
         
         header.setTitle(viewModel.title)
     }
@@ -182,20 +183,6 @@ class EventDetailViewController: UIViewController, Subscriber {
     
     // MARK: -
     
-    @objc private func onToggleDetails() {
-        isExpanded = !isExpanded
-        detailsButton.isSelected = isExpanded
-        
-        UIView.spring(0.7, animations: {
-            if self.isExpanded {
-                self.containerHeightConstraint.constant = self.expandedContainerHeight
-            } else {
-                self.containerHeightConstraint.constant = self.compactContainerHeight
-            }
-            self.view.layoutIfNeeded()
-        }) { _ in }
-    }
-    
     @objc private func close() {
         if let delegate = transitioningDelegate as? ModalTransitionDelegate {
             delegate.reset()
@@ -215,9 +202,6 @@ extension EventDetailViewController {
         if let delegate = transitioningDelegate as? ModalTransitionDelegate {
             delegate.shouldDismissInteractively = false
         }
-        if !isExpanded {
-            onToggleDetails()
-        }
         if let keyboardHeight = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
             tableView.contentInset = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
         }
@@ -231,5 +215,37 @@ extension EventDetailViewController {
             // adding inset in keyboardWillShow is animated by itself but removing is not
             self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         })
+    }
+}
+
+//MARK: - Wagerr Explorer Navigation functions
+enum EventExplorerType {
+    case address
+    case event
+    case transaction
+}
+
+extension EventDetailViewController {
+
+    static func navigate(to: String, type: EventExplorerType) {
+        let baseURL = "https://explorer.wagerr.com/#"
+        var typeURL = ""
+        switch type {
+            case .address:
+                typeURL = "address"
+            case .event:
+                typeURL = "bet/event"
+            case .transaction:
+                typeURL = "tx"
+        }
+        guard let url = URL(string: String.init(format: "%@/%@/%@", baseURL, typeURL, to)) else {
+            return //be safe
+        }
+
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            UIApplication.shared.openURL(url)
+        }
     }
 }

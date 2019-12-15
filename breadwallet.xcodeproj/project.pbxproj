@@ -16,6 +16,11 @@
 		06086226238AAB8C002F4E9B /* EventListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086225238AAB8C002F4E9B /* EventListCell.swift */; };
 		06086228238B10A2002F4E9B /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086227238B10A2002F4E9B /* EventDetailViewController.swift */; };
 		0608622A238B11B1002F4E9B /* EventDetailDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06086229238B11B1002F4E9B /* EventDetailDatasource.swift */; };
+		062D29A823A5147A009ADC9E /* EventDetailRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29A723A5147A009ADC9E /* EventDetailRowCell.swift */; };
+		062D29AA23A515A6009ADC9E /* EventDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29A923A515A6009ADC9E /* EventDateCell.swift */; };
+		062D29AC23A528FF009ADC9E /* EventTeamsLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AB23A528FF009ADC9E /* EventTeamsLabelCell.swift */; };
+		062D29AE23A62EBC009ADC9E /* EventBetOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AD23A62EBC009ADC9E /* EventBetOptionCell.swift */; };
+		062D29B023A65DDD009ADC9E /* EventSpinnerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AF23A65DDD009ADC9E /* EventSpinnerCell.swift */; };
 		06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */; };
 		06673E902377F25200549005 /* WagerrEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8F2377F25200549005 /* WagerrEntities.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
@@ -678,6 +683,11 @@
 		06086225238AAB8C002F4E9B /* EventListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListCell.swift; sourceTree = "<group>"; };
 		06086227238B10A2002F4E9B /* EventDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
 		06086229238B11B1002F4E9B /* EventDetailDatasource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailDatasource.swift; sourceTree = "<group>"; };
+		062D29A723A5147A009ADC9E /* EventDetailRowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailRowCell.swift; sourceTree = "<group>"; };
+		062D29A923A515A6009ADC9E /* EventDateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDateCell.swift; sourceTree = "<group>"; };
+		062D29AB23A528FF009ADC9E /* EventTeamsLabelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTeamsLabelCell.swift; sourceTree = "<group>"; };
+		062D29AD23A62EBC009ADC9E /* EventBetOptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBetOptionCell.swift; sourceTree = "<group>"; };
+		062D29AF23A65DDD009ADC9E /* EventSpinnerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSpinnerCell.swift; sourceTree = "<group>"; };
 		063B76E820C282A600B3CB35 /* neoscrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = neoscrypt.h; sourceTree = "<group>"; };
 		063B76E920C282A600B3CB35 /* neoscrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = neoscrypt.c; sourceTree = "<group>"; };
 		063B76EB20C33A3000B3CB35 /* hash9.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash9.c; sourceTree = "<group>"; };
@@ -1940,6 +1950,11 @@
 		06086224238AAB4E002F4E9B /* EventCells */ = {
 			isa = PBXGroup;
 			children = (
+				062D29AB23A528FF009ADC9E /* EventTeamsLabelCell.swift */,
+				062D29AD23A62EBC009ADC9E /* EventBetOptionCell.swift */,
+				062D29A923A515A6009ADC9E /* EventDateCell.swift */,
+				062D29AF23A65DDD009ADC9E /* EventSpinnerCell.swift */,
+				062D29A723A5147A009ADC9E /* EventDetailRowCell.swift */,
 				06086225238AAB8C002F4E9B /* EventListCell.swift */,
 			);
 			path = EventCells;
@@ -4404,6 +4419,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE0A68211FB651DA00EF31CD /* CoreDatabase.swift in Sources */,
+				062D29AE23A62EBC009ADC9E /* EventBetOptionCell.swift in Sources */,
 				CEBF29301EF9D76F005C330A /* Environment.swift in Sources */,
 				7C67B6362056FB13006487BE /* BRAPIClient+Ethereum.swift in Sources */,
 				06A3D905239DB5CC00518AD8 /* EventsPickerView.swift in Sources */,
@@ -4496,9 +4512,11 @@
 				CE45C1F91E74B400002C3847 /* ManageWalletViewController.swift in Sources */,
 				CE03EC721EF193810038E3A8 /* String+Keys.swift in Sources */,
 				CE92F9F01DED0C790046B516 /* PresentModalAnimator.swift in Sources */,
+				062D29AA23A515A6009ADC9E /* EventDateCell.swift in Sources */,
 				7C67B6382056FBFA006487BE /* JSONRPC.swift in Sources */,
 				CEAA9E951DC1659F0066731D /* UILabel+BRWAdditions.swift in Sources */,
 				06086221238AA1C2002F4E9B /* EventsTableViewController.swift in Sources */,
+				062D29B023A65DDD009ADC9E /* EventSpinnerCell.swift in Sources */,
 				CEBF292E1EF99E55005C330A /* LightWeightAlert.swift in Sources */,
 				CEBF32EE1DDBC30000348FC6 /* ShadowButton.swift in Sources */,
 				7CBF4B6B2008899100E003AA /* TxAddressCell.swift in Sources */,
@@ -4506,6 +4524,7 @@
 				CEB909F71E5FE654001804DC /* EnterPhraseCollectionViewController.swift in Sources */,
 				CEF3D2DD1E8CBA790070178E /* LAContext+Extensions.swift in Sources */,
 				CECCE5AE1E04AD6300D99448 /* AddressCell.swift in Sources */,
+				062D29AC23A528FF009ADC9E /* EventTeamsLabelCell.swift in Sources */,
 				CE6BCF5D1EE9E89A0029849C /* CustomTitleView.swift in Sources */,
 				CE2DC1391EBC36EE000FE727 /* Prompt.swift in Sources */,
 				CE83DE2A1E9EB7F600D07636 /* SendAmountCell.swift in Sources */,
@@ -4595,6 +4614,7 @@
 				7CF913BE1FFC7DC30085CB70 /* TxMemoCell.swift in Sources */,
 				22A9A9471DF61945000F0016 /* BRAPIProxy.swift in Sources */,
 				CE20C9011DBBFFF800C8397A /* Actions.swift in Sources */,
+				062D29A823A5147A009ADC9E /* EventDetailRowCell.swift in Sources */,
 				CE20C9191DBE7B8200C8397A /* State.swift in Sources */,
 				CEEC70811E90C04700EF788E /* SeparatorCell.swift in Sources */,
 				CE20C8FE1DBB133A00C8397A /* SimpleRedux.swift in Sources */,

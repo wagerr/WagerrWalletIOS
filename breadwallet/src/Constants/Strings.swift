@@ -194,6 +194,14 @@ enum S {
     
     enum EventDetails {
         static let emptyMessage = NSLocalizedString("EventDetails.emptyMessage", value:"Sports events will appear here.", comment: "Empty event list message.")
+        static let event = NSLocalizedString("EventDetails.event", value:"Event", comment: "Event")
+        static let homeTeam = NSLocalizedString("EventDetails.homeTeam", value:"Home Team", comment: "Home Team")
+        static let awayTeam = NSLocalizedString("EventDetails.awayTeam", value:"Away Team", comment: "Away Team")
+        static let overOdds = NSLocalizedString("EventDetails.overOdds", value:"Over Odds", comment: "Over Odd")
+        static let underOdds = NSLocalizedString("EventDetails.underOdds", value:"Under Odds", comment: "Under Odds")
+        static let moneyLine = NSLocalizedString("EventDetails.moneyLine", value:"Money Line", comment: "Away Team")
+        static let spreadPoints = NSLocalizedString("EventDetails.spreadPoints", value:"Spread Points", comment: "Over Odd")
+        static let totalPoints = NSLocalizedString("EventDetails.totalPoints", value:"Total Points", comment: "Under Odds")
     }
 
     enum SecurityCenter {

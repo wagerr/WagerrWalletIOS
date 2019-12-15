@@ -249,8 +249,8 @@ class ModalPresenter : Subscriber, Trackable {
                     aId = "articles/360034979232-How-can-I-send-Wagerr-WGR-";
                 case ArticleIds.requestAmount:
                     aId = "articles/360034983592-How-do-I-use-the-Request-an-Amount-screen-in-my-Wagerr-wallet-";
-                //case ArticleIds.betSlip:
-                //    aId = "articles/360035358891-Betting-Slip";
+                case ArticleIds.betSlip:
+                    aId = "articles/360035358891-Betting-Slip";
                 default:
                     aId = "categories/360002247832-Mobile-Application";
             }

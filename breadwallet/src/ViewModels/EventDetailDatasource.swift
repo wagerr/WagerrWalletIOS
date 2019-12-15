@@ -13,28 +13,30 @@ class EventDetailDataSource: NSObject {
     // MARK: - Types
     
     enum Field: String {
-        case amount
-        case status
-        case memo
-        case timestamp
-        case address
-        case exchangeRate
+        case date
+        case teams
+        case moneyline
+        case spreads
+        case totals
         case blockHeight
         case transactionId
         case gasPrice
         case gasLimit
         case fee
-        case total
-        
+
         var cellType: UITableViewCell.Type {
             switch self {
-            case .amount:
-                return TxAmountCell.self
-            case .status:
-                return TxStatusCell.self
-            case .memo:
-                return TxMemoCell.self
-            case .address, .transactionId:
+            case .date:
+                return EventDateCell.self
+            case .teams:
+                return EventTeamsLabelCell.self
+            case .moneyline:
+                return EventBetOptionCell.self
+            case .spreads:
+                return EventBetOptionSpreadsCell.self
+            case .totals:
+                return EventBetOptionTotalsCell.self
+            case .transactionId:
                 return TxAddressCell.self
             default:
                 return TxLabelCell.self
@@ -57,13 +59,17 @@ class EventDetailDataSource: NSObject {
         self.viewModel = viewModel
         
         // define visible rows and order
-        fields = [.amount]
+        fields = [.date]
                 
-        fields.append(.timestamp)
-        fields.append(.address)
-                
-        fields.append(.blockHeight)
-        fields.append(.transactionId)
+        fields.append(.teams)
+        fields.append(.moneyline)
+        if (viewModel.hasSpreads)   {
+            fields.append(.spreads)
+        }
+        if (viewModel.hasTotals)   {
+            fields.append(.totals)
+        }
+        //fields.append(.transactionId)
     }
     
     func registerCells(forTableView tableView: UITableView) {
@@ -72,26 +78,16 @@ class EventDetailDataSource: NSObject {
     
     fileprivate func title(forField field: Field) -> String {
         switch field {
-        case .status:
-            return S.TransactionDetails.statusHeader
-        case .memo:
-            return S.TransactionDetails.commentsHeader
-        case .address:
+        case .date:
+            return viewModel.shortTimestamp
+        case .teams:
             return ""
-        case .exchangeRate:
-            return S.TransactionDetails.exchangeRateHeader
-        case .blockHeight:
-            return S.TransactionDetails.blockHeightLabel
-        case .transactionId:
-            return S.TransactionDetails.txHashHeader
-        case .gasPrice:
-            return S.TransactionDetails.gasPriceHeader
-        case .gasLimit:
-            return S.TransactionDetails.gasLimitHeader
-        case .fee:
-            return S.TransactionDetails.feeHeader
-        case .total:
-            return S.TransactionDetails.totalHeader
+        case .moneyline:
+            return S.EventDetails.moneyLine
+        case .spreads:
+            return S.EventDetails.spreadPoints
+        case .totals:
+            return S.EventDetails.totalPoints
         default:
             return ""
         }
@@ -111,36 +107,41 @@ extension EventDetailDataSource: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: field.rawValue,
                                                  for: indexPath)
         
-        if let rowCell = cell as? TxDetailRowCell {
+        if let rowCell = cell as? EventDetailRowCell {
             rowCell.title = title(forField: field)
         }
 
         switch field {
-        case .amount:
-            let amountCell = cell as! TxAmountCell
-            //amountCell.set(viewModel: viewModel)
+        case .date:
+            let dateCell = cell as! EventDateCell
+            dateCell.set(event: viewModel.eventID)
     
-        case .status:
-            let statusCell = cell as! TxStatusCell
-            //statusCell.set(txInfo: viewModel)
+        case .teams:
+            let teamsCell = cell as! EventTeamsLabelCell
+            teamsCell.home = viewModel.txHomeTeam
+            teamsCell.away = viewModel.txAwayTeam
+        
+        case .moneyline:
+            let betCell = cell as! EventBetOptionCell
+            betCell.option = .MoneyLine
+            betCell.home = viewModel.txHomeOdds
+            betCell.away = viewModel.txAwayOdds
+            betCell.draw = viewModel.txDrawOdds
             
-        case .memo:
-            let memoCell = cell as! TxMemoCell
-            //memoCell.set(viewModel: viewModel, tableView: tableView)
-            
-        case .timestamp:
-            let labelCell = cell as! TxLabelCell
-            //labelCell.titleLabel.attributedText = viewModel.timestampHeader
-            //labelCell.value = viewModel.longTimestamp
-            
-        case .address:
-            let addressCell = cell as! TxAddressCell
-            //addressCell.set(address: viewModel.displayAddress)
-            
-        case .exchangeRate:
-            let labelCell = cell as! TxLabelCell
-            //labelCell.value = viewModel.exchangeRate ?? ""
-            
+        case .spreads:
+            let betCell = cell as! EventBetOptionSpreadsCell
+            betCell.option = .SpreadPoints
+            betCell.home = viewModel.txHomeSpread
+            betCell.away = viewModel.txAwaySpread
+            betCell.draw = viewModel.txSpreadPointsFormatted
+                
+        case .totals:
+            let betCell = cell as! EventBetOptionTotalsCell
+            betCell.option = .TotalPoints
+            betCell.home = viewModel.txOverOdds
+            betCell.away = viewModel.txUnderOdds
+            betCell.draw = viewModel.txTotalPoints
+                
         case .blockHeight:
             let labelCell = cell as! TxLabelCell
             //labelCell.value = viewModel.blockHeight
@@ -161,13 +162,9 @@ extension EventDetailDataSource: UITableViewDataSource {
             let labelCell = cell as! TxLabelCell
             //labelCell.value = viewModel.fee ?? ""
             
-        case .total:
-            let labelCell = cell as! TxLabelCell
-            //labelCell.value = viewModel.total ?? ""
         }
         
         return cell
 
     }
-    
 }

@@ -27,12 +27,19 @@ class EventBetLabel : UILabel   {
     override func drawText(in rect: CGRect) {
         super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))
     }
-    /*
-    override func drawText(in rect: CGRect) {
-        let insets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, insets))
+    
+    func toggleLabel() -> Bool  {
+        var bRet = false
+        if self.font.pointSize == W.FontSize.normalSize    {
+           self.font = self.font.withSize(W.FontSize.selectSize)
+           bRet = true
+        }
+        else {
+           self.font = self.font.withSize(W.FontSize.normalSize)
+           bRet = false
+        }
+        return bRet
     }
- */
 }
 
 class EventDetailRowCell: UITableViewCell {

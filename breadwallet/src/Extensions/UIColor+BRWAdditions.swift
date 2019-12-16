@@ -286,6 +286,13 @@ extension UIColor {
             return .white
         }
     }
+    static var colorSlider: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorBetSlider")!
+        } else {
+            return UIColor(red: 13.0/255.0, green: 177, blue: 153, alpha: 1.0)
+        }
+    }
 }
 
 extension UIColor {

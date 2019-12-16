@@ -75,3 +75,15 @@ enum Words {
         return wordList.map({ $0.utf8String })
     }
 }
+
+// Wagerr constants
+struct W    {
+    struct BetAmount    {
+        static let min: Float = 25.0
+        static let max: Float = 10000.0
+    }
+    struct FontSize {
+        static let normalSize = CGFloat(24.0)
+        static let selectSize = CGFloat(30.0)
+    }
+}

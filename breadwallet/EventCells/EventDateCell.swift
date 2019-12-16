@@ -19,6 +19,7 @@ class EventDateCell: EventDetailRowCell {
     // MARK: - Init
     
     override func addSubviews() {
+        rowHeight = CGFloat(20.0)
         super.addSubviews()
         container.addSubview(eventButton)
     }

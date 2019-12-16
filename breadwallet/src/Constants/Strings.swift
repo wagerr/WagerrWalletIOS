@@ -202,6 +202,7 @@ enum S {
         static let moneyLine = NSLocalizedString("EventDetails.moneyLine", value:"Money Line", comment: "Away Team")
         static let spreadPoints = NSLocalizedString("EventDetails.spreadPoints", value:"Spread Points", comment: "Over Odd")
         static let totalPoints = NSLocalizedString("EventDetails.totalPoints", value:"Total Points", comment: "Under Odds")
+        static let potentialReward = NSLocalizedString("EventDetails.potentialReward", value:"Potential Reward", comment: "Potential Reward")
     }
 
     enum SecurityCenter {

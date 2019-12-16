@@ -15,8 +15,17 @@ private extension C {
     static let detailsButtonHeight: CGFloat = 65.0
 }
 
-class EventDetailViewController: UIViewController, Subscriber {
-    
+protocol EventBetOptionDelegate  {
+    func didTapBetOption(choice: EventBetChoice, isSelected: Bool)
+}
+
+protocol EventBetSliderDelegate  {
+    func didTapOk(choice: EventBetChoice, amount: Int)
+    func didTapCancel()
+}
+
+class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDelegate, EventBetSliderDelegate {
+        
     // MARK: - Private Vars
     
     private let container = UIView()
@@ -27,6 +36,7 @@ class EventDetailViewController: UIViewController, Subscriber {
     private let detailsButton = UIButton(type: .custom)
     private let tableView = UITableView()
     
+    private var sliderPosToRemove : Int = 0
     private var containerHeightConstraint: NSLayoutConstraint!
     
     private var event: BetEventViewModel {
@@ -35,7 +45,7 @@ class EventDetailViewController: UIViewController, Subscriber {
         }
     }
     private var viewModel: BetEventViewModel
-    private var dataSource: EventDetailDataSource
+    private var dataSource: EventDetailDataSource?
     private var isExpanded: Bool = true
     
     private var compactContainerHeight: CGFloat {
@@ -54,10 +64,10 @@ class EventDetailViewController: UIViewController, Subscriber {
     init(event: BetEventViewModel) {
         self.event = event
         self.viewModel = event
-        self.dataSource = EventDetailDataSource(viewModel: viewModel)
         self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
         
         super.init(nibName: nil, bundle: nil)
+        self.dataSource = EventDetailDataSource(viewModel: viewModel, controller: self)
         
         header.closeCallback = { [weak self] in
             self?.close()
@@ -83,6 +93,48 @@ class EventDetailViewController: UIViewController, Subscriber {
         })
     }
     
+    // bet option cell delegate
+    func didTapBetOption(choice: EventBetChoice, isSelected: Bool) {
+        let sliderPos = (dataSource?.prepareBetLayout(choice: choice))!
+        tableView.beginUpdates()
+        if sliderPosToRemove == 0  {
+            tableView.insertRows(at: [IndexPath(row: sliderPos, section: 0)], with: .automatic)
+            sliderPosToRemove = sliderPos
+        }
+        else    {
+            if sliderPosToRemove != sliderPos   {
+                if isSelected   {
+                    tableView.moveRow(at: IndexPath(row: sliderPosToRemove, section: 0), to: IndexPath(row: sliderPos, section: 0))
+                    sliderPosToRemove = sliderPos
+                }
+                else {
+                    tableView.deleteRows(at: [IndexPath(row: sliderPos, section: 0)], with: .none)
+                    sliderPosToRemove = 0
+                }
+            }
+            else    {
+                if !isSelected  { didTapCancel() }
+            }
+        }
+        tableView.endUpdates()
+        dataSource?.registerBetChoice(choice: choice)
+    }
+    
+    // bet slider cell delegates
+    func didTapOk(choice: EventBetChoice, amount: Int) {
+        print("tapOk")
+    }
+       
+    func didTapCancel() {
+        dataSource?.prepareBetLayout(choice: nil)
+        tableView.beginUpdates()
+        tableView.deleteRows(at: [IndexPath(row: sliderPosToRemove, section: 0)], with: .none)
+        tableView.endUpdates()
+        sliderPosToRemove = 0
+        let choice = EventBetChoice.init(option: .none, type: .none, odd: 1.0 )
+        dataSource?.cleanBetOptions( choice: choice )
+    }
+
     private func setup() {
         addSubViews()
         addConstraints()
@@ -97,7 +149,7 @@ class EventDetailViewController: UIViewController, Subscriber {
         container.addSubview(tableView)
         container.addSubview(footer)
         container.addSubview(separator)
-        footer.addSubview(detailsButton)
+        //footer.addSubview(detailsButton)
     }
     
     private func addConstraints() {
@@ -153,7 +205,7 @@ class EventDetailViewController: UIViewController, Subscriber {
         tableView.isScrollEnabled = false
         tableView.showsVerticalScrollIndicator = false
         
-        dataSource.registerCells(forTableView: tableView)
+        dataSource?.registerCells(forTableView: tableView)
         
         tableView.dataSource = dataSource
         tableView.reloadData()
@@ -167,8 +219,8 @@ class EventDetailViewController: UIViewController, Subscriber {
     
     private func reload() {
         viewModel = event
-        dataSource = EventDetailDataSource(viewModel: viewModel)
-        tableView.dataSource = dataSource
+        //dataSource = EventDetailDataSource(viewModel: viewModel)
+        //tableView.dataSource = dataSource
         tableView.reloadData()
     }
     

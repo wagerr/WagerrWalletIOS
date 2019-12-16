@@ -7,11 +7,42 @@
 //
 
 import UIKit
+import BRCore
 
 enum EventBetOption {
     case MoneyLine
     case SpreadPoints
     case TotalPoints
+    case none
+}
+
+enum EventBetType   {
+    case home
+    case away
+    case draw
+    case over
+    case under
+    case none
+}
+
+struct EventBetChoice {
+    let option : EventBetOption
+    let type : EventBetType
+    let odd : Float
+    
+    init(option: EventBetOption, type: EventBetType, odd: Float) {
+        self.option = option
+        self.type = type
+        self.odd = odd
+    }
+    
+    func potentialReward(stake: Int) -> (cryptoAmount: String, fiatAmount: String )   {
+        let cryptoAmount = Float(stake) * (odd - 1)
+        let currency = Currencies.btc
+        let rate = currency.state?.currentRate
+        let amount = Amount(amount: UInt256(UInt64(cryptoAmount)*C.satoshis), currency: currency, rate: rate)
+        return (amount.tokenDescription, amount.fiatDescription)
+    }
 }
 
 class EventBetOptionSpreadsCell : EventBetOptionCell    {
@@ -40,6 +71,20 @@ class EventBetOptionTotalsCell : EventBetOptionCell    {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc override func actionTappedHome() {
+        guard home != "N/A" else { return }
+        let choice = EventBetChoice.init(option: self.option, type: .over, odd: Float(homeLabel.text!)!)
+        self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: homeLabel.toggleLabel() )
+        print("tapped")
+    }
+    
+    @objc override func actionTappedAway() {
+        guard away != "N/A" else { return }
+        let choice = EventBetChoice.init(option: self.option, type: .under, odd: Float(awayLabel.text!)!)
+        self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: awayLabel.toggleLabel() )
+        print("tapped")
+    }
+    
     override func addSubviews() {
         super.addSubviews()
         container.addSubview(overHeaderLabel)
@@ -59,6 +104,17 @@ class EventBetOptionTotalsCell : EventBetOptionCell    {
             ])
     }
     
+    override func restoreLabelsSize(choice: EventBetChoice)    {
+        if choice.option == self.option {
+            if choice.type != .over { homeLabel.font = homeLabel.font.withSize(W.FontSize.normalSize) }
+            if choice.type != .under { awayLabel.font = awayLabel.font.withSize(W.FontSize.normalSize) }
+        }
+        else    {
+            homeLabel.font = homeLabel.font.withSize(W.FontSize.normalSize)
+            awayLabel.font = awayLabel.font.withSize(W.FontSize.normalSize)
+        }
+    }
+    
     override func setupStyle() {
         super.setupStyle()
         overHeaderLabel.textColor = .secondaryGrayText
@@ -71,43 +127,15 @@ class EventBetOptionTotalsCell : EventBetOptionCell    {
 }
 
 class EventBetOptionCell: EventDetailRowCell {
+
+    var cellDelegate: EventBetOptionDelegate?
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         option = .MoneyLine
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
-        let tapActionHome = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedHome))
-        homeLabel.isUserInteractionEnabled = true
-        homeLabel.addGestureRecognizer(tapActionHome)
-        
-        let tapActionDraw = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedDraw))
-        drawLabel.isUserInteractionEnabled = true
-        drawLabel.addGestureRecognizer(tapActionDraw)
-        
-        let tapActionAway = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAway))
-        awayLabel.isUserInteractionEnabled = true
-        awayLabel.addGestureRecognizer(tapActionAway)
+        addGestures()
     }
-    
-    private func setupViews() {
-        addSubviews()
-        addConstraints()
-        setupStyle()
-    }
-    
-    // MARK: - Tap actions
-    @objc func actionTappedHome() {
-        print("tapped")
-    }
-    
-    @objc func actionTappedDraw() {
-        print("tapped")
-    }
-    
-    @objc func actionTappedAway() {
-        print("tapped")
-    }
-    
     
     // MARK: - Accessors
     public var option : EventBetOption
@@ -138,11 +166,65 @@ class EventBetOptionCell: EventDetailRowCell {
             drawLabel.text = newValue
         }
     }
-    // MARK: - Views
     
-    fileprivate let homeLabel = EventBetLabel(font: UIFont.customBody(size: 24.0))
-    fileprivate let awayLabel = EventBetLabel(font: UIFont.customBody(size: 24.0))
-    fileprivate let drawLabel = EventBetLabel(font: UIFont.customBody(size: 24.0))
+    func addGestures()  {
+        let tapActionHome = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedHome))
+        homeLabel.isUserInteractionEnabled = true
+        homeLabel.addGestureRecognizer(tapActionHome)
+
+        let tapActionDraw = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedDraw))
+        drawLabel.isUserInteractionEnabled = true
+        drawLabel.addGestureRecognizer(tapActionDraw)
+
+        let tapActionAway = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAway))
+        awayLabel.isUserInteractionEnabled = true
+        awayLabel.addGestureRecognizer(tapActionAway)
+    }
+    
+    private func setupViews() {
+        addSubviews()
+        addConstraints()
+        setupStyle()
+    }
+    
+    // MARK: - Tap actions
+    @objc func actionTappedHome() {
+        guard home != "N/A" else { return }
+        let choice = EventBetChoice.init(option: self.option, type: .home, odd: Float(homeLabel.text!)!)
+        self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: homeLabel.toggleLabel() )
+        print("tapped")
+    }
+    
+    @objc func actionTappedDraw() {
+        guard draw != "N/A" else { return }
+        let choice = EventBetChoice.init(option: self.option, type: .draw, odd: Float(drawLabel.text!)!)
+        self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: drawLabel.toggleLabel() )
+        print("tapped")
+    }
+    
+    @objc func actionTappedAway() {
+        guard away != "N/A" else { return }
+        let choice = EventBetChoice.init(option: self.option, type: .away, odd: Float(awayLabel.text!)!)
+        self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: awayLabel.toggleLabel() )
+    }
+    
+    func restoreLabelsSize(choice: EventBetChoice)    {
+        if choice.option == self.option {
+            if choice.type != .home { homeLabel.font = homeLabel.font.withSize(W.FontSize.normalSize) }
+            if choice.type != .draw { drawLabel.font = drawLabel.font.withSize(W.FontSize.normalSize) }
+            if choice.type != .away { awayLabel.font = awayLabel.font.withSize(W.FontSize.normalSize) }
+        }
+        else    {
+            homeLabel.font = homeLabel.font.withSize(W.FontSize.normalSize)
+            drawLabel.font = drawLabel.font.withSize(W.FontSize.normalSize)
+            awayLabel.font = awayLabel.font.withSize(W.FontSize.normalSize)
+        }
+    }
+    
+    // MARK: - Views
+    fileprivate let homeLabel = EventBetLabel(font: UIFont.customBody(size: W.FontSize.normalSize))
+    fileprivate let awayLabel = EventBetLabel(font: UIFont.customBody(size: W.FontSize.normalSize))
+    fileprivate let drawLabel = EventBetLabel(font: UIFont.customBody(size: W.FontSize.normalSize))
 
     // MARK: - Init
     

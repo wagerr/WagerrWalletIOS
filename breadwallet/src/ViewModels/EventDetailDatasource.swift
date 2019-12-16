@@ -18,11 +18,7 @@ class EventDetailDataSource: NSObject {
         case moneyline
         case spreads
         case totals
-        case blockHeight
-        case transactionId
-        case gasPrice
-        case gasLimit
-        case fee
+        case betslider
 
         var cellType: UITableViewCell.Type {
             switch self {
@@ -36,10 +32,8 @@ class EventDetailDataSource: NSObject {
                 return EventBetOptionSpreadsCell.self
             case .totals:
                 return EventBetOptionTotalsCell.self
-            case .transactionId:
-                return TxAddressCell.self
-            default:
-                return TxLabelCell.self
+            case .betslider:
+                return EventSliderCell.self
             }
         }
         
@@ -49,31 +43,61 @@ class EventDetailDataSource: NSObject {
     }
     
     // MARK: - Vars
+    var sliderCell : EventSliderCell?
+    var moneyLineCell : EventBetOptionCell?
+    var spreadsCell : EventBetOptionSpreadsCell?
+    var totalsCell : EventBetOptionTotalsCell?
+    var currChoice : EventBetChoice?
     
     fileprivate var fields: [Field]
     fileprivate let viewModel: BetEventViewModel
+    fileprivate let viewController: EventDetailViewController
     
     // MARK: - Init
     
-    init(viewModel: BetEventViewModel) {
+    init(viewModel: BetEventViewModel, controller: EventDetailViewController) {
         self.viewModel = viewModel
+        self.viewController = controller
+        fields = []
         
-        // define visible rows and order
+        super.init()
+        self.prepareBetLayout(choice: nil)
+    }
+    
+    func prepareBetLayout( choice: EventBetChoice? ) -> Int {
+        var sliderPos = 0
         fields = [.date]
                 
         fields.append(.teams)
         fields.append(.moneyline)
+        if (choice != nil && choice?.option == EventBetOption.MoneyLine) {
+            fields.append(.betslider)
+            sliderPos = fields.count - 1
+        }
         if (viewModel.hasSpreads)   {
             fields.append(.spreads)
+            if (choice != nil && choice?.option == EventBetOption.SpreadPoints) {
+                fields.append(.betslider)
+                sliderPos = fields.count - 1
+            }
         }
         if (viewModel.hasTotals)   {
             fields.append(.totals)
+            if (choice != nil && choice?.option == EventBetOption.TotalPoints) {
+                fields.append(.betslider)
+                sliderPos = fields.count - 1
+            }
         }
-        //fields.append(.transactionId)
+        currChoice = choice
+        return sliderPos
     }
     
     func registerCells(forTableView tableView: UITableView) {
         fields.forEach { $0.registerCell(forTableView: tableView) }
+        // register betSlider cell manually
+        var fields2 : [Field] = []
+        fields2.append(.betslider)
+        fields2.forEach { $0.registerCell(forTableView: tableView) }
     }
     
     fileprivate func title(forField field: Field) -> String {
@@ -84,6 +108,8 @@ class EventDetailDataSource: NSObject {
             return ""
         case .moneyline:
             return S.EventDetails.moneyLine
+        case .betslider:
+            return ""
         case .spreads:
             return S.EventDetails.spreadPoints
         case .totals:
@@ -127,6 +153,8 @@ extension EventDetailDataSource: UITableViewDataSource {
             betCell.home = viewModel.txHomeOdds
             betCell.away = viewModel.txAwayOdds
             betCell.draw = viewModel.txDrawOdds
+            self.moneyLineCell = betCell
+            betCell.cellDelegate = viewController
             
         case .spreads:
             let betCell = cell as! EventBetOptionSpreadsCell
@@ -134,6 +162,8 @@ extension EventDetailDataSource: UITableViewDataSource {
             betCell.home = viewModel.txHomeSpread
             betCell.away = viewModel.txAwaySpread
             betCell.draw = viewModel.txSpreadPointsFormatted
+            self.spreadsCell = betCell
+            betCell.cellDelegate = viewController
                 
         case .totals:
             let betCell = cell as! EventBetOptionTotalsCell
@@ -141,30 +171,35 @@ extension EventDetailDataSource: UITableViewDataSource {
             betCell.home = viewModel.txOverOdds
             betCell.away = viewModel.txUnderOdds
             betCell.draw = viewModel.txTotalPoints
+            self.totalsCell = betCell
+            betCell.cellDelegate = viewController
                 
-        case .blockHeight:
-            let labelCell = cell as! TxLabelCell
-            //labelCell.value = viewModel.blockHeight
-            
-        case .transactionId:
-            let addressCell = cell as! TxAddressCell
-            //addressCell.set(address: viewModel.transactionHash)
-            
-        case .gasPrice:
-            let labelCell = cell as! TxLabelCell
-            //labelCell.value = viewModel.gasPrice ?? ""
-            
-        case .gasLimit:
-            let labelCell = cell as! TxLabelCell
-            //labelCell.value = viewModel.gasLimit ?? ""
-            
-        case .fee:
-            let labelCell = cell as! TxLabelCell
-            //labelCell.value = viewModel.fee ?? ""
+        case .betslider:
+            let betSliderCell = cell as! EventSliderCell
+            self.sliderCell = betSliderCell
+            self.sliderCell?.betChoice = currChoice
+            betSliderCell.cellDelegate = viewController
             
         }
         
         return cell
 
     }
+    
+    func cleanBetOptions(choice: EventBetChoice)    {
+        self.moneyLineCell?.restoreLabelsSize(choice: choice)
+        self.spreadsCell?.restoreLabelsSize(choice: choice)
+        self.totalsCell?.restoreLabelsSize(choice: choice)
+    }
+    
+    func registerBetChoice(choice: EventBetChoice)  {
+        cleanBetOptions(choice: choice)
+        currChoice = choice
+        guard self.sliderCell != nil else {
+            return
+        }
+        self.sliderCell?.betChoice = choice
+        self.sliderCell?.recalculateReward(amount: -1)
+    }
+    
 }

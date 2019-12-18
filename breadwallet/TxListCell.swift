@@ -24,6 +24,7 @@ class TxListCell: UITableViewCell {
     // MARK: Vars
     
     private var viewModel: TxListViewModel!
+    private var walletManager: BTCWalletManager?
     
     // MARK: - Init
     
@@ -32,12 +33,30 @@ class TxListCell: UITableViewCell {
         setupViews()
     }
     
-    func setTransaction(_ viewModel: TxListViewModel, isBtcSwapped: Bool, rate: Rate, maxDigits: Int, isSyncing: Bool) {
+    func setTransaction(_ viewModel: TxListViewModel, isBtcSwapped: Bool, rate: Rate, maxDigits: Int, isSyncing: Bool, walletManager: BTCWalletManager) {
         self.viewModel = viewModel
+        self.walletManager = walletManager
+        
+        let betEntity = viewModel.getBetEntity()
         
         timestamp.text = viewModel.shortTimestamp
+        
+        let currentHeight = walletManager.peerManager!.lastBlockHeight
+        let isInmature = (currentHeight-UInt32(viewModel.tx.blockHeight)) <= W.Blockchain.payoutMaturity
+        if betEntity == nil {
+            if viewModel.isCoinbase {   // payout
+                //+++walletManager.db
+            }
+            else    {   // normal tx
+                
+            }
+        }
+        else    {   // regular bet
+            
+        }
+        
         descriptionLabel.text = viewModel.shortDescription
-        amount.attributedText = viewModel.amount(isBtcSwapped: isBtcSwapped, rate: rate)
+        amount.attributedText = viewModel.amount(isBtcSwapped: isBtcSwapped, rate: rate, isInmature: isInmature)
         
         statusIndicator.status = viewModel.status
         

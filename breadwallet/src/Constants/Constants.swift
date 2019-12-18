@@ -86,4 +86,7 @@ struct W    {
         static let normalSize = CGFloat(24.0)
         static let selectSize = CGFloat(30.0)
     }
+    struct Blockchain   {
+        static let payoutMaturity = 101
+    }
 }

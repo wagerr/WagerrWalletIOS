@@ -209,6 +209,14 @@ extension UIColor {
         return UIColor(red: 244.0/255.0, green: 107.0/255.0, blue: 65.0/255.0, alpha: 1.0)
     }
     
+    static var inmatureGray: UIColor {
+        if #available(iOS 11.0, *) {
+            return UIColor(named: "colorDraw")!
+        } else {
+            return UIColor(red: 204/255.0, green: 204/255.0, blue: 204/255.0, alpha: 1.0)
+        }
+    }
+    
     static var statusIndicatorActive: UIColor {
         return UIColor(red: 194.0/255.0, green: 12.0/255.0, blue: 34.0/255.0, alpha: 1.0)
     }

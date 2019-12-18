@@ -84,9 +84,9 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         Store.lazySubscribe(self, selector: { $0[self.viewModel.currency]?.currentRate != $1[self.viewModel.currency]?.currentRate }, callback: { _ in self.reload() })
         // refresh if tx state changes
         Store.lazySubscribe(self, selector: {
-            guard let oldTransactions = $0[self.viewModel.currency]?.transactions else { return false }
-            guard let newTransactions = $1[self.viewModel.currency]?.transactions else { return false }
-            return oldTransactions != newTransactions }, callback: { [unowned self] in
+            guard let oldEvents = $0[self.viewModel.currency]?.events else { return false }
+            guard let newEvents = $1[self.viewModel.currency]?.events else { return false }
+            return oldEvents != newEvents }, callback: { [unowned self] in
             guard let event = $0[self.viewModel.currency]?.events.first(where: { $0.eventID == self.viewModel.eventID }) else { return }
             self.event = event
         })

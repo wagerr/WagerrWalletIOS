@@ -22,18 +22,20 @@ class EventListCell: UITableViewCell {
     private let separator = UIView(color: .separatorGray)
     
     // MARK: Vars
-    
     private var viewModel: BetEventViewModel!
-    
+    private var isSyncing : Bool
+
     // MARK: - Init
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        self.isSyncing = true
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
     }
     
-    func setTransaction(_ viewModel: BetEventViewModel, isBtcSwapped: Bool, rate: Rate, maxDigits: Int, isSyncing: Bool) {
+    func setEvent(_ viewModel: BetEventViewModel, isSyncing: Bool) {
         self.viewModel = viewModel
+        self.isSyncing = isSyncing
         
         timestamp.text = viewModel.shortTimestamp
         headerLabel.text = viewModel.eventDescription

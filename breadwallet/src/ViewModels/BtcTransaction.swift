@@ -32,6 +32,14 @@ struct BtcTransaction: Transaction {
         return tx.pointee
     }
     
+    func getRawTransactionRef() -> BRTxRef {
+        return tx
+    }
+    
+    var isCoinbase : Bool   {
+        return tx.pointee.inCount==1 && tx.pointee.outCount>1 && tx.pointee.outputs[0].swiftAddress.isEmpty
+    }
+    
     let amount: UInt256
     let fee: UInt64
     let startingBalance: UInt64

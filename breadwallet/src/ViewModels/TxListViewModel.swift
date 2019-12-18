@@ -13,8 +13,12 @@ import BRCore
 struct TxListViewModel: TxViewModel {
     
     // MARK: - Properties
-    
+    private var betEntity : BetEntity?
     let tx: Transaction
+    
+    init(tx: Transaction)   {
+        self.tx = tx
+    }
     
     var shortDescription: String {
         let isComplete = tx.status == .complete
@@ -44,7 +48,7 @@ struct TxListViewModel: TxViewModel {
         }
     }
 
-    func amount(isBtcSwapped: Bool, rate: Rate) -> NSAttributedString {
+    func amount(isBtcSwapped: Bool, rate: Rate, isInmature: Bool) -> NSAttributedString {
         var amount = tx.amount
         
         if let tx = tx as? EthTransaction, tokenTransferCode != nil {
@@ -55,9 +59,27 @@ struct TxListViewModel: TxViewModel {
                           currency: tx.currency,
                           rate: isBtcSwapped ? rate : nil,
                           negative: (tx.direction == .sent)).description
-        let color: UIColor = (tx.direction == .received) ? .receivedGreen : .darkText
+        let color: UIColor = (tx.direction == .received) ? (isInmature) ? .inmatureGray : .receivedGreen : .darkText
         
         return NSMutableAttributedString(string: text,
                                          attributes: [.foregroundColor: color])
+    }
+    
+    func getBetEntity() -> BetEntity?    {
+        var ret : BetEntity?
+        if self.betEntity == nil {
+            let opCodeManager = WagerrOpCodeManager();
+            let txRef = self.tx as? BtcTransaction
+            ret = opCodeManager.getEventIdFromCoreTx( (txRef?.getRawTransactionRef())!  )
+        }
+        else{
+            ret = self.betEntity
+        }
+        return ret
+    }
+    
+    var isCoinbase : Bool   {
+        let txRef = self.tx as? BtcTransaction
+        return txRef!.isCoinbase
     }
 }

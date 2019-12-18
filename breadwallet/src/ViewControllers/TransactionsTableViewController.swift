@@ -220,7 +220,9 @@ extension TransactionsTableViewController {
                             isBtcSwapped: isBtcSwapped,
                             rate: rate,
                             maxDigits: currency.state?.maxDigits ?? currency.commonUnit.decimals,
-                            isSyncing: currency.state?.syncState != .success)
+                            isSyncing: currency.state?.syncState != .success,
+                            walletManager: walletManager as! BTCWalletManager
+                            )
         return cell
     }
 }

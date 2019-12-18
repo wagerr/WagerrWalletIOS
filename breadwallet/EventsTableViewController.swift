@@ -234,13 +234,9 @@ extension EventsTableViewController {
 
     private func eventCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: eventCellIdentifier, for: indexPath) as! EventListCell
-        let rate = self.rate ?? Rate.empty
         let viewModel = events[indexPath.row]
-        cell.setTransaction(viewModel,
-                            isBtcSwapped: isBtcSwapped,
-                            rate: rate,
-                            maxDigits: currency.state?.maxDigits ?? currency.commonUnit.decimals,
-                            isSyncing: currency.state?.syncState != .success)
+        cell.setEvent(viewModel,
+                      isSyncing: currency.state?.syncState != .success)
         return cell
     }
 }

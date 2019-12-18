@@ -9,7 +9,7 @@
 import UIKit
 import BRCore
 
-class EventSliderCell: EventDetailRowCell {
+class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
     var betChoice : EventBetChoice?
     var cellDelegate: EventBetSliderDelegate?
     
@@ -33,7 +33,8 @@ class EventSliderCell: EventDetailRowCell {
     }
   
     // MARK: Views
-    private let amountLabel = UILabel(font: UIFont.customBody(size: 24.0))
+    private let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
+    private let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))
     private let rewardLabel = UILabel(font: UIFont.customBody(size: 16.0))
     private let betSlider = BetSlider(frame: CGRect(x: 50.0, y: 10.0, width: 850.0, height: 35.0))
     private let doBetButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
@@ -44,6 +45,7 @@ class EventSliderCell: EventDetailRowCell {
     override func addSubviews() {
         super.addSubviews()
         container.addSubview(amountLabel)
+        container.addSubview(currencyLabel)
         container.addSubview(rewardLabel)
         container.addSubview(betSlider)
         container.addSubview(doBetButton)
@@ -57,6 +59,11 @@ class EventSliderCell: EventDetailRowCell {
         amountLabel.constrain([
             amountLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             amountLabel.constraint(toTop: container, constant: C.padding[3])
+        ])
+        
+        currencyLabel.constrain([
+            currencyLabel.leadingAnchor.constraint(equalTo: amountLabel.trailingAnchor,constant: C.padding[1]),
+            currencyLabel.topAnchor.constraint(equalTo: amountLabel.topAnchor)
         ])
 
         betSlider.constrain([
@@ -85,11 +92,22 @@ class EventSliderCell: EventDetailRowCell {
     
     override func setupStyle() {
         super.setupStyle()
+        
         amountLabel.textColor = .primaryText
         let minBet = Int(W.BetAmount.min)
-        self.amount = String.init(format: "%d %@", minBet, Currencies.btc.code)
+        self.amount = String.init( String(minBet))
+        amountLabel.delegate = self
+        amountLabel.returnKeyType = UIReturnKeyType.done
+        amountLabel.keyboardType = UIKeyboardType.decimalPad
+        amountLabel.font = UIFont.customBody(size: 24.0)
+        addDoneButtonOnKeyboard()
+        
+        currencyLabel.text = Currencies.btc.code
+        
         rewardLabel.textColor = .primaryText
         self.reward = S.EventDetails.potentialReward
+        
+        
         
         //setup slider
         self.betSlider.minimumValue = W.BetAmount.min;
@@ -130,7 +148,7 @@ class EventSliderCell: EventDetailRowCell {
 
     @objc func onSliderChange(sender: UISlider)    {
         if betChoice == nil { return }
-        self.amount = String.init(format: "%d %@", Int(sender.value), Currencies.btc.code)
+        self.amount = String(Int(sender.value))
         recalculateReward(amount: Int(sender.value))
      }
     
@@ -138,6 +156,51 @@ class EventSliderCell: EventDetailRowCell {
         let sliderValue = ( amount == -1 ) ? Int(betSlider.value) : amount
         let potentialRewardData = betChoice?.potentialReward(stake: sliderValue)
         self.reward = String.init(format: "%@: %@ (%@)", S.EventDetails.potentialReward, potentialRewardData!.cryptoAmount, potentialRewardData!.fiatAmount)
+    }
+    
+    // amount text field delegate
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.resignFirstResponder()
+        adjustSlider()
+    }
+    
+    func adjustSlider() {
+        let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
+        let minBet = Int(W.BetAmount.min)
+        let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
+        
+        if (Int(amount)! < minBet)  { amount = String(minBet) }
+        if (Float(Int(amount)!) > maxBet)  { amount = String(Int(maxBet)) }
+        betSlider.setValue(Float(Int(amount)!), animated: true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func addDoneButtonOnKeyboard()
+    {
+        var doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        doneToolbar.barStyle = UIBarStyle.blackTranslucent
+
+        var flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        var done: UIBarButtonItem = UIBarButtonItem(title: S.RecoverWallet.done, style: UIBarButtonItemStyle.done, target: self, action: #selector(self.doneButtonAction))
+        done.tintColor = .white
+
+        var items = NSMutableArray()
+        items.add(flexSpace)
+        items.add(done)
+
+        doneToolbar.items = items as! [UIBarButtonItem]
+        doneToolbar.sizeToFit()
+
+        self.amountLabel.inputAccessoryView = doneToolbar
+    }
+    
+    @objc func doneButtonAction()
+    {
+        self.amountLabel.resignFirstResponder()
     }
 }
 

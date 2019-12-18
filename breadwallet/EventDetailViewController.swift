@@ -33,7 +33,6 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private let header: ModalHeaderView
     private let footer = UIView()
     private let separator = UIView()
-    private let detailsButton = UIButton(type: .custom)
     private let tableView = UITableView()
     
     private var sliderPosToRemove : Int = 0
@@ -149,7 +148,6 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         container.addSubview(tableView)
         container.addSubview(footer)
         container.addSubview(separator)
-        //footer.addSubview(detailsButton)
     }
     
     private func addConstraints() {
@@ -177,7 +175,6 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             separator.topAnchor.constraint(equalTo: footer.topAnchor, constant: 1.0),
             separator.trailingAnchor.constraint(equalTo: footer.trailingAnchor),
             separator.heightAnchor.constraint(equalToConstant: 0.5) ])
-        detailsButton.constrain(toSuperviewEdges: .zero)
     }
     
     private func setupActions() {
@@ -193,10 +190,6 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         footer.backgroundColor = .whiteBackground
         separator.backgroundColor = .secondaryShadow
         
-        detailsButton.setTitleColor(.blueButtonText, for: .normal)
-        detailsButton.setTitleColor(.blueButtonText, for: .selected)
-        detailsButton.titleLabel?.font = .customBody(size: 16.0)
-
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 65.0
@@ -209,10 +202,6 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         
         tableView.dataSource = dataSource
         tableView.reloadData()
-        
-        detailsButton.setTitle(S.TransactionDetails.showDetails, for: .normal)
-        detailsButton.setTitle(S.TransactionDetails.hideDetails, for: .selected)
-        //detailsButton.addTarget(self, action: #selector(onToggleDetails), for: .touchUpInside)
         
         header.setTitle(viewModel.title)
     }

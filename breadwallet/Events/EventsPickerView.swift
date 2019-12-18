@@ -30,7 +30,7 @@ class EventPickerView : UIPickerView, UIPickerViewDataSource, UIPickerViewDelega
     init(pickerData: [ (Int, String) ], dropdownField: UITextField, didChangePicker: @escaping ( Int ) -> Void ) {
         self.pickerData = pickerData
         self.pickerTextField = dropdownField
-        self.selectedIndex = 0
+        self.selectedIndex = -1
         self.didChangePicker = didChangePicker
         super.init(frame: CGRect.zero)
 

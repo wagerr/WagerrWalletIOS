@@ -14,7 +14,7 @@ private let promptDelay: TimeInterval = 0.6
 class TransactionsTableViewController : UITableViewController, Subscriber, Trackable {
 
     //MARK: - Public
-    init(currency: CurrencyDef, walletManager: WalletManager, didSelectTransaction: @escaping ([Transaction], Int) -> Void) {
+    init(currency: CurrencyDef, walletManager: WalletManager, didSelectTransaction: @escaping (WgrTransactionInfo, Int) -> Void) {
         self.currency = currency
         self.walletManager = walletManager
         self.didSelectTransaction = didSelectTransaction
@@ -22,7 +22,7 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
         super.init(nibName: nil, bundle: nil)
     }
 
-    let didSelectTransaction: ([Transaction], Int) -> Void
+    let didSelectTransaction: (WgrTransactionInfo, Int) -> Void
 
     var filters: [TransactionFilter] = [] {
         didSet {
@@ -41,6 +41,8 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
     private var allTransactions: [Transaction] = [] {
         didSet { transactions = allTransactions }
     }
+    private var transactionInfo = [ String : WgrTransactionInfo ]()
+    
     private var isBtcSwapped: Bool {
         didSet { reload() }
     }
@@ -175,7 +177,8 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if hasExtraSection && indexPath.section == 0 { return }
-        didSelectTransaction(transactions, indexPath.row)
+        let tx = transactions[indexPath.row]
+        didSelectTransaction(transactionInfo[tx.hash]!, indexPath.row)
     }
 
     private func reload() {
@@ -215,14 +218,25 @@ extension TransactionsTableViewController {
     private func transactionCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: transactionCellIdentifier, for: indexPath) as! TxListCell
         let rate = self.rate ?? Rate.empty
-        let viewModel = TxListViewModel(tx: transactions[indexPath.row])
-        cell.setTransaction(viewModel,
-                            isBtcSwapped: isBtcSwapped,
-                            rate: rate,
-                            maxDigits: currency.state?.maxDigits ?? currency.commonUnit.decimals,
-                            isSyncing: currency.state?.syncState != .success,
-                            walletManager: walletManager as! BTCWalletManager
-                            )
+        let tx = transactions[indexPath.row]
+        let viewModel = TxListViewModel(tx: tx)
+        
+        if transactionInfo[tx.hash] != nil  {
+            cell.setTransaction(viewModel,
+                isBtcSwapped: self.isBtcSwapped,
+                rate: rate,
+                maxDigits: self.currency.state?.maxDigits ?? self.currency.commonUnit.decimals,
+                isSyncing: self.currency.state?.syncState != .success,
+                txInfo: transactionInfo[tx.hash]!
+            )
+        }
+        else    {
+            WgrTransactionInfo.create(tx: tx as! BtcTransaction, wm: walletManager as! BTCWalletManager, callback: { txInfo in
+                self.transactionInfo[tx.hash] = txInfo
+                self.reload( txHash: tx.hash )
+            })
+        }
+        
         return cell
     }
 }

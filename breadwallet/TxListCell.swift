@@ -22,9 +22,7 @@ class TxListCell: UITableViewCell {
     private var completeConstraints = [NSLayoutConstraint]()
     
     // MARK: Vars
-    
     private var viewModel: TxListViewModel!
-    private var walletManager: BTCWalletManager?
     
     // MARK: - Init
     
@@ -33,30 +31,21 @@ class TxListCell: UITableViewCell {
         setupViews()
     }
     
-    func setTransaction(_ viewModel: TxListViewModel, isBtcSwapped: Bool, rate: Rate, maxDigits: Int, isSyncing: Bool, walletManager: BTCWalletManager) {
+    func setTransaction(_ viewModel: TxListViewModel, isBtcSwapped: Bool, rate: Rate, maxDigits: Int, isSyncing: Bool, txInfo: WgrTransactionInfo) {
         self.viewModel = viewModel
-        self.walletManager = walletManager
         
-        let betEntity = viewModel.getBetEntity()
+        var txDate: String = viewModel.shortTimestamp + " "
+        var txDesc: String = ""
         
-        timestamp.text = viewModel.shortTimestamp
+        let strings = txInfo.getDescriptionStrings()
+        txDate = strings.date
+        txDesc = strings.description
         
-        let currentHeight = walletManager.peerManager!.lastBlockHeight
-        let isInmature = (currentHeight-UInt32(viewModel.tx.blockHeight)) <= W.Blockchain.payoutMaturity
-        if betEntity == nil {
-            if viewModel.isCoinbase {   // payout
-                //+++walletManager.db
-            }
-            else    {   // normal tx
-                
-            }
-        }
-        else    {   // regular bet
-            
-        }
+        if txDesc.isEmpty   { txDesc = viewModel.shortDescription }
         
-        descriptionLabel.text = viewModel.shortDescription
-        amount.attributedText = viewModel.amount(isBtcSwapped: isBtcSwapped, rate: rate, isInmature: isInmature)
+        timestamp.text = viewModel.shortTimestamp + " " + txDate
+        descriptionLabel.text = txDesc
+        amount.attributedText = viewModel.amount(isBtcSwapped: isBtcSwapped, rate: rate, isInmature: txInfo.isInmature)
         
         statusIndicator.status = viewModel.status
         

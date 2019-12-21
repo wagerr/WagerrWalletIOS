@@ -9,6 +9,115 @@
 import Foundation
 import BRCore
 
+
+struct WgrTransactionInfo {
+    var transaction : BtcTransaction
+    var betEntity : BetEntity?
+    var betResult : BetResult?
+    var betEvent : BetEventViewModel?
+    var currentHeight : UInt32
+    
+    init(tx: BtcTransaction, ent: BetEntity?, res: BetResult?, event: BetEventViewModel?, currHeight: UInt32)  {
+        self.transaction = tx
+        self.betEntity = ent
+        self.betResult = res
+        self.betEvent = event
+        self.currentHeight = currHeight
+    }
+    
+    static func create(tx: BtcTransaction, wm: BTCWalletManager, callback: @escaping ( WgrTransactionInfo? ) -> Void  )   {
+        var ent : BetEntity?
+        var res : BetResult?
+        var event : BetEventViewModel?
+        let currHeight = wm.peerManager!.lastBlockHeight
+        
+        let opCodeManager = WagerrOpCodeManager();
+        
+        ent = opCodeManager.getEventIdFromCoreTx( (tx.getRawTransactionRef())  )
+        if ent == nil {
+            if tx.isCoinbase    {
+                wm.db?.loadResultAtHeigh(blockHeight: Int(tx.blockHeight-1), callback: { result in
+                    res = result
+                    if result != nil    {
+                        wm.db?.loadEvents( result!.eventID, 0, callback: { events in
+                            event = events[0] ?? nil
+                            callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+                        })
+                    }
+                    else    {
+                        callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+                    }
+                })
+            }
+            else    {
+                callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+            }
+        }
+        else    {
+            wm.db?.loadEvents( ent!.eventID, 0, callback: { events in
+                event = events[0] ?? nil
+                callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+            })
+        }
+    }
+    
+    var isCoinbase : Bool   {
+        return transaction.isCoinbase
+    }
+    
+    var isInmature : Bool   {
+        return (self.currentHeight-UInt32(transaction.blockHeight)) <= W.Blockchain.payoutMaturity
+    }
+    
+    var eventDateString : String {
+        return (betEvent != nil) ? betEvent!.shortTimestamp : ""
+    }
+    
+    var eventDetailString : String {
+        return String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
+    }
+    
+    func getDescriptionStrings() -> ( date: String, description: String) {
+        var txDesc: String = ""
+        var txDate: String = ""
+        
+        if self.betEntity == nil {
+            if self.isCoinbase {   // payout
+                if self.betResult != nil {
+                    if self.betEvent != nil {
+                        txDesc = String.init(format: "%@ - %@", self.betEvent!.txHomeTeam, self.betEvent!.txAwayTeam)
+                    }
+                    else {
+                        txDesc = String.init(format: "Event #%d info not available", self.betEvent!.eventID)
+                    }
+                    txDate = String.init(format: "PAYOUT Event #%d", self.betEvent!.eventID)
+                }
+                else    {
+                    txDesc = String.init(format: "Result not available at height %@", transaction.blockHeight)
+                    txDate = "PAYOUT"
+                }
+                if isInmature {
+                    txDate += String.init(format: "(%d/%d)", (self.currentHeight-UInt32(transaction.blockHeight)), W.Blockchain.payoutMaturity)
+                }
+            }
+            else    {   // normal tx
+                txDesc = ""
+            }
+        }
+        else    {   // regular bet
+            if self.betEvent != nil {
+                txDesc = self.betEvent!.getDescriptionForBet(bet: self.betEntity!)
+                txDate = self.betEvent!.getEventDateForBet(bet: self.betEntity!)
+            }
+            else {
+                txDesc = String.init(format: "Event #%d info not available", self.betEntity!.eventID)
+                txDate = String.init(format: "BET %@ ", self.betEntity!.outcome.description)
+            }
+        }
+        return ( date: txDate, description: txDesc )
+    }
+}
+
 /// Wrapper for BTC transaction model + metadata
 struct BtcTransaction: Transaction {
     

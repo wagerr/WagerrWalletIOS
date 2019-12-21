@@ -180,8 +180,8 @@ class AccountViewController : UIViewController, Subscriber {
         })
     }
     
-    private func didSelectTransaction(transactions: [Transaction], selectedIndex: Int) -> Void {
-        let transactionDetails = TxDetailViewController(transaction: transactions[selectedIndex])
+    private func didSelectTransaction(txInfo: WgrTransactionInfo, selectedIndex: Int) -> Void {
+        let transactionDetails = TxDetailViewController(txInfo: txInfo, wm: walletManager as! BTCWalletManager)
         transactionDetails.modalPresentationStyle = .overCurrentContext
         transactionDetails.transitioningDelegate = transitionDelegate
         transactionDetails.modalPresentationCapturesStatusBarAppearance = true

@@ -13,7 +13,6 @@ import BRCore
 struct TxListViewModel: TxViewModel {
     
     // MARK: - Properties
-    private var betEntity : BetEntity?
     let tx: Transaction
     
     init(tx: Transaction)   {
@@ -63,23 +62,5 @@ struct TxListViewModel: TxViewModel {
         
         return NSMutableAttributedString(string: text,
                                          attributes: [.foregroundColor: color])
-    }
-    
-    func getBetEntity() -> BetEntity?    {
-        var ret : BetEntity?
-        if self.betEntity == nil {
-            let opCodeManager = WagerrOpCodeManager();
-            let txRef = self.tx as? BtcTransaction
-            ret = opCodeManager.getEventIdFromCoreTx( (txRef?.getRawTransactionRef())!  )
-        }
-        else{
-            ret = self.betEntity
-        }
-        return ret
-    }
-    
-    var isCoinbase : Bool   {
-        let txRef = self.tx as? BtcTransaction
-        return txRef!.isCoinbase
     }
 }

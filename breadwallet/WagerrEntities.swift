@@ -276,6 +276,26 @@ class BetEventViewModel : BetEventDatabaseModel, Equatable {
     var txAttrAwayResult : NSAttributedString {
         return getAttrAway(txAwayScore)
     }
+    
+    func getEventDateForBet(bet: BetEntity) -> String  {
+        return String.init(format: "BET %@ ", bet.outcome.description)
+    }
+    
+    func getDescriptionForBet(bet: BetEntity) -> String  {
+        var ret = ""
+        switch bet.outcome  {
+            case .MONEY_LINE_HOME_WIN, .SPREADS_HOME:
+                ret = txHomeTeam
+            case .MONEY_LINE_AWAY_WIN, .SPREADS_AWAY:
+                ret = txAwayTeam
+            case .MONEY_LINE_DRAW, .TOTAL_OVER, .TOTAL_UNDER:
+                ret = String.init(format: "%@ - %@", txHomeTeam, txAwayTeam )
+            case .UNKNOWN:
+                ret = "Unknown"
+        }
+        return ret
+    }
+    
     private func getAttrHome(_ str : String ) -> NSAttributedString  {
         let homeAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.colorHome]
         let ret = NSMutableAttributedString(string: str, attributes: homeAttrs)
@@ -286,6 +306,7 @@ class BetEventViewModel : BetEventDatabaseModel, Equatable {
         let ret = NSMutableAttributedString(string: str, attributes: awayAttrs)
         return ret
     }
+    
 }
 /*
 class BetEventDetailViewModel : BetEventViewModel   {
@@ -340,6 +361,27 @@ enum BetOutcome : Int32 {
      case TOTAL_OVER = 0x06
      case TOTAL_UNDER = 0x07
      case UNKNOWN = -1
+    
+    var description: String   {
+        switch self     {
+        case .MONEY_LINE_HOME_WIN:
+            return "M. Line home"
+        case .MONEY_LINE_AWAY_WIN:
+            return "M. Line away"
+        case .MONEY_LINE_DRAW:
+            return "M. Line draw"
+        case .SPREADS_HOME:
+            return "Spreads home"
+        case .SPREADS_AWAY:
+            return "Spreads away"
+        case .TOTAL_OVER:
+            return "Totals Over"
+        case .TOTAL_UNDER:
+            return "Totals Under"
+        case .UNKNOWN:
+            return "Unknown"
+        }
+    }
 }
 
 class BetEntity : BetCore {

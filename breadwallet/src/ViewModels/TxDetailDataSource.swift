@@ -25,6 +25,9 @@ class TxDetailDataSource: NSObject {
         case gasLimit
         case fee
         case total
+        case event
+        case eventDetail
+        case transactionLink
         
         var cellType: UITableViewCell.Type {
             switch self {
@@ -36,6 +39,10 @@ class TxDetailDataSource: NSObject {
                 return TxMemoCell.self
             case .address, .transactionId:
                 return TxAddressCell.self
+            case .event:
+                return EventDateCell.self
+            case .transactionLink:
+                return LinkCell.self
             default:
                 return TxLabelCell.self
             }
@@ -50,11 +57,13 @@ class TxDetailDataSource: NSObject {
     
     fileprivate var fields: [Field]
     fileprivate let viewModel: TxDetailViewModel
+    fileprivate let transactionInfo: WgrTransactionInfo
     
     // MARK: - Init
     
-    init(viewModel: TxDetailViewModel) {
+    init(viewModel: TxDetailViewModel, txInfo: WgrTransactionInfo) {
         self.viewModel = viewModel
+        self.transactionInfo = txInfo
         
         // define visible rows and order
         fields = [.amount]
@@ -64,6 +73,12 @@ class TxDetailDataSource: NSObject {
         }
         
         fields.append(.timestamp)
+        
+        if txInfo.betEvent != nil   {
+            fields.append(.event)
+            fields.append(.eventDetail)
+        }
+        
         fields.append(.address)
         
         if viewModel.comment != nil      { fields.append(.memo) }
@@ -75,6 +90,7 @@ class TxDetailDataSource: NSObject {
         
         fields.append(.blockHeight)
         fields.append(.transactionId)
+        fields.append(.transactionLink)
     }
     
     func registerCells(forTableView tableView: UITableView) {
@@ -87,6 +103,10 @@ class TxDetailDataSource: NSObject {
             return S.TransactionDetails.statusHeader
         case .memo:
             return S.TransactionDetails.commentsHeader
+        case .event:
+            return transactionInfo.eventDateString
+        case .eventDetail:
+            return ""
         case .address:
             return viewModel.addressHeader
         case .exchangeRate:
@@ -95,6 +115,8 @@ class TxDetailDataSource: NSObject {
             return S.TransactionDetails.blockHeightLabel
         case .transactionId:
             return S.TransactionDetails.txHashHeader
+        case .transactionLink:
+            return ""
         case .gasPrice:
             return S.TransactionDetails.gasPriceHeader
         case .gasLimit:
@@ -125,6 +147,10 @@ extension TxDetailDataSource: UITableViewDataSource {
         if let rowCell = cell as? TxDetailRowCell {
             rowCell.title = title(forField: field)
         }
+        
+        if let rowCell = cell as? EventDetailRowCell {
+            rowCell.title = title(forField: field)
+        }
 
         switch field {
         case .amount:
@@ -138,7 +164,15 @@ extension TxDetailDataSource: UITableViewDataSource {
         case .memo:
             let memoCell = cell as! TxMemoCell
             memoCell.set(viewModel: viewModel, tableView: tableView)
+        
+        case .event:
+            let eventCell = cell as! EventDateCell
+            eventCell.set(event: transactionInfo.betEvent!.eventID)
             
+        case .eventDetail:
+            let labelCell = cell as! TxLabelCell
+            labelCell.value = transactionInfo.eventDetailString
+        
         case .timestamp:
             let labelCell = cell as! TxLabelCell
             labelCell.titleLabel.attributedText = viewModel.timestampHeader
@@ -159,6 +193,10 @@ extension TxDetailDataSource: UITableViewDataSource {
         case .transactionId:
             let addressCell = cell as! TxAddressCell
             addressCell.set(address: viewModel.transactionHash)
+            
+        case .transactionLink:
+            let txLinkCell = cell as! LinkCell
+            txLinkCell.set(text: "See in explorer", txHash: viewModel.transactionHash)
             
         case .gasPrice:
             let labelCell = cell as! TxLabelCell

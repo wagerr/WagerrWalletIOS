@@ -26,8 +26,9 @@ class TxDetailViewController: UIViewController, Subscriber {
     private let separator = UIView()
     private let detailsButton = UIButton(type: .custom)
     private let tableView = UITableView()
-    
+    private var transactionInfo : WgrTransactionInfo
     private var containerHeightConstraint: NSLayoutConstraint!
+    private var walletManager: BTCWalletManager?
     
     private var transaction: Transaction {
         didSet {
@@ -51,10 +52,12 @@ class TxDetailViewController: UIViewController, Subscriber {
     
     // MARK: - Init
     
-    init(transaction: Transaction) {
-        self.transaction = transaction
+    init(txInfo: WgrTransactionInfo, wm: BTCWalletManager) {
+        self.transactionInfo = txInfo
+        self.transaction = txInfo.transaction
+        self.walletManager = wm
         self.viewModel = TxDetailViewModel(tx: transaction)
-        self.dataSource = TxDetailDataSource(viewModel: viewModel)
+        self.dataSource = TxDetailDataSource(viewModel: viewModel, txInfo: txInfo)
         self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails, currency: transaction.currency)
         
         super.init(nibName: nil, bundle: nil)
@@ -79,7 +82,10 @@ class TxDetailViewController: UIViewController, Subscriber {
             guard let newTransactions = $1[self.viewModel.currency]?.transactions else { return false }
             return oldTransactions != newTransactions }, callback: { [unowned self] in
             guard let tx = $0[self.viewModel.currency]?.transactions.first(where: { $0.hash == self.viewModel.transactionHash }) else { return }
-            self.transaction = tx
+                WgrTransactionInfo.create(tx: tx as! BtcTransaction, wm: self.walletManager as! BTCWalletManager, callback: { txInfo in
+                    self.transactionInfo = txInfo!
+                    self.transaction = tx
+                })
         })
     }
     
@@ -161,12 +167,16 @@ class TxDetailViewController: UIViewController, Subscriber {
         detailsButton.setTitle(S.TransactionDetails.hideDetails, for: .selected)
         detailsButton.addTarget(self, action: #selector(onToggleDetails), for: .touchUpInside)
         
-        header.setTitle(viewModel.title)
+        let strings = transactionInfo.getDescriptionStrings()
+        //let txDate = strings.date
+        let txDesc = strings.description
+
+        header.setTitle( (txDesc.isEmpty) ? viewModel.title : transactionInfo.getDescriptionStrings().date )
     }
     
     private func reload() {
         viewModel = TxDetailViewModel(tx: transaction)
-        dataSource = TxDetailDataSource(viewModel: viewModel)
+        dataSource = TxDetailDataSource(viewModel: viewModel, txInfo: self.transactionInfo)
         tableView.dataSource = dataSource
         tableView.reloadData()
     }

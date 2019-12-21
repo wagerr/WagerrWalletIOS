@@ -794,6 +794,36 @@ class CoreDatabase {
         }
     }
     
+    func loadResultAtHeigh(blockHeight: Int, callback: @escaping (BetResult?)->Void  ) {
+        var ret : BetResult?
+        queue.async {
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select ZTYPE, ZEVENT_ID, ZRESULT_TYPE, ZHOME_TEAM_SCORE, ZAWAY_TEAM_SCORE, ZTIMESTAMP, ZHEIGHT, ZTXHASH from WGR_RESULT where ZHEIGHT = \(blockHeight)", -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+            
+            guard sqlite3_step(sql) == SQLITE_ROW else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+
+            let resultType = UInt32(sqlite3_column_int(sql, 2))
+            ret = BetResult.init(blockheight: UInt64(sqlite3_column_int(sql, 6))
+                , timestamp: TimeInterval(UInt64(bitPattern: sqlite3_column_int64(sql, 5)))
+                , txHash: String(cString: sqlite3_column_text(sql, 7))
+                , version: 1
+                , type: .RESULT_PEERLESS
+                , eventID: UInt64(sqlite3_column_int(sql, 1))
+                , resultType: BetResultType( rawValue : (resultType != 0) ? Int32(bitPattern: resultType) : -1)!
+                , homeScore: UInt32(sqlite3_column_int(sql, 3))
+                , awayScore: UInt32(sqlite3_column_int(sql, 4)))
+            
+            DispatchQueue.main.async {
+                callback(ret)
+            }
+        }
+    }
+    
     func loadMappingsByNamespaceId( mappingID : Int32 ,  callback: @escaping ([BetMapping?])->Void) {
         queue.async {
             var mappings = [BetMapping?]()
@@ -824,7 +854,7 @@ class CoreDatabase {
         }
     }
 
-    func loadEvents(_ eventID : UInt32,_ eventTimestamp : TimeInterval, callback: @escaping ([BetEventViewModel?])->Void) {
+    func loadEvents(_ eventID : UInt64,_ eventTimestamp : TimeInterval, callback: @escaping ([BetEventViewModel?])->Void) {
         queue.async {
             var events = [BetEventViewModel?]()
             var sql: OpaquePointer? = nil
@@ -832,7 +862,6 @@ class CoreDatabase {
             defer { sqlite3_finalize(sql) }
 
             while sqlite3_step(sql) == SQLITE_ROW {
-                let pk = UInt32(sqlite3_column_int(sql, 31))
                 let txSport = sqlite3_column_text(sql, 23)
                 let txTournament = sqlite3_column_text(sql, 24)
                 let txRound = sqlite3_column_text(sql, 25)
@@ -912,7 +941,7 @@ class CoreDatabase {
         return ret
     }
     
-    func getEventsQuery(_ eventID : UInt32,_ eventTimestamp : TimeInterval ) -> String {
+    func getEventsQuery(_ eventID : UInt64,_ eventTimestamp : TimeInterval ) -> String {
         
         var QUERY = "SELECT a.ZTXHASH, a.ZTYPE, a.ZVERSION, a.ZEVENT_ID, a.ZEVENT_TIMESTAMP, a.ZSPORT_ID, a.ZTOURNAMENT_ID, a.ZROUND_ID, a.ZHOME_TEAM, a.ZAWAY_TEAM, a.ZHOME_ODDS, a.ZAWAY_ODDS, a.ZDRAW_ODDS, a.ZENTRY_PRICE, a.ZSPREAD_POINTS, a.ZSPREAD_HOME_ODDS, a.ZSPREAD_AWAY_ODDS, a.ZTOTAL_POINTS, a.ZTOTAL_OVER_ODDS, a.ZTOTAL_UNDER_ODDS, a.ZHEIGHT, a.ZTIMESTAMP, a.ZLAST_UPDATED"
                 // event mappings

@@ -205,6 +205,17 @@ enum S {
         static let potentialReward = NSLocalizedString("EventDetails.potentialReward", value:"Potential Reward", comment: "Potential Reward")
     }
 
+    enum BetSettings {
+        static let headerMessage = NSLocalizedString("BetSettings.headerMessage", value:"Wagerr Bet Display Settings", comment: "header message.")
+        static let useFeeCheck = NSLocalizedString("BetSettings.useFeeCheck", value:"Include Wagerr network share in betting odds", comment: "Use fee check text")
+    }
+    
+    enum Betting {
+        static let errorMinimum = NSLocalizedString("Betting.errorMinimum", value:"Minimum bet is %d %#", comment: "ninimum bet error message.")
+        static let errorTimeout = NSLocalizedString("Betting.errorTimeout", value:"Event is closed for betting", comment: "Event closed")
+        static let errorMinBet = NSLocalizedString("Betting.errorMinBet", value:"Minimum bet is %d %@", comment: "Minimum bet error")
+    }
+    
     enum SecurityCenter {
         static let title = NSLocalizedString("SecurityCenter.title", value:"Security Center", comment: "Security Center Title")
         static let info = NSLocalizedString("SecurityCenter.info", value:"Enable all security features for maximum protection.", comment: "Security Center Info")
@@ -322,6 +333,7 @@ enum S {
         static let faceIdLimit = NSLocalizedString("Settings.faceIdLimit", value:"Face ID Spending Limit", comment: "Face ID spending limit label")
         static let sendLogs = NSLocalizedString("Settings.sendLogs", value: "Send Logs", comment: "Send Logs option")
         static let resetCurrencies = NSLocalizedString("Settings.resetCurrencies", value: "Reset to Default Currencies", comment: "Reset currencies button")
+        static let betSettings = NSLocalizedString("Settings.betSettings", value: "Bet Settings", comment: "Bet Settings option")
     }
 
     enum About {
@@ -446,6 +458,8 @@ enum S {
         static let received = NSLocalizedString("Search.received", value: "received", comment: "Received filter label")
         static let pending = NSLocalizedString("Search.pending", value: "pending", comment: "Pending filter label")
         static let complete = NSLocalizedString("Search.complete", value: "complete", comment: "Complete filter label")
+        static let bethistory = NSLocalizedString("Search.bethistory", value: "bet history", comment: "Bet history filter label")
+        static let payouts = NSLocalizedString("Search.payouts", value: "payouts", comment: "Payout filter label")
         static let search = NSLocalizedString("Search.search", value: "Search", comment: "Search bar placeholder text")
     }
 

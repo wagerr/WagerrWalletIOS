@@ -31,6 +31,9 @@ private let mostRecentSelectedCurrencyCodeKey = "mostRecentSelectedCurrencyCodeK
 private let hasSetSelectedCurrencyKey = "hasSetSelectedCurrencyKey"
 private let hasBchConnectedKey = "hasBchConnectedKey"
 
+// Wagerr's
+private let showNetworkFeesInOddsKey = "showNetworkFeesInOddsKey"
+
 extension UserDefaults {
 
     static var isBiometricsEnabled: Bool {
@@ -245,5 +248,13 @@ extension UserDefaults {
     static var hasBchConnected: Bool {
         get { return defaults.bool(forKey: hasBchConnectedKey) }
         set { defaults.set(newValue, forKey: hasBchConnectedKey) }
+    }
+}
+
+//MARK: - Wagerr settings
+extension UserDefaults {
+    static var showNetworkFeesInOdds: Bool {
+        get { return defaults.bool(forKey: showNetworkFeesInOddsKey) }
+        set { defaults.setValue(newValue, forKey: showNetworkFeesInOddsKey) }
     }
 }

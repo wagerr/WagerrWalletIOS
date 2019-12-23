@@ -13,6 +13,7 @@ class EventDetailDataSource: NSObject {
     // MARK: - Types
     
     enum Field: String {
+        case header
         case date
         case teams
         case moneyline
@@ -22,6 +23,8 @@ class EventDetailDataSource: NSObject {
 
         var cellType: UITableViewCell.Type {
             switch self {
+            case .header:
+                return EventHeaderCell.self
             case .date:
                 return EventDateCell.self
             case .teams:
@@ -52,21 +55,25 @@ class EventDetailDataSource: NSObject {
     fileprivate var fields: [Field]
     fileprivate let viewModel: BetEventViewModel
     fileprivate let viewController: EventDetailViewController
+    private var tableView: UITableView!
     
     // MARK: - Init
     
-    init(viewModel: BetEventViewModel, controller: EventDetailViewController) {
+    init(tableView: UITableView, viewModel: BetEventViewModel, controller: EventDetailViewController) {
         self.viewModel = viewModel
         self.viewController = controller
         fields = []
         
         super.init()
+        self.tableView = tableView
+        self.tableView.dataSource = self
+
         self.prepareBetLayout(choice: nil)
     }
     
     func prepareBetLayout( choice: EventBetChoice? ) -> Int {
         var sliderPos = 0
-        fields = [.date]
+        fields = [.header, .date]
                 
         fields.append(.teams)
         fields.append(.moneyline)
@@ -102,6 +109,8 @@ class EventDetailDataSource: NSObject {
     
     fileprivate func title(forField field: Field) -> String {
         switch field {
+        case .header:
+            return ""
         case .date:
             return viewModel.shortTimestamp
         case .teams:
@@ -138,6 +147,12 @@ extension EventDetailDataSource: UITableViewDataSource {
         }
 
         switch field {
+        case .header:
+            let headerCell = cell as! EventHeaderCell
+            headerCell.header = viewModel.title
+            let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
+            headerCell.error = (Float(balanceAmount) < W.BetAmount.min) ? String.init(format: S.Betting.errorMinimum, W.BetAmount.min, Currencies.btc.code) : ""
+
         case .date:
             let dateCell = cell as! EventDateCell
             dateCell.set(event: viewModel.eventID)

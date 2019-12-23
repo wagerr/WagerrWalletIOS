@@ -198,7 +198,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
         didSelectEvent(events, indexPath.row)
     }
 
-    private func reload() {
+    public func reload() {
         tableView.reloadData()
         if events.count == 0 {
             if emptyMessage.superview == nil {

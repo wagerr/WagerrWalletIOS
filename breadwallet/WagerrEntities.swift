@@ -142,36 +142,41 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txHomeOdds : String {
-        return (homeOdds==0) ? "N/A" : String(format: "%.2f", Float(homeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (homeOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(homeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txAwayOdds : String {
-        return (awayOdds==0) ? "N/A" : String(format: "%.2f", Float(awayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (awayOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd:Float(awayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txDrawOdds : String {
-        return (drawOdds==0) ? "N/A" : String(format: "%.2f", Float(drawOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (drawOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd:Float(drawOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txSpreadPoints : String {
         return (spreadPoints==0) ? "N/A" : String(format: "%.1f", Float(spreadPoints) / Float(EventMultipliers.SPREAD_MULTIPLIER) )
     }
+    
+    func getOdd( odd : Float ) -> Float   {
+        return (UserDefaults.showNetworkFeesInOdds) ? odd : ((odd-1)*0.94)+1
+    }
+    
     var txSpreadPointsFormatted : String    {
         let fmt = (spreadHomeOdds>spreadAwayOdds) ? "+%@/-%@" : "-%@/+%@"
         return String.init(format: fmt, txSpreadPoints, txSpreadPoints)
     }
     
     var txHomeSpread : String {
-        return (spreadHomeOdds==0) ? "N/A" : String(format: "%.2f", Float(spreadHomeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (spreadHomeOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(spreadHomeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txAwaySpread : String {
-        return (spreadAwayOdds==0) ? "N/A" : String(format: "%.2f", Float(spreadAwayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (spreadAwayOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(spreadAwayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
     }
     var txTotalPoints : String {
         return (totalPoints==0) ? "N/A" : String(format: "%.1f", Float(totalPoints) / Float(EventMultipliers.TOTAL_MULTIPLIER) )
     }
     var txOverOdds : String {
-        return (overOdds==0) ? "N/A" : String(format: "%.2f", Float(overOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (overOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(overOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
     }
     var txUnderOdds : String {
-        return (underOdds==0) ? "N/A" : String(format: "%.2f", Float(underOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return (underOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(underOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
     }
     
     var hasSpreads : Bool   {

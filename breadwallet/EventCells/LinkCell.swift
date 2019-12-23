@@ -2,8 +2,8 @@
 //  TxAddressCell.swift
 //  breadwallet
 //
-//  Created by Ehsan Rezaie on 2017-12-20.
-//  Copyright © 2017 breadwallet LLC. All rights reserved.
+//  Created by MIP on 2019-12-20.
+//  Copyright © 2019 Wagerr Ltd. All rights reserved.
 //
 
 import UIKit

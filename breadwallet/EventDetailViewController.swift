@@ -24,13 +24,13 @@ protocol EventBetSliderDelegate  {
     func didTapCancel()
 }
 
-class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDelegate, EventBetSliderDelegate {
-        
+class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDelegate, EventBetSliderDelegate, Trackable {
+       
     // MARK: - Private Vars
     
     private let container = UIView()
     private let tapView = UIView()
-    private let header: ModalHeaderView
+    //private let header: ModalHeaderView
     private let footer = UIView()
     private let separator = UIView()
     private let tableView = UITableView()
@@ -44,8 +44,14 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         }
     }
     private var viewModel: BetEventViewModel
+    private var walletManager: BTCWalletManager
     private var dataSource: EventDetailDataSource?
     private var isExpanded: Bool = true
+    
+    private var sender: BitcoinSender
+    private let verifyPinTransitionDelegate = PinTransitioningDelegate()
+    var presentVerifyPin: ((String, @escaping ((String) -> Void))->Void)?
+    var onPublishSuccess: (()->Void)?
     
     private var compactContainerHeight: CGFloat {
         return C.expandedContainerHeight
@@ -53,30 +59,33 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     private var expandedContainerHeight: CGFloat {
         let maxHeight = view.frame.height - C.padding[4]
-        var contentHeight = header.frame.height + tableView.contentSize.height + footer.frame.height + separator.frame.height
+        var contentHeight =  tableView.contentSize.height + footer.frame.height + separator.frame.height
         tableView.isScrollEnabled = contentHeight > maxHeight
         return min(maxHeight, contentHeight)
     }
     
     // MARK: - Init
     
-    init(event: BetEventViewModel) {
+    init(event: BetEventViewModel, wm: BTCWalletManager, sender: BitcoinSender) {
         self.event = event
         self.viewModel = event
-        self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
+        self.walletManager = wm
+        self.sender = sender
+        //self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
         
         super.init(nibName: nil, bundle: nil)
-        self.dataSource = EventDetailDataSource(viewModel: viewModel, controller: self)
-        
+        /*
         header.closeCallback = { [weak self] in
             self?.close()
         }
-        
-        setup()
+         */
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self)
+
+        setup()
         
         registerForKeyboardNotifications()
         
@@ -121,7 +130,47 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     // bet slider cell delegates
     func didTapOk(choice: EventBetChoice, amount: Int) {
-        print("tapOk")
+        // check event timestamp
+        let now = Date()
+        if viewModel.eventTimestamp - now.timeIntervalSinceReferenceDate < W.Blockchain.cutoffSeconds    {
+            let alert = UIAlertController(title: S.Alert.error, message: S.Betting.errorTimeout, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: S.Button.ok, style: .default, handler: nil))
+            self.present(alert, animated: true)
+        }
+        else    {
+            let transaction = walletManager.wallet?.createBetTransaction(forAmount: UInt64(amount)*C.satoshis, type: BetType.PEERLESS.rawValue, eventID: Int32(viewModel.eventID), outcome: choice.getOutcome().rawValue)
+
+            self.sender.setBetTransaction(tx: transaction)
+            let pinVerifier: PinVerifier = { [weak self] pinValidationCallback in
+                self?.presentVerifyPin?(S.VerifyPin.authorize) { pin in
+                    self?.parent?.view.isFrameChangeBlocked = false
+                    pinValidationCallback(pin)
+                }
+            }
+            
+            sender.sendTransaction(allowBiometrics: true, pinVerifier: pinVerifier) { [weak self] result in
+                guard let `self` = self else { return }
+                switch result {
+                case .success:
+                    self.dismiss(animated: true, completion: {
+                        Store.trigger(name: .showStatusBar)
+                        self.onPublishSuccess?()
+                    })
+                    self.saveEvent("send.success")
+                case .creationError(let message):
+                    self.showAlert(title: S.Send.createTransactionError, message: message, buttonLabel: S.Button.ok)
+                    self.saveEvent("send.publishFailed", attributes: ["errorMessage": message])
+                case .publishFailure(let error):
+                    if case .posixError(let code, let description) = error {
+                        self.showAlert(title: S.Alerts.sendFailure, message: "\(description) (\(code))", buttonLabel: S.Button.ok)
+                        self.saveEvent("send.publishFailed", attributes: ["errorMessage": "\(description) (\(code))"])
+                    }
+                case .insufficientGas(let rpcErrorMessage):
+                    self.saveEvent("send.publishFailed", attributes: ["errorMessage": rpcErrorMessage])
+                }
+            }
+        }
+        
     }
        
     func didTapCancel() {
@@ -137,20 +186,21 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private func setup() {
         addSubViews()
         addConstraints()
-        setupActions()
+        //setupActions()
         setInitialData()
     }
     
     private func addSubViews() {
-        view.addSubview(tapView)
-        view.addSubview(container)
-        container.addSubview(header)
-        container.addSubview(tableView)
-        container.addSubview(footer)
-        container.addSubview(separator)
+        //view.addSubview(tapView)
+        //view.addSubview(container)
+        //view.addSubview(header)
+        view.addSubview(tableView)
+        view.addSubview(footer)
+        view.addSubview(separator)
     }
     
     private func addConstraints() {
+        /*
         tapView.constrain(toSuperviewEdges: nil)
         container.constrain([
             container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[2]),
@@ -160,12 +210,13 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         
         containerHeightConstraint = container.heightAnchor.constraint(equalToConstant: compactContainerHeight)
         containerHeightConstraint.isActive = true
+        */
+        //header.constrainTopCorners(height: C.Sizes.headerHeight)
         
-        header.constrainTopCorners(height: C.Sizes.headerHeight)
         tableView.constrain([
-            tableView.topAnchor.constraint(equalTo: header.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: footer.topAnchor)
             ])
         
@@ -184,9 +235,10 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     }
     
     private func setInitialData() {
+        /*
         container.layer.cornerRadius = C.Sizes.roundedCornerRadius
         container.layer.masksToBounds = true
-        
+        */
         footer.backgroundColor = .whiteBackground
         separator.backgroundColor = .secondaryShadow
         
@@ -203,7 +255,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         tableView.dataSource = dataSource
         tableView.reloadData()
         
-        header.setTitle(viewModel.title)
+        //header.setTitle(viewModel.title)
     }
     
     private func reload() {
@@ -290,3 +342,18 @@ extension EventDetailViewController {
         }
     }
 }
+
+extension EventDetailViewController : ModalDisplayable {
+    var faqArticleId: String? {
+        return ArticleIds.betSlip
+    }
+    
+    var faqCurrency: CurrencyDef? {
+        return Currencies.btc
+    }
+
+    var modalTitle: String {
+        return ""
+    }
+}
+

@@ -107,8 +107,6 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         rewardLabel.textColor = .primaryText
         self.reward = S.EventDetails.potentialReward
         
-        
-        
         //setup slider
         self.betSlider.minimumValue = W.BetAmount.min;
         let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis

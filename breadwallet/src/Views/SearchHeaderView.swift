@@ -13,6 +13,8 @@ enum SearchFilterType {
     case received
     case pending
     case complete
+    case bethistory
+    case payout
     case text(String)
 
     var description: String {
@@ -25,6 +27,10 @@ enum SearchFilterType {
             return S.Search.pending
         case .complete:
             return S.Search.complete
+        case .bethistory:
+            return S.Search.bethistory
+        case .payout:
+            return S.Search.payouts
         case .text(_):
             return ""
         }
@@ -33,23 +39,33 @@ enum SearchFilterType {
     var filter: TransactionFilter {
         switch self {
         case .sent:
-            return { $0.direction == .sent }
+            return { $0.transaction.direction == .sent }
         case .received:
-            return { $0.direction == .received }
+            return { $0.transaction.direction == .received }
         case .pending:
-            return { $0.isPending }
+            return { $0.transaction.isPending }
         case .complete:
-            return { !$0.isPending }
+            return { !$0.transaction.isPending }
+        case .bethistory:
+            return { $0.betEntity != nil }
+        case .payout:
+            return { $0.isCoinbase && $0.transaction.direction == .received  }
         case .text(let text):
-            return { transaction in
+            return { txInfo in
                 let loweredText = text.lowercased()
-                if transaction.hash.lowercased().contains(loweredText) {
+                if txInfo.transaction.hash.lowercased().contains(loweredText) {
                     return true
                 }
-                if transaction.toAddress.lowercased().contains(loweredText) {
+                if txInfo.transaction.toAddress.lowercased().contains(loweredText) {
                     return true
                 }
-                if let metaData = transaction.metaData {
+                if txInfo.betEvent != nil && String(txInfo.betEvent!.eventID).contains(loweredText)  {
+                    return true
+                }
+                if txInfo.betEvent != nil && txInfo.eventDetailString.lowercased().contains(loweredText)  {
+                    return true
+                }
+                if let metaData = txInfo.transaction.metaData {
                     if metaData.comment.lowercased().contains(loweredText) {
                         return true
                     }
@@ -72,6 +88,10 @@ func ==(lhs: SearchFilterType, rhs: SearchFilterType) -> Bool {
         return true
     case (.complete, .complete):
         return true
+    case (.bethistory, .bethistory):
+        return true
+    case (.payout, .payout):
+        return true
     case (.text(_), .text(_)):
         return true
     default:
@@ -80,7 +100,7 @@ func ==(lhs: SearchFilterType, rhs: SearchFilterType) -> Bool {
 }
 
 
-typealias TransactionFilter = (Transaction) -> Bool
+typealias TransactionFilter = (WgrTransactionInfo) -> Bool
 
 class SearchHeaderView : UIView {
 
@@ -101,6 +121,9 @@ class SearchHeaderView : UIView {
     private let received = ShadowButton(title: S.Search.received, type: .search)
     private let pending = ShadowButton(title: S.Search.pending, type: .search)
     private let complete = ShadowButton(title: S.Search.complete, type: .search)
+    private let bethistory = ShadowButton(title: S.Search.bethistory, type: .search)
+    private let payout = ShadowButton(title: S.Search.payouts, type: .search)
+    
     private let cancel = UIButton(type: .system)
     fileprivate var filters: [SearchFilterType] = [] {
         didSet {
@@ -108,8 +131,10 @@ class SearchHeaderView : UIView {
         }
     }
 
-    private let sentFilter: TransactionFilter = { return $0.direction == .sent }
-    private let receivedFilter: TransactionFilter = { return $0.direction == .received }
+    private let sentFilter: TransactionFilter = { return $0.transaction.direction == .sent }
+    private let receivedFilter: TransactionFilter = { return $0.transaction.direction == .received }
+    private let betHistoryFilter: TransactionFilter = { return $0.betEntity != nil }
+    private let payoutFilter: TransactionFilter = { return $0.isCoinbase }
 
     override func layoutSubviews() {
         guard !hasSetup else { return }
@@ -155,6 +180,8 @@ class SearchHeaderView : UIView {
         received.isToggleable = true
         pending.isToggleable = true
         complete.isToggleable = true
+        bethistory.isToggleable = true
+        payout.isToggleable = true
 
         sent.tap = { [weak self] in
             guard let myself = self else { return }
@@ -195,6 +222,26 @@ class SearchHeaderView : UIView {
                 }
             }
         }
+        
+        bethistory.tap = { [weak self] in
+            guard let myself = self else { return }
+            if myself.toggleFilterType(.bethistory) {
+                if myself.payout.isSelected {
+                    myself.payout.isSelected = false
+                    myself.toggleFilterType(.payout)
+                }
+            }
+        }
+
+        payout.tap = { [weak self] in
+            guard let myself = self else { return }
+            if myself.toggleFilterType(.payout) {
+                if myself.bethistory.isSelected {
+                    myself.bethistory.isSelected = false
+                    myself.toggleFilterType(.bethistory)
+                }
+            }
+        }
     }
 
     @discardableResult private func toggleFilterType(_ filterType: SearchFilterType) -> Bool {
@@ -208,7 +255,7 @@ class SearchHeaderView : UIView {
     }
 
     private func addFilterButtons() {
-        if #available(iOS 9, *) {
+        /* if #available(iOS 9, *) {
             let stackView = UIStackView()
             addSubview(stackView)
             stackView.distribution = .fillProportionally
@@ -221,14 +268,19 @@ class SearchHeaderView : UIView {
             stackView.addArrangedSubview(received)
             stackView.addArrangedSubview(pending)
             stackView.addArrangedSubview(complete)
+            stackView.addArrangedSubview(bethistory)
+            stackView.addArrangedSubview(payout)
         } else {
+            */
             addSubview(sent)
             addSubview(received)
             addSubview(pending)
             addSubview(complete)
+            addSubview(bethistory)
+            addSubview(payout)
             sent.constrain([
-                sent.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor),
-                sent.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[1]) ])
+                sent.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor, constant: C.padding[2]),
+                sent.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[4]) ])
             received.constrain([
                 received.leadingAnchor.constraint(equalTo: sent.trailingAnchor, constant: C.padding[1]),
                 received.topAnchor.constraint(equalTo: sent.topAnchor)])
@@ -238,7 +290,14 @@ class SearchHeaderView : UIView {
             complete.constrain([
                 complete.leadingAnchor.constraint(equalTo: pending.trailingAnchor, constant: C.padding[1]),
                 complete.topAnchor.constraint(equalTo: sent.topAnchor) ])
-        }
+            
+            bethistory.constrain([
+                bethistory.centerXAnchor.constraint(equalTo: received.leadingAnchor),
+                bethistory.bottomAnchor.constraint(equalTo: received.topAnchor, constant: -C.padding[1]) ])
+            payout.constrain([
+                payout.centerXAnchor.constraint(equalTo: complete.leadingAnchor),
+                payout.bottomAnchor.constraint(equalTo: received.topAnchor, constant: -C.padding[1]) ])
+        //}
     }
 
     required init?(coder aDecoder: NSCoder) {

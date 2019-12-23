@@ -26,9 +26,30 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
 
     var filters: [TransactionFilter] = [] {
         didSet {
-            transactions = filters.reduce(allTransactions, { $0.filter($1) })
-            tableView.reloadData()
+            // load all missing event data
+            if self.transactionInfo.count == self.allTransactions.count  {  // finished
+                self.doFilter()
+                return
+            }
+            for tx in allTransactions   {
+                if transactionInfo[tx.hash] == nil  {
+                    WgrTransactionInfo.create(tx: tx as! BtcTransaction, wm: walletManager as! BTCWalletManager, callback: { txInfo in
+                        self.transactionInfo[tx.hash] = txInfo
+                        if self.transactionInfo.count == self.allTransactions.count  {  // finished
+                            self.doFilter()
+                        }
+                    })
+                }
+            }
         }
+    }
+    
+    func doFilter() {
+        let allTxInfo = Array(transactionInfo.values)
+        var filteredTxInfo : [ WgrTransactionInfo ]
+        filteredTxInfo = filters.reduce(allTxInfo, { $0.filter($1) })
+        transactions = filteredTxInfo.map {$0.transaction}
+        tableView.reloadData()
     }
 
     //MARK: - Private

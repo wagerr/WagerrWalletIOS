@@ -24,6 +24,9 @@
 		06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */; };
 		06673E902377F25200549005 /* WagerrEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8F2377F25200549005 /* WagerrEntities.swift */; };
 		0670668423AE787100D4238D /* LinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668323AE787100D4238D /* LinkCell.swift */; };
+		0670668623AF585200D4238D /* BetSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668523AF585100D4238D /* BetSettingsViewController.swift */; };
+		0670668823AF596200D4238D /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668723AF596200D4238D /* Checkbox.swift */; };
+		0670668A23B0C61500D4238D /* EventHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668923B0C61500D4238D /* EventHeaderCell.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
 		06A3D905239DB5CC00518AD8 /* EventsPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */; };
 		06C0C6C220B360C10047C540 /* x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C020B360C00047C540 /* x11.c */; };
@@ -696,6 +699,9 @@
 		06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrOpCodeManager.swift; sourceTree = "<group>"; };
 		06673E8F2377F25200549005 /* WagerrEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrEntities.swift; sourceTree = "<group>"; };
 		0670668323AE787100D4238D /* LinkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkCell.swift; sourceTree = "<group>"; };
+		0670668523AF585100D4238D /* BetSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BetSettingsViewController.swift; path = src/ViewControllers/BetSettingsViewController.swift; sourceTree = "<group>"; };
+		0670668723AF596200D4238D /* Checkbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
+		0670668923B0C61500D4238D /* EventHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventHeaderCell.swift; sourceTree = "<group>"; };
 		06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPickerView.swift; sourceTree = "<group>"; };
 		06C0C6BE20B360BF0047C540 /* x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x11.h; sourceTree = "<group>"; };
 		06C0C6C020B360C00047C540 /* x11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x11.c; sourceTree = "<group>"; };
@@ -1953,6 +1959,7 @@
 			isa = PBXGroup;
 			children = (
 				0670668323AE787100D4238D /* LinkCell.swift */,
+				0670668923B0C61500D4238D /* EventHeaderCell.swift */,
 				062D29AB23A528FF009ADC9E /* EventTeamsLabelCell.swift */,
 				062D29AD23A62EBC009ADC9E /* EventBetOptionCell.swift */,
 				062D29A923A515A6009ADC9E /* EventDateCell.swift */,
@@ -3308,6 +3315,7 @@
 				CEA05CC21F21B53C00D850F0 /* FeeSelector.swift */,
 				CE8644241F2C160200033129 /* ConfirmationViewController.swift */,
 				CE44BA1A1F33BFC500392A1A /* NodeSelectorViewController.swift */,
+				0670668523AF585100D4238D /* BetSettingsViewController.swift */,
 				CEE659E81F664C73001FF29D /* WelcomeViewController.swift */,
 				1B1AFF9E1FB7EF7C00E61908 /* BiometricsSettingsViewController.swift */,
 				1B1AFF9F1FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift */,
@@ -3623,6 +3631,7 @@
 		CEC6AA471DEFCFCD00EE5AFD /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				0670668723AF596200D4238D /* Checkbox.swift */,
 			);
 			name = Controls;
 			sourceTree = "<group>";
@@ -4448,6 +4457,7 @@
 				CEF3E82D1DE528BF007C0A9E /* AlertView.swift in Sources */,
 				CEF3E82B1DE51612007C0A9E /* GradientCircle.swift in Sources */,
 				7C35E715200AC26A0064808F /* EthTransaction.swift in Sources */,
+				0670668A23B0C61500D4238D /* EventHeaderCell.swift in Sources */,
 				7CCD9F6C1FEC1FA300175E64 /* TxAmountCell.swift in Sources */,
 				CE124CFE1E68F57700DFA146 /* Async.swift in Sources */,
 				2218BD771E8F55430091D5E8 /* BRAPIClient+Assets.swift in Sources */,
@@ -4518,6 +4528,7 @@
 				062D29AA23A515A6009ADC9E /* EventDateCell.swift in Sources */,
 				7C67B6382056FBFA006487BE /* JSONRPC.swift in Sources */,
 				CEAA9E951DC1659F0066731D /* UILabel+BRWAdditions.swift in Sources */,
+				0670668623AF585200D4238D /* BetSettingsViewController.swift in Sources */,
 				06086221238AA1C2002F4E9B /* EventsTableViewController.swift in Sources */,
 				062D29B023A65DDD009ADC9E /* EventSliderCell.swift in Sources */,
 				CEBF292E1EF99E55005C330A /* LightWeightAlert.swift in Sources */,
@@ -4599,6 +4610,7 @@
 				22A9A94B1DF61945000F0016 /* BRCoding.swift in Sources */,
 				0608621B238A961E002F4E9B /* Event.swift in Sources */,
 				22A9A9561DF61945000F0016 /* BRWalletPlugin.swift in Sources */,
+				0670668823AF596200D4238D /* Checkbox.swift in Sources */,
 				CE6B829A1FE3A7B6007A41B9 /* UIScrollView+Additions.swift in Sources */,
 				CEF3E8361DE60222007C0A9E /* ModalNavigationController.swift in Sources */,
 				CED811E21EB302DD003A8D1E /* WatchTransaction.swift in Sources */,

@@ -210,6 +210,10 @@ class BitcoinSender: SenderBase<Wagerr, BTCWalletManager>, Sender {
         super.reset()
     }
     
+    func setBetTransaction(tx: BRTxRef?) {
+        transaction = tx
+    }
+    
     func sendTransaction(allowBiometrics: Bool, pinVerifier: @escaping PinVerifier, completion: @escaping SendCompletion) {
         guard readyToSend, let tx = transaction else { return completion(.creationError("not ready")) }
         

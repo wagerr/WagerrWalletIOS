@@ -36,8 +36,44 @@ struct EventBetChoice {
         self.odd = odd
     }
     
+    func getOutcome() -> BetOutcome {
+        switch option {
+        case .MoneyLine:
+            switch type {
+                case .home:
+                    return .MONEY_LINE_HOME_WIN
+                case .away:
+                    return .MONEY_LINE_AWAY_WIN
+                case .draw:
+                    return .MONEY_LINE_DRAW
+                default:
+                    return .UNKNOWN
+            }
+        case .SpreadPoints:
+            switch type {
+                case .home:
+                    return .SPREADS_HOME
+                case .away:
+                    return .SPREADS_AWAY
+                default:
+                    return .UNKNOWN
+            }
+        case .TotalPoints:
+            switch type {
+            case .over:
+                return .TOTAL_OVER
+            case .under:
+                return .TOTAL_UNDER
+            default:
+                return .UNKNOWN
+            }
+        case .none:
+            return .UNKNOWN
+        }
+    }
+    
     func potentialReward(stake: Int) -> (cryptoAmount: String, fiatAmount: String )   {
-        let cryptoAmount = Float(stake) * (odd - 1)
+        let cryptoAmount = (UserDefaults.showNetworkFeesInOdds) ? Float(stake) * (odd - 1) * 0.94 : Float(stake) * (odd - 1)
         let currency = Currencies.btc
         let rate = currency.state?.currentRate
         let amount = Amount(amount: UInt256(UInt64(cryptoAmount)*C.satoshis), currency: currency, rate: rate)

@@ -76,7 +76,13 @@ class ModalViewController : UIViewController, Subscriber {
         //of the content at initial layout
         view.layoutIfNeeded()
 
-        let height = scrollViewContent.bounds.size.height
+        var height = scrollViewContent.bounds.size.height
+        // bet slip as modal view with table inside does not calculate the table height because
+        // it's not rendered, but it's not rendered because container height is not calculated...
+        // break the loop...
+        if let controller = childViewController as? EventDetailViewController {
+            height = CGFloat(500)
+        }
         let minHeight = scrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: height)
         let midHeight = scrollView.heightAnchor.constraint(equalTo: scrollViewContent.heightAnchor)
         let maxHeight = scrollView.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor, constant: -headerHeight)

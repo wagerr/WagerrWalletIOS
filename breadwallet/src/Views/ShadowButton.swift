@@ -189,7 +189,7 @@ class ShadowButton: UIControl {
         case .search:
             label.font = UIFont.customBody(size: 13.0)
             container.backgroundColor = .secondaryButton
-            label.textColor = .grayTextTint
+            label.textColor = .white
             container.layer.borderColor = UIColor.secondaryBorder.cgColor
             container.layer.borderWidth = 1.0
             shadowView.layer.shadowColor = UIColor.black.cgColor

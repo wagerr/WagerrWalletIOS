@@ -13,7 +13,11 @@ import MachO
 let eventsHeaderHeight: CGFloat = 152.0
 let eventsFooterHeight: CGFloat = 0.0
 
-class EventListController : UIViewController, Subscriber {
+protocol BetSettingsDelegate    {
+    func didTapBetSettingsBack()
+}
+
+class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
 
     //MARK: - Public
     let currency: CurrencyDef
@@ -107,8 +111,16 @@ class EventListController : UIViewController, Subscriber {
         searchButton.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
         searchButton.tintColor = .white
         searchButton.tap = showSearchHeaderView
-        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchButton)
         
+        let settingButton = UIButton(type: .system)
+        settingButton.setImage(#imageLiteral(resourceName: "SettingsIcon"), for: .normal)
+        settingButton.frame = CGRect(x: 0.0, y: 12.0, width: 22.0, height: 22.0) // for iOS 10
+        settingButton.widthAnchor.constraint(equalToConstant: 22.0).isActive = true
+        settingButton.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
+        settingButton.tintColor = .white
+        settingButton.tap = showBetSettings
+        
+        navigationItem.rightBarButtonItems = [ UIBarButtonItem(customView: searchButton), UIBarButtonItem(customView: settingButton) ]
     }
 
     private func addSubviews() {
@@ -191,11 +203,14 @@ class EventListController : UIViewController, Subscriber {
     }
 
     private func didSelectEvent(events: [BetEventViewModel], selectedIndex: Int) -> Void {
+        Store.perform(action: RootModalActions.Present(modal: .sendbet(event: events[selectedIndex])))
+        /*
         let eventDetails = EventDetailViewController(event: events[selectedIndex])
         eventDetails.modalPresentationStyle = .overCurrentContext
         eventDetails.transitioningDelegate = transitionDelegate
         eventDetails.modalPresentationCapturesStatusBarAppearance = true
         present(eventDetails, animated: true, completion: nil)
+ */
     }
 
     private func showJailbreakWarnings(isJailbroken: Bool) {
@@ -231,6 +246,17 @@ class EventListController : UIViewController, Subscriber {
                             self.searchHeaderview.triggerUpdate()
                             self.setNeedsStatusBarAppearanceUpdate()
         })
+    }
+    
+    private func showBetSettings() {
+        self.navigationController?.navigationBar.tintColor = .primaryText
+        let betSettingController = BetSettingsViewController()
+        betSettingController.delegate = self
+        self.navigationController?.pushViewController(betSettingController, animated: true)
+    }
+    
+    func didTapBetSettingsBack()    {
+        eventsTableView.reload()
     }
     
     private func hideSearchHeaderView() {

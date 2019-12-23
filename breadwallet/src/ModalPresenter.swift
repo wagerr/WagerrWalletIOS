@@ -271,6 +271,8 @@ class ModalPresenter : Subscriber, Trackable {
             return makeSendView(currency: currency)
         case .receive(let currency):
             return makeReceiveView(currency: currency, isRequestAmountVisible: (currency.urlSchemes?[0] != nil))
+        case .sendbet(let event):
+            return makeSendBetView(event: event)
         case .loginScan:
             return nil //The scan view needs a custom presentation
         case .loginAddress:
@@ -329,6 +331,38 @@ class ModalPresenter : Subscriber, Trackable {
         return root
     }
 
+    private func makeSendBetView(event: BetEventViewModel) -> UIViewController? {
+        let currency = Currencies.btc
+        guard !(currency.state?.isRescanning ?? false) else {
+            let alert = UIAlertController(title: S.Alert.error, message: S.Send.isRescanning, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: S.Button.ok, style: .cancel, handler: nil))
+            topViewController?.present(alert, animated: true, completion: nil)
+            return nil
+        }
+        guard let walletManager = walletManagers[currency.code] else { return nil }
+        guard let kvStore = walletManager.apiClient?.kv else { return nil }
+        guard let sender = currency.createSender(walletManager: walletManager, kvStore: kvStore) else { return nil }
+        let sendVC = EventDetailViewController(event: event,
+                                               wm: walletManager as! BTCWalletManager,
+                                               sender: sender as! BitcoinSender)
+        currentRequest = nil
+
+        let root = ModalViewController(childViewController: sendVC)
+        sendVC.presentVerifyPin = { [weak self, weak root] bodyText, success in
+            guard let myself = self else { return }
+            let walletManager = myself.primaryWalletManager
+            let vc = VerifyPinViewController(bodyText: bodyText, pinLength: Store.state.pinLength, walletManager: walletManager, success: success)
+            vc.transitioningDelegate = self?.verifyPinTransitionDelegate
+            vc.modalPresentationStyle = .overFullScreen
+            vc.modalPresentationCapturesStatusBarAppearance = true
+            root?.view.isFrameChangeBlocked = true
+            root?.present(vc, animated: true, completion: nil)
+        }
+        sendVC.onPublishSuccess = { [weak self] in
+            self?.presentAlert(.sendSuccess, completion: {})
+        }
+        return root
+    }
     
     private func makeReceiveView(currency: CurrencyDef, isRequestAmountVisible: Bool, isBTCLegacy: Bool = false) -> UIViewController? {
         let receiveVC = ReceiveViewController(currency: currency, isRequestAmountVisible: isRequestAmountVisible, isBTCLegacy: isBTCLegacy)
@@ -407,14 +441,12 @@ class ModalPresenter : Subscriber, Trackable {
                 let currencySettingsVC = SettingsViewController(sections: sections, rows: currencySettings, optionalTitle: pageTitle)
                 settingsNav.pushViewController(currencySettingsVC, animated: true)
             })
-            } /*+ [
-                Setting(title: S.Settings.resetCurrencies, callback: {
-                    settingsNav.dismiss(animated: true, completion: {
-                        Store.trigger(name: .resetDisplayCurrencies)
-                    })
+            } + [
+                Setting(title: S.Settings.betSettings, callback: {
+                    settingsNav.pushViewController(BetSettingsViewController(), animated: true)
                 })
         ]
- */
+ 
         
         let rows = [
             SettingsSections.wallet: [

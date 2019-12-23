@@ -114,6 +114,7 @@ class AccountViewController : UIViewController, Subscriber {
         searchButton.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
         searchButton.tintColor = .white
         searchButton.tap = showSearchHeaderView
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchButton)
         
     }

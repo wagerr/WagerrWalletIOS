@@ -88,5 +88,6 @@ struct W    {
     }
     struct Blockchain   {
         static let payoutMaturity = 101
+        static let cutoffSeconds = 12.0 * 60
     }
 }

@@ -211,7 +211,7 @@ enum S {
     }
     
     enum Betting {
-        static let errorMinimum = NSLocalizedString("Betting.errorMinimum", value:"Minimum bet is %d %#", comment: "ninimum bet error message.")
+        static let errorMinimum = NSLocalizedString("Betting.errorMinimum", value:"Minimum bet is %d %@", comment: "ninimum bet error message.")
         static let errorTimeout = NSLocalizedString("Betting.errorTimeout", value:"Event is closed for betting", comment: "Event closed")
         static let errorMinBet = NSLocalizedString("Betting.errorMinBet", value:"Minimum bet is %d %@", comment: "Minimum bet error")
     }

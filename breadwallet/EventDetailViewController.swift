@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BRCore
 
 private extension C {
     static let statusRowHeight: CGFloat = 48.0
@@ -50,6 +51,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     private var sender: BitcoinSender
     private let verifyPinTransitionDelegate = PinTransitioningDelegate()
+    private let confirmTransitioningDelegate = PinTransitioningDelegate()
     var presentVerifyPin: ((String, @escaping ((String) -> Void))->Void)?
     var onPublishSuccess: (()->Void)?
     
@@ -138,41 +140,73 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             self.present(alert, animated: true)
         }
         else    {
-            let transaction = walletManager.wallet?.createBetTransaction(forAmount: UInt64(amount)*C.satoshis, type: BetType.PEERLESS.rawValue, eventID: Int32(viewModel.eventID), outcome: choice.getOutcome().rawValue)
+            let cryptoAmount = UInt256(UInt64(amount)*C.satoshis)
+            let transaction = walletManager.wallet?.createBetTransaction(forAmount: (UInt64(amount)*C.satoshis), type: BetType.PEERLESS.rawValue, eventID: Int32(viewModel.eventID), outcome: choice.getOutcome().rawValue)
 
             self.sender.setBetTransaction(tx: transaction)
-            let pinVerifier: PinVerifier = { [weak self] pinValidationCallback in
-                self?.presentVerifyPin?(S.VerifyPin.authorize) { pin in
-                    self?.parent?.view.isFrameChangeBlocked = false
-                    pinValidationCallback(pin)
-                }
-            }
             
-            sender.sendTransaction(allowBiometrics: true, pinVerifier: pinVerifier) { [weak self] result in
-                guard let `self` = self else { return }
-                switch result {
-                case .success:
-                    self.dismiss(animated: true, completion: {
-                        Store.trigger(name: .showStatusBar)
-                        self.onPublishSuccess?()
-                    })
-                    self.saveEvent("send.success")
-                case .creationError(let message):
-                    self.showAlert(title: S.Send.createTransactionError, message: message, buttonLabel: S.Button.ok)
-                    self.saveEvent("send.publishFailed", attributes: ["errorMessage": message])
-                case .publishFailure(let error):
-                    if case .posixError(let code, let description) = error {
-                        self.showAlert(title: S.Alerts.sendFailure, message: "\(description) (\(code))", buttonLabel: S.Button.ok)
-                        self.saveEvent("send.publishFailed", attributes: ["errorMessage": "\(description) (\(code))"])
-                    }
-                case .insufficientGas(let rpcErrorMessage):
-                    self.saveEvent("send.publishFailed", attributes: ["errorMessage": rpcErrorMessage])
-                }
-            }
+            let fee = sender.fee(forAmount: cryptoAmount) ?? UInt256(0)
+            let feeCurrency = Currencies.btc
+            let currency = Currencies.btc
+            
+            let displyAmount = Amount(amount: cryptoAmount,
+                                      currency: currency,
+                                      rate: currency.state?.currentRate,
+                                      maximumFractionDigits: Amount.highPrecisionDigits)
+            let feeAmount = Amount(amount: fee,
+                                   currency: feeCurrency,
+                                   rate: (currency.state?.currentRate != nil) ? feeCurrency.state?.currentRate : nil,
+                                   maximumFractionDigits: Amount.highPrecisionDigits)
+
+            let confirm = ConfirmationViewController(amount: Amount(amount: cryptoAmount, currency: currency),
+                                                     fee: feeAmount,
+                                                     feeType: .regular,
+                                                     address: "Betting",
+                                                     isUsingBiometrics: sender.canUseBiometrics,
+                                                     currency: currency)
+            confirm.successCallback = doSend
+            confirm.cancelCallback = sender.reset
+            
+            confirmTransitioningDelegate.shouldShowMaskView = false
+            confirm.transitioningDelegate = confirmTransitioningDelegate
+            confirm.modalPresentationStyle = .overFullScreen
+            confirm.modalPresentationCapturesStatusBarAppearance = true
+            present(confirm, animated: true, completion: nil)
         }
         
     }
        
+    func doSend()   {
+        let pinVerifier: PinVerifier = { [weak self] pinValidationCallback in
+            self?.presentVerifyPin?(S.VerifyPin.authorize) { pin in
+                self?.parent?.view.isFrameChangeBlocked = false
+                pinValidationCallback(pin)
+            }
+        }
+        
+        sender.sendTransaction(allowBiometrics: true, pinVerifier: pinVerifier) { [weak self] result in
+            guard let `self` = self else { return }
+            switch result {
+            case .success:
+                self.dismiss(animated: true, completion: {
+                    Store.trigger(name: .showStatusBar)
+                    self.onPublishSuccess?()
+                })
+                self.saveEvent("send.success")
+            case .creationError(let message):
+                self.showAlert(title: S.Send.createTransactionError, message: message, buttonLabel: S.Button.ok)
+                self.saveEvent("send.publishFailed", attributes: ["errorMessage": message])
+            case .publishFailure(let error):
+                if case .posixError(let code, let description) = error {
+                    self.showAlert(title: S.Alerts.sendFailure, message: "\(description) (\(code))", buttonLabel: S.Button.ok)
+                    self.saveEvent("send.publishFailed", attributes: ["errorMessage": "\(description) (\(code))"])
+                }
+            case .insufficientGas(let rpcErrorMessage):
+                self.saveEvent("send.publishFailed", attributes: ["errorMessage": rpcErrorMessage])
+            }
+        }
+    }
+    
     func didTapCancel() {
         dataSource?.prepareBetLayout(choice: nil)
         tableView.beginUpdates()

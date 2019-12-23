@@ -12,7 +12,7 @@ import BRCore
 private let largeFontSize: CGFloat = 28.0
 private let smallFontSize: CGFloat = 14.0
 
-class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelegate {
+class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelegate  {
 
     // MARK: - Views
     
@@ -165,9 +165,11 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
         sportPickerTextField.backgroundColor = .whiteBackground
         sportPickerTextField.textColor = .primaryText
         sportPickerTextField.isUserInteractionEnabled = true
+        sportPickerTextField.font = UIFont.customBody(size: 14.0)
         tournamentPickerTextField.backgroundColor = .whiteBackground
         tournamentPickerTextField.textColor = .primaryText
         tournamentPickerTextField.isUserInteractionEnabled = true
+        tournamentPickerTextField.font = UIFont.customBody(size: 14.0)
     }
 
     private func addSubviews() {
@@ -195,11 +197,14 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
         
         sportPickerTextField.constrain([
             sportPickerTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[5]),
-            sportPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[2])
+            sportPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[2]),
+            //sportPickerTextField.widthAnchor.constraint(equalToConstant: CGFloat(200.0))
             ])
         tournamentPickerTextField.constrain([
-            tournamentPickerTextField.leadingAnchor.constraint(equalTo: sportPickerTextField.leadingAnchor),
-            tournamentPickerTextField.topAnchor.constraint(equalTo: sportPickerTextField.bottomAnchor, constant: C.padding[1])
+            tournamentPickerTextField.leadingAnchor.constraint(equalTo: sportPickerTextField!.trailingAnchor, constant: C.padding[1]/2),
+            //tournamentPickerTextField.trailingAnchor.constraint(equalTo: balanceLabel.leadingAnchor),
+            tournamentPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[2]),
+            //tournamentPickerTextField.widthAnchor.constraint(equalToConstant: CGFloat(200.0) )
             ])
         
         balanceLabel.constrain([
@@ -231,8 +236,8 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
             primaryBalance.leadingAnchor.constraint(equalTo: conversionSymbol.trailingAnchor, constant: C.padding[1]),
             conversionSymbol.leadingAnchor.constraint(equalTo: secondaryBalance.trailingAnchor, constant: C.padding[1]),
             currencyTapView.leadingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor),
-            sportPickerTextField.trailingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor, constant: -C.padding[1]),
-            tournamentPickerTextField.trailingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor, constant: -C.padding[1])
+            //sportPickerTextField.trailingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor, constant: -C.padding[1]),
+            //tournamentPickerTextField.trailingAnchor.constraint(equalTo: secondaryBalance.leadingAnchor, constant: -C.padding[1])
         ]
 
         swappedConstraints = [
@@ -240,8 +245,8 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
             secondaryBalance.leadingAnchor.constraint(equalTo: conversionSymbol.trailingAnchor, constant: C.padding[1]),
             conversionSymbol.leadingAnchor.constraint(equalTo: primaryBalance.trailingAnchor, constant: C.padding[1]),
             currencyTapView.leadingAnchor.constraint(equalTo: primaryBalance.leadingAnchor),
-            sportPickerTextField.trailingAnchor.constraint(equalTo: primaryBalance.leadingAnchor, constant: -C.padding[1]),
-            tournamentPickerTextField.trailingAnchor.constraint(equalTo: primaryBalance.leadingAnchor, constant: -C.padding[1])
+            //sportPickerTextField.trailingAnchor.constraint(equalTo: primaryBalance.leadingAnchor, constant: -C.padding[1]),
+            //tournamentPickerTextField.trailingAnchor.constraint(equalTo: primaryBalance.leadingAnchor, constant: -C.padding[1])
         ]
 
         NSLayoutConstraint.activate(isBtcSwapped ? self.swappedConstraints : self.regularConstraints)
@@ -325,12 +330,14 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
         self.sports = sports
         self.tournaments = tournaments
         let didChangeTournament : (Int) -> Void = { (tournamentID) in
-                self.changeFilterType( .tournament(tournamentID) )
+            self.changeFilterType( .tournament(tournamentID) )
+            self.tournamentPickerTextField.resignFirstResponder()
         }
         sportPickerTextField.loadDropdownData(data: sports, didChangePicker: { (sportID) in
             self.tournamentPickerTextField.loadDropdownData(data: tournaments[sportID] ?? tournaments[0]!, didChangePicker: didChangeTournament)
             self.changeFilterType( .sport(sportID) )
             self.changeFilterType( .tournament(-1) )
+            self.sportPickerTextField.resignFirstResponder()
         } )
         tournamentPickerTextField.loadDropdownData(data: tournaments[sportPickerTextField.getSelectedIndex()] ?? tournaments[0]!, didChangePicker: didChangeTournament )
     }

@@ -212,6 +212,7 @@ class BitcoinSender: SenderBase<Wagerr, BTCWalletManager>, Sender {
     
     func setBetTransaction(tx: BRTxRef?) {
         transaction = tx
+        readyToSend = true
     }
     
     func sendTransaction(allowBiometrics: Bool, pinVerifier: @escaping PinVerifier, completion: @escaping SendCompletion) {

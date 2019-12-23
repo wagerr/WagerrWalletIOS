@@ -73,7 +73,8 @@ struct EventBetChoice {
     }
     
     func potentialReward(stake: Int) -> (cryptoAmount: String, fiatAmount: String )   {
-        let cryptoAmount = (UserDefaults.showNetworkFeesInOdds) ? Float(stake) * (odd - 1) * 0.94 : Float(stake) * (odd - 1)
+        let winningAmount: Float = (UserDefaults.showNetworkFeesInOdds) ? Float(stake) * (odd - 1) * 0.94 : Float(stake) * (odd - 1)
+        let cryptoAmount: Float = Float(stake) + winningAmount
         let currency = Currencies.btc
         let rate = currency.state?.currentRate
         let amount = Amount(amount: UInt256(UInt64(cryptoAmount)*C.satoshis), currency: currency, rate: rate)

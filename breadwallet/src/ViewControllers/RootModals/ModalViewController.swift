@@ -81,7 +81,7 @@ class ModalViewController : UIViewController, Subscriber {
         // it's not rendered, but it's not rendered because container height is not calculated...
         // break the loop...
         if let controller = childViewController as? EventDetailViewController {
-            height = CGFloat(500)
+            height = CGFloat(600)
         }
         let minHeight = scrollView.heightAnchor.constraint(greaterThanOrEqualToConstant: height)
         let midHeight = scrollView.heightAnchor.constraint(equalTo: scrollViewContent.heightAnchor)

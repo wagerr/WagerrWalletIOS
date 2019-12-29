@@ -195,6 +195,10 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if hasExtraSection && indexPath.section == 0 { return }
+        guard currency.state?.syncState == .success else {
+            self.showAlert(title: S.Alert.error, message: S.Betting.errorSyncinc, buttonLabel: S.Button.ok)
+            return
+        }
         didSelectEvent(events, indexPath.row)
     }
 

@@ -329,8 +329,28 @@ extension EventDetailViewController {
         if let delegate = transitioningDelegate as? ModalTransitionDelegate {
             delegate.shouldDismissInteractively = false
         }
+        /*
         if let keyboardHeight = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
             tableView.contentInset = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
+        }
+        */
+        //Need to calculate keyboard exact size due to Apple suggestions
+        self.tableView.isScrollEnabled = true
+        let info : NSDictionary = notification.userInfo! as NSDictionary
+        let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+
+        self.tableView.contentInset = contentInsets
+        self.tableView.scrollIndicatorInsets = contentInsets
+
+        var aRect : CGRect = self.view.frame
+        aRect.size.height -= keyboardSize!.height
+        if let activeFrame = self.dataSource?.sliderCell?.amountTextFrame
+        {
+            if (!aRect.contains(activeFrame.origin))
+            {
+                self.tableView.scrollRectToVisible(activeFrame, animated: true)
+            }
         }
     }
     
@@ -342,6 +362,13 @@ extension EventDetailViewController {
             // adding inset in keyboardWillShow is animated by itself but removing is not
             self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         })
+    }
+    
+    func deregisterFromKeyboardNotifications()
+    {
+        //Removing notifies on keyboard appearing
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
 }
 

@@ -48,7 +48,7 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
         let allTxInfo = Array(transactionInfo.values)
         var filteredTxInfo : [ WgrTransactionInfo ]
         filteredTxInfo = filters.reduce(allTxInfo, { $0.filter($1) })
-        transactions = filteredTxInfo.map {$0.transaction}
+        transactions = filteredTxInfo.map {$0.transaction}.sorted(by: { $0.timestamp > $1.timestamp } )
         tableView.reloadData()
     }
 

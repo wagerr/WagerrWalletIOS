@@ -190,20 +190,20 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
         currencyName.constrain([
             currencyName.constraint(.leading, toView: self, constant: C.padding[2]),
             currencyName.constraint(.trailing, toView: self, constant: -C.padding[2]),
-            currencyName.constraint(.top, toView: self, constant: E.isIPhoneX ? C.padding[5] : C.padding[3])
+            currencyName.constraint(.top, toView: self, constant: E.isIPhoneXOrBetter ? C.padding[5] : C.padding[3])
             ])
         
         exchangeRateLabel.pinTo(viewAbove: currencyName)
         
         sportPickerTextField.constrain([
             sportPickerTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[5]),
-            sportPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[2]),
+            sportPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[1]),
             //sportPickerTextField.widthAnchor.constraint(equalToConstant: CGFloat(200.0))
             ])
         tournamentPickerTextField.constrain([
             tournamentPickerTextField.leadingAnchor.constraint(equalTo: sportPickerTextField!.trailingAnchor, constant: C.padding[1]/2),
             //tournamentPickerTextField.trailingAnchor.constraint(equalTo: balanceLabel.leadingAnchor),
-            tournamentPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[2]),
+            tournamentPickerTextField.topAnchor.constraint(equalTo: exchangeRateLabel.bottomAnchor, constant: C.padding[1]),
             //tournamentPickerTextField.widthAnchor.constraint(equalToConstant: CGFloat(200.0) )
             ])
         

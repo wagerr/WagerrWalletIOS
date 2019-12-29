@@ -159,7 +159,7 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txSpreadPointsFormatted : String    {
-        let fmt = (spreadHomeOdds>spreadAwayOdds) ? "+%@/-%@" : "-%@/+%@"
+        let fmt = (homeOdds>awayOdds) ? "+%@/-%@" : "-%@/+%@"
         return String.init(format: fmt, txSpreadPoints, txSpreadPoints)
     }
     
@@ -216,11 +216,21 @@ class BetEventViewModel : BetEventDatabaseModel, Equatable {
     }
     
     static func ==(lhs: BetEventViewModel, rhs: BetEventViewModel) -> Bool {
-        return lhs.eventID == rhs.eventID
+        return  lhs.eventID == rhs.eventID &&
+            lhs.homeOdds == rhs.homeOdds &&
+            lhs.drawOdds == rhs.drawOdds &&
+            lhs.awayOdds == rhs.awayOdds &&
+            lhs.spreadHomeOdds == rhs.spreadHomeOdds &&
+            lhs.spreadAwayOdds == rhs.spreadAwayOdds &&
+            lhs.overOdds == rhs.overOdds &&
+            lhs.underOdds == rhs.underOdds &&
+            lhs.spreadPoints == rhs.spreadPoints &&
+            lhs.totalPoints == rhs.totalPoints &&
+            lhs.eventTimestamp == rhs.eventTimestamp
     }
 
     static func !=(lhs: BetEventViewModel, rhs: BetEventViewModel) -> Bool {
-        return lhs.eventID != rhs.eventID
+        return !(lhs == rhs)
     }
     
     var currency: CurrencyDef { return Currencies.btc }     // always WGR

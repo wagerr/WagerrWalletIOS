@@ -32,6 +32,11 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         }
     }
   
+    public var amountTextFrame : CGRect  {
+        get {
+            return amountLabel.frame
+        }
+    }
     // MARK: Views
     private let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
     private let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))

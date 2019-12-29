@@ -103,7 +103,8 @@ class TxAmountCell: UITableViewCell, Subscriber {
             attributedText.set(attributes: [.foregroundColor: fiatColor], forText: currentAmount)
             attributedText.set(attributes: [.foregroundColor: fiatColor], forText: originalAmount!)
             
-            fiatAmountLabel.attributedText = attributedText
+            //fiatAmountLabel.attributedText = attributedText
+            fiatAmountLabel.text = ""
         }
     }
 }

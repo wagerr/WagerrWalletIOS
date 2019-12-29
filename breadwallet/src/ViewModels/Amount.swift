@@ -103,7 +103,7 @@ struct Amount {
         let unit = currency.unit(forDecimals: currency.state?.maxDigits ?? currency.commonUnit.decimals) ?? currency.commonUnit
         return tokenDescription(inUnit: unit)
     }
-    
+        
     /// Token value in default units as formatted string without symbol
     var tokenFormattedValue: String {
         let unit = currency.unit(forDecimals: currency.state?.maxDigits ?? currency.commonUnit.decimals) ?? currency.commonUnit

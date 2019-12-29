@@ -77,8 +77,8 @@ struct EventBetChoice {
         let cryptoAmount: Float = Float(stake) + winningAmount
         let currency = Currencies.btc
         let rate = currency.state?.currentRate
-        let amount = Amount(amount: UInt256(UInt64(cryptoAmount)*C.satoshis), currency: currency, rate: rate)
-        return (amount.tokenDescription, amount.fiatDescription)
+        let amount = Amount(amount: UInt256(UInt64(cryptoAmount*Float(C.satoshis))), currency: currency, rate: rate)
+        return (String.init(format: "%.2f %@", cryptoAmount, currency.code), amount.fiatDescription)
     }
 }
 

@@ -700,7 +700,7 @@ class ModalPresenter : Subscriber, Trackable {
         nc.setClearNavbar()
         nc.setWhiteStyle()
         let start = StartImportViewController(walletManager: walletManager)
-        start.addCloseNavigationItem(tintColor: .white)
+        start.addCloseNavigationItem(tintColor: .whiteBackground)
         start.navigationItem.title = S.Import.title
         let faqButton = UIButton.buildFaqButton(articleId: ArticleIds.importWallet, currency: walletManager.currency)
         faqButton.tintColor = .white
@@ -713,7 +713,7 @@ class ModalPresenter : Subscriber, Trackable {
     func presentBiometricsSetting() {
         let walletManager = primaryWalletManager
         let biometricsSettings = BiometricsSettingsViewController(walletManager: walletManager)
-        biometricsSettings.addCloseNavigationItem(tintColor: .white)
+        biometricsSettings.addCloseNavigationItem(tintColor: .whiteBackground)
         let nc = ModalNavigationController(rootViewController: biometricsSettings)
         biometricsSettings.presentSpendingLimit = strongify(self) { myself in
             myself.pushBiometricsSpendingLimit(onNc: nc)

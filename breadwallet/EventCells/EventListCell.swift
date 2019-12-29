@@ -16,8 +16,8 @@ class EventListCell: UITableViewCell {
     private var headerLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
     private let homeTeamLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
     private let awayTeamLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
-    private let homeResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
-    private let awayResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
+    //private let homeResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
+    //private let awayResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
     private let oddsLabel = UILabel(font: .customBold(size: 18.0))
     private let separator = UIView(color: .separatorGray)
     
@@ -42,8 +42,8 @@ class EventListCell: UITableViewCell {
         homeTeamLabel.attributedText = viewModel.txAttrHomeTeam
         awayTeamLabel.attributedText = viewModel.txAttrAwayTeam
         oddsLabel.attributedText = viewModel.oddsDescription
-        homeResultLabel.attributedText = viewModel.txAttrHomeResult
-        awayResultLabel.attributedText = viewModel.txAttrAwayResult
+        //homeResultLabel.attributedText = viewModel.txAttrHomeResult
+        //awayResultLabel.attributedText = viewModel.txAttrAwayResult
     }
     
     // MARK: - Private
@@ -60,8 +60,8 @@ class EventListCell: UITableViewCell {
         contentView.addSubview(homeTeamLabel)
         contentView.addSubview(awayTeamLabel)
         contentView.addSubview(oddsLabel)
-        contentView.addSubview(homeResultLabel)
-        contentView.addSubview(awayResultLabel)
+        //contentView.addSubview(homeResultLabel)
+        //contentView.addSubview(awayResultLabel)
         contentView.addSubview(separator)
     }
     
@@ -82,12 +82,12 @@ class EventListCell: UITableViewCell {
         oddsLabel.constrain([
              oddsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -C.padding[1]/2),
              oddsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
-        homeResultLabel.constrain([
+        /*homeResultLabel.constrain([
             homeResultLabel.topAnchor.constraint(equalTo: homeTeamLabel.topAnchor),
             homeResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])
         awayResultLabel.constrain([
             awayResultLabel.topAnchor.constraint(equalTo: awayTeamLabel.topAnchor),
-            awayResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])
+            awayResultLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])*/
         separator.constrainBottomCorners(height: 0.5)
     }
     

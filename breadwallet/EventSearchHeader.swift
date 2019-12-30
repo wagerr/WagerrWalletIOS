@@ -126,12 +126,12 @@ class EventSearchHeaderView : UIView {
             cancel.widthAnchor.constraint(equalToConstant: titleSize.width + C.padding[4])])
         searchBar.constrain([
             searchBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[1]),
-            searchBar.topAnchor.constraint(equalTo: topAnchor, constant: E.isIPhoneX ? C.padding[5] : C.padding[2]),
+            searchBar.topAnchor.constraint(equalTo: topAnchor, constant: E.isIPhoneXOrBetter ? C.padding[4] : C.padding[2]),
             searchBar.trailingAnchor.constraint(equalTo: cancel.leadingAnchor, constant: -C.padding[1]) ])
     }
 
     private func setData() {
-        backgroundColor = .whiteTint
+        backgroundColor = .grayBackground
         searchBar.backgroundImage = UIImage()
         searchBar.delegate = self
         cancel.tap = { [weak self] in

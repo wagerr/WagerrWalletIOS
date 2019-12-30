@@ -123,17 +123,23 @@ class BetEventDatabaseModel : BetCore {
     }
 
     override func SaveToDB(_ db : CoreDatabase ) {
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss.SSSS"
         switch self.type {
             case .EVENT_PEERLESS:
                 db.saveBetEvent( self )
             
             case .UPDATE_PEERLESS:
+                print(String.init(format: "%@: updateOdds %d: %@/%@/%@", formatter.string(from: date), self.eventID, self.txHomeOdds, self.txDrawOdds, self.txAwayOdds))
                 db.updateOdds( self )
             
             case .EVENT_PEERLESS_SPREAD:
+                print(String.init(format: "%@: updateSpread %d: %@/%@", formatter.string(from: date), self.eventID, self.txHomeSpread, self.txAwaySpread))
                 db.updateSpreads( self )
             
             case .EVENT_PEERLESS_TOTAL:
+                print(String.init(format: "%@: updateTotals %d: %@/%@", formatter.string(from: date), self.eventID, self.txOverOdds, self.txUnderOdds))
                 db.updateTotals( self )
                 
             default:    // never happen

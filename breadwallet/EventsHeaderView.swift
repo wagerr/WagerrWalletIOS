@@ -228,7 +228,7 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
         
         currencyTapView.constrain([
             currencyTapView.trailingAnchor.constraint(equalTo: balanceLabel.trailingAnchor),
-            currencyTapView.topAnchor.constraint(equalTo: primaryBalance.topAnchor, constant: -C.padding[1]),
+            currencyTapView.topAnchor.constraint(equalTo: tournamentPickerTextField.bottomAnchor, constant: C.padding[1]/2),
             currencyTapView.bottomAnchor.constraint(equalTo: primaryBalance.bottomAnchor, constant: C.padding[1]) ])
 
         regularConstraints = [

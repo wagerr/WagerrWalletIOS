@@ -20,9 +20,10 @@ private let minTargetSize: CGFloat = 48.0
 
 class ShadowButton: UIControl {
 
-    init(title: String, type: ButtonType) {
+    init(title: String, type: ButtonType, YCompressionFactor: CGFloat = 1.0) {
         self.title = title
         self.type = type
+        self.YCompressionFactor = YCompressionFactor
         super.init(frame: .zero)
         accessibilityLabel = title
         setupViews()
@@ -32,11 +33,13 @@ class ShadowButton: UIControl {
         self.title = title
         self.type = type
         self.image = image
+        self.YCompressionFactor = 1.0
         super.init(frame: .zero)
         accessibilityLabel = title
         setupViews()
     }
 
+    let YCompressionFactor : CGFloat
     var isToggleable = false
     var title: String {
         didSet {
@@ -150,7 +153,7 @@ class ShadowButton: UIControl {
 
     private func setupLabelOnly() {
         container.addSubview(label)
-        label.constrain(toSuperviewEdges: UIEdgeInsets(top: C.padding[1], left: C.padding[1], bottom: -C.padding[1], right: -C.padding[1]))
+        label.constrain(toSuperviewEdges: UIEdgeInsets(top: C.padding[1]/YCompressionFactor, left: C.padding[1], bottom: -C.padding[1]/YCompressionFactor, right: -C.padding[1]))
     }
 
     private func setColors() {

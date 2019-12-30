@@ -117,12 +117,12 @@ class SearchHeaderView : UIView {
     }
 
     private let searchBar = UISearchBar()
-    private let sent = ShadowButton(title: S.Search.sent, type: .search)
-    private let received = ShadowButton(title: S.Search.received, type: .search)
-    private let pending = ShadowButton(title: S.Search.pending, type: .search)
-    private let complete = ShadowButton(title: S.Search.complete, type: .search)
-    private let bethistory = ShadowButton(title: S.Search.bethistory, type: .search)
-    private let payout = ShadowButton(title: S.Search.payouts, type: .search)
+    private let sent = ShadowButton(title: S.Search.sent, type: .search, YCompressionFactor: 2.0)
+    private let received = ShadowButton(title: S.Search.received, type: .search, YCompressionFactor: 2.0)
+    private let pending = ShadowButton(title: S.Search.pending, type: .search, YCompressionFactor: 2.0)
+    private let complete = ShadowButton(title: S.Search.complete, type: .search, YCompressionFactor: 2.0)
+    private let bethistory = ShadowButton(title: S.Search.bethistory, type: .search, YCompressionFactor: 2.0)
+    private let payout = ShadowButton(title: S.Search.payouts, type: .search, YCompressionFactor: 2.0)
     
     private let cancel = UIButton(type: .system)
     fileprivate var filters: [SearchFilterType] = [] {
@@ -163,12 +163,12 @@ class SearchHeaderView : UIView {
             cancel.widthAnchor.constraint(equalToConstant: titleSize.width + C.padding[4])])
         searchBar.constrain([
             searchBar.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[1]),
-            searchBar.topAnchor.constraint(equalTo: topAnchor, constant: E.isIPhoneX ? C.padding[5] : C.padding[2]),
+            searchBar.topAnchor.constraint(equalTo: topAnchor, constant: E.isIPhoneXOrBetter ? C.padding[4] : C.padding[2]),
             searchBar.trailingAnchor.constraint(equalTo: cancel.leadingAnchor, constant: -C.padding[1]) ])
     }
 
     private func setData() {
-        backgroundColor = .whiteTint
+        backgroundColor = .grayBackground
         searchBar.backgroundImage = UIImage()
         searchBar.delegate = self
         cancel.tap = { [weak self] in

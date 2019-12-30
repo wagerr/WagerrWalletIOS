@@ -29,7 +29,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
     func doFilter()    {
         events = filters2.reduce(allEvents, { $0.filter($1) })
         events = filters.reduce(events, { $0.filter($1) })
-        tableView.reloadData()
+        self.reload()
     }
     
     // searchbar filters
@@ -132,7 +132,8 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
                         callback: { state in
                             self.allEvents = state[self.currency]?.events ?? [BetEventViewModel]()
                             self.didChangeEvents(self.allEvents)
-                            self.reload()
+                            //self.reload()
+                            self.doFilter()
         })
     }
 

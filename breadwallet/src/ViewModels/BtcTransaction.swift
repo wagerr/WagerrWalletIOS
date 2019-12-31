@@ -67,7 +67,7 @@ struct WgrTransactionInfo {
     
     var isInmature : Bool   {
         let blockHeight = (W.Blockchain.txUnconfirmed==transaction.blockHeight) ? self.currentHeight : UInt32(transaction.blockHeight)
-        return (self.currentHeight-blockHeight) <= W.Blockchain.payoutMaturity
+        return (Int(self.currentHeight)-Int(blockHeight)) <= W.Blockchain.payoutMaturity
     }
     
     var eventDateString : String {
@@ -98,7 +98,7 @@ struct WgrTransactionInfo {
                     txDate = "PAYOUT"
                 }
                 if isInmature {
-                    txDate += String.init(format: "(%d/%d)", (self.currentHeight-UInt32(transaction.blockHeight)), W.Blockchain.payoutMaturity)
+                    txDate += String.init(format: " (%d/%d)", (self.currentHeight-UInt32(transaction.blockHeight)), W.Blockchain.payoutMaturity)
                 }
             }
             else    {   // normal tx

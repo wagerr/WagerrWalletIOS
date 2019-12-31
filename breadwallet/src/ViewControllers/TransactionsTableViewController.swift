@@ -243,6 +243,7 @@ extension TransactionsTableViewController {
         let viewModel = TxListViewModel(tx: tx)
         
         if transactionInfo[tx.hash] != nil  {
+            transactionInfo[tx.hash]?.transaction = tx as! BtcTransaction
             cell.setTransaction(viewModel,
                 isBtcSwapped: self.isBtcSwapped,
                 rate: rate,

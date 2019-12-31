@@ -25,7 +25,7 @@ class StartFlowPresenter : Subscriber {
     private let walletManager: BTCWalletManager
     private var loginViewController: UIViewController?
     private let loginTransitionDelegate = LoginTransitionDelegate()
-
+   
     private var closeButton: UIButton {
         let button = UIButton.close
         button.tintColor = .white

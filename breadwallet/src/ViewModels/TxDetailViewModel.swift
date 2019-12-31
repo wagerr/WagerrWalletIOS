@@ -40,7 +40,7 @@ struct TxDetailViewModel: TxViewModel {
     }
     
     var timestampHeader: NSAttributedString {
-        if status == .complete {
+        if status == .complete   {
             let text = " " + S.TransactionDetails.completeTimestampHeader
             let attributedString = NSMutableAttributedString(string: text)
             let icon = NSTextAttachment()

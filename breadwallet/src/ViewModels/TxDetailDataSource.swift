@@ -175,7 +175,12 @@ extension TxDetailDataSource: UITableViewDataSource {
         
         case .timestamp:
             let labelCell = cell as! TxLabelCell
-            labelCell.titleLabel.attributedText = viewModel.timestampHeader
+            if (transactionInfo.isInmature) {
+                labelCell.titleLabel.attributedText = NSAttributedString(string: S.Betting.payoutImmature)
+            }
+            else    {
+                labelCell.titleLabel.attributedText = viewModel.timestampHeader
+            }
             labelCell.value = viewModel.longTimestamp
             
         case .address:

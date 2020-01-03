@@ -175,7 +175,7 @@ extension TxDetailDataSource: UITableViewDataSource {
         
         case .timestamp:
             let labelCell = cell as! TxLabelCell
-            if (transactionInfo.isInmature) {
+            if (transactionInfo.isInmature && transactionInfo.isCoinbase) {
                 labelCell.titleLabel.attributedText = NSAttributedString(string: S.Betting.payoutImmature)
             }
             else    {

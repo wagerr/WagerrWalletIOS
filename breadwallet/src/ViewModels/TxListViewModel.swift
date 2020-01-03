@@ -47,7 +47,7 @@ struct TxListViewModel: TxViewModel {
         }
     }
 
-    func amount(isBtcSwapped: Bool, rate: Rate, isInmature: Bool) -> NSAttributedString {
+    func amount(isBtcSwapped: Bool, rate: Rate, isInmaturePayout: Bool) -> NSAttributedString {
         var amount = tx.amount
         
         if let tx = tx as? EthTransaction, tokenTransferCode != nil {
@@ -58,7 +58,7 @@ struct TxListViewModel: TxViewModel {
                           currency: tx.currency,
                           rate: isBtcSwapped ? rate : nil,
                           negative: (tx.direction == .sent)).description
-        let color: UIColor = (tx.direction == .received) ? (isInmature) ? .inmatureGray : .receivedGreen : .darkText
+        let color: UIColor = (tx.direction == .received) ? (isInmaturePayout) ? .inmatureGray : .receivedGreen : .darkText
         
         return NSMutableAttributedString(string: text,
                                          attributes: [.foregroundColor: color])

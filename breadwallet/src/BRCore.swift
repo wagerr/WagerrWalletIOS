@@ -232,7 +232,13 @@ extension BRKey {
 
 extension BRTxInput {
     var swiftAddress: String {
-        get { return String(cString: UnsafeRawPointer([self.address]).assumingMemoryBound(to: CChar.self)) }
+        get { //return String(cString: UnsafeRawPointer([self.address]).assumingMemoryBound(to: CChar.self)) }
+            return withUnsafePointer(to: self.address) {
+                $0.withMemoryRebound(to: UInt8.self, capacity: MemoryLayout.size(ofValue: self.address)) {
+                    String(cString: $0)
+                }
+            }
+        }
         set { BRTxInputSetAddress(&self, newValue) }
     }
     

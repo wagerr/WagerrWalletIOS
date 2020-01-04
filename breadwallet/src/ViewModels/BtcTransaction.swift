@@ -98,7 +98,9 @@ struct WgrTransactionInfo {
                     txDate = "PAYOUT"
                 }
                 if isInmature {
-                    txDate += String.init(format: " (%d/%d)", (self.currentHeight-UInt32(transaction.blockHeight)), W.Blockchain.payoutMaturity)
+                    var confirmations = Int(self.currentHeight)-Int(transaction.blockHeight)
+                    if confirmations<0  { confirmations=0 }
+                    txDate += String.init(format: " (%d/%d)", confirmations, W.Blockchain.payoutMaturity)
                 }
             }
             else    {   // normal tx

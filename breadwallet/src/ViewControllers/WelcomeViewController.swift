@@ -12,7 +12,7 @@ class WelcomeViewController : UIViewController, ContentBoxPresenter {
 
     let blurView = UIVisualEffectView()
     let effect = UIBlurEffect(style: .dark)
-    let contentBox = UIView(color: .white)
+    let contentBox = UIView(color: .whiteBackground)
 
     private let header = GradientView()
     private let titleLabel = UILabel.wrapping(font: .customBold(size: 16.0), color: .darkText)

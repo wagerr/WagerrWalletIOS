@@ -30,7 +30,7 @@ class ConfirmationViewController : UIViewController, ContentBoxPresenter {
     private let currency: CurrencyDef
 
     //ContentBoxPresenter
-    let contentBox = UIView(color: .white)
+    let contentBox = UIView(color: .whiteBackground)
     let blurView = UIVisualEffectView()
     let effect = UIBlurEffect(style: .dark)
 
@@ -134,7 +134,7 @@ class ConfirmationViewController : UIViewController, ContentBoxPresenter {
     }
 
     private func setInitialData() {
-        view.backgroundColor = .clear
+        view.backgroundColor = .whiteBackground
         payLabel.text = S.Confirmation.send
 
         let displayTotal = Amount(amount: amount.rawValue + feeAmount.rawValue,

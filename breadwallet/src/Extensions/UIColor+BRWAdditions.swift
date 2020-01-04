@@ -19,7 +19,7 @@ extension UIColor {
         if #available(iOS 11.0, *) {
             return UIColor(named: "colorPrimaryText")!
         } else {
-            return .white
+            return .black
         }
     }
 
@@ -70,7 +70,7 @@ extension UIColor {
     }
 
     static var gradientEnd: UIColor {
-        return UIColor(red: 67.0/255.0, green: 66/255.0, blue: 66.0/255.0, alpha: 1.0)
+        return UIColor(red: 0.0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0)
     }
 
     static var offWhite: UIColor {

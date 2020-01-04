@@ -60,6 +60,9 @@ struct E {
     static let isIPhoneX: Bool = {
         return (UIScreen.main.bounds.size.height == 812.0)
     }()
+    static let isIPhoneXOrBetter: Bool = {
+        return (UIScreen.main.bounds.size.height >= 812.0)
+    }()
     static let is32Bit: Bool = {
         return MemoryLayout<Int>.size == MemoryLayout<UInt32>.size
     }()

@@ -309,8 +309,10 @@ extension BTCWalletManager : BRWalletListener {
         }
     }
     
-    @objc private func updateEvents() {
-        eventUpdateTimer?.invalidate()
+    @objc func updateEvents() {
+        if eventUpdateTimer != nil    {
+            eventUpdateTimer?.invalidate()
+        }
         eventUpdateTimer = nil
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let myself = self else { return }

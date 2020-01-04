@@ -143,8 +143,13 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         Store.subscribe(self, name: .hideStatusBar, callback: { _ in
             self.shouldShowStatusBar = false
         })
+        NotificationCenter.default.addObserver(self, selector: #selector(self.willEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
     }
 
+    @objc func willEnterForeground() {
+        (walletManager as! BTCWalletManager).updateEvents()
+    }
+    
     private func setInitialData() {
         searchHeaderview.didCancel = hideSearchHeaderView
         searchHeaderview.didChangeFilters = { [weak self] filters in

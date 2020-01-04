@@ -302,6 +302,10 @@ class BetEventViewModel : BetEventDatabaseModel, Equatable {
         return String.init(format: "BET %@ ", bet.outcome.description)
     }
     
+    func zeroedOdds() -> Bool   {
+        return homeOdds==0 && drawOdds==0 && awayOdds==0
+    }
+    
     func getDescriptionForBet(bet: BetEntity) -> String  {
         var ret = ""
         switch bet.outcome  {

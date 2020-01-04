@@ -664,6 +664,27 @@ class CoreDatabase {
             self.setDBFileAttributes()
         }
     }
+    
+    func deleteBetMapping(_ txHash: String ) {
+        queue.async {
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "delete from WGR_MAPPING where ZTXHASH = ?", -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+            sqlite3_bind_text(sql, 1, txHash, -1, SQLITE_TRANSIENT)
+
+            guard sqlite3_step(sql) == SQLITE_DONE else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                return
+            }
+        }
+    }
+    
+    func cleanChainBugs() {
+       // fake team mappings for ID 187.
+        deleteBetMapping("cc89779e8e57d49e5e6d3e16ad57e648b19d86fb8f4714bc7df5abd3f92daa1d")
+        deleteBetMapping("d8e1e8389bbcffe1c79cf11e2206281377e54b99219ec6ccec296c2adb8ad65f")
+        deleteBetMapping("929972a7b2fdf55f6da7488ccaf7312fd5d22c4bca003ca089293c93f1c32917")
+    }
 
     func saveBetEvent(_ ent: BetEventDatabaseModel) {
         queue.async {
@@ -904,7 +925,9 @@ class CoreDatabase {
                     homeScore: UInt32(bitPattern: sqlite3_column_int(sql, 29)),
                     awayScore: UInt32(bitPattern: sqlite3_column_int(sql, 30)) );
                 
-                events.append(event)
+                if !event.zeroedOdds()  {
+                    events.append(event)
+                }
             }
 
             if sqlite3_errcode(self.db) != SQLITE_DONE { print("SQLITE error loadEvents: " + String(cString: sqlite3_errmsg(self.db))) }

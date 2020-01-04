@@ -32,7 +32,7 @@ class BiometricsSpendingLimitViewController: UITableViewController, Subscriber {
         tableView.register(SeparatorCell.self, forCellReuseIdentifier: cellIdentifier)
         tableView.sectionHeaderHeight = UITableViewAutomaticDimension
         tableView.estimatedSectionHeaderHeight = 50.0
-        tableView.backgroundColor = .whiteTint
+        tableView.backgroundColor = .whiteBackground
         tableView.separatorStyle = .none
 
         let titleLabel = UILabel(font: .customBold(size: 17.0), color: .darkText)
@@ -96,7 +96,7 @@ class BiometricsSpendingLimitViewController: UITableViewController, Subscriber {
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if let header = self.header { return header }
-        let header = UIView(color: .whiteTint)
+        let header = UIView(color: .whiteBackground)
         header.addSubview(amount)
         header.addSubview(body)
         amount.pinTopLeft(padding: C.padding[2])

@@ -32,14 +32,28 @@ class StartViewController : UIViewController {
     }()
     private var faq: UIButton
 
+
     override func viewDidLoad() {
         view.backgroundColor = .whiteBackground
         setData()
         addSubviews()
         addConstraints()
         addButtonActions()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.willEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
     }
 
+    @objc func willEnterForeground() {
+        let nc = self.presentingViewController as? RootNavigationController
+        nc?.checkGitHubVersion(controller: self)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let nc = self.presentingViewController as? RootNavigationController
+        nc?.checkGitHubVersion(controller: self)
+    }
+    
     private func setData() {
         message.text = S.StartViewController.message
         message.lineBreakMode = .byWordWrapping

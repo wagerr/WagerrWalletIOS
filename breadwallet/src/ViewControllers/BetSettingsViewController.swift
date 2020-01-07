@@ -13,18 +13,14 @@ class BetSettingsViewController : UIViewController {
 
     var delegate : BetSettingsDelegate? = nil
     let titleLabel = UILabel(font: .customBold(size: 24.0), color: .darkText)
-    private let checkIncludeFee = UIButton(type: .system)
-    private let labelIncludeFee = UIButton()
+    //private let checkIncludeFee = UIButton(type: .system)
+    private let checkIncludeFee = UISwitch(frame: CGRect(x: 163, y: 150, width: 0, height: 0))
+    private let labelIncludeFee = UILabel(font: UIFont.customBody(size: 14.0), color: .primaryText)
 
     init() {
         super.init(nibName: nil, bundle: nil)
     }
 
-    var isChecked: Bool = false {
-        didSet {
-            checkIncludeFee.tintColor = isChecked ? .primaryButton : .grayTextTint
-        }
-    }
     override func viewDidLoad() {
         addSubviews()
         addConstraints()
@@ -60,12 +56,13 @@ class BetSettingsViewController : UIViewController {
         
         checkIncludeFee.constrain([
             checkIncludeFee.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: C.padding[2]),
-            checkIncludeFee.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[4]),
+            checkIncludeFee.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
         ])
         
         labelIncludeFee.constrain([
             labelIncludeFee.topAnchor.constraint(equalTo: checkIncludeFee.topAnchor, constant: -C.padding[1]/2 ),
-            labelIncludeFee.leadingAnchor.constraint(equalTo: checkIncludeFee.trailingAnchor, constant: C.padding[2]),
+            labelIncludeFee.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[4]),
+            labelIncludeFee.trailingAnchor.constraint(equalTo: checkIncludeFee.leadingAnchor, constant: -C.padding[2]),
         ])
     }
 
@@ -73,17 +70,14 @@ class BetSettingsViewController : UIViewController {
         view.backgroundColor = .whiteBackground
         titleLabel.text = S.BetSettings.headerMessage
         titleLabel.textAlignment = .right
-        labelIncludeFee.setTitle(S.BetSettings.useFeeCheck, for: .normal)
-        labelIncludeFee.setTitleColor(.primaryText, for: .normal)
-        labelIncludeFee.titleLabel?.font = UIFont.customBody(size: 14.0)
-        labelIncludeFee.tap = strongify(self) { myself in
-            self.isChecked = !self.isChecked
-            UserDefaults.showNetworkFeesInOdds = self.isChecked
+        labelIncludeFee.text = S.BetSettings.useFeeCheck
+        labelIncludeFee.lineBreakMode = .byWordWrapping
+        labelIncludeFee.numberOfLines = 2
+        checkIncludeFee.tap = strongify(self) { myself in
+            UserDefaults.showNetworkFeesInOdds = self.checkIncludeFee.isOn
         }
         
-        checkIncludeFee.setImage(#imageLiteral(resourceName: "CircleCheck"), for: .normal)
-        self.isChecked = UserDefaults.showNetworkFeesInOdds
-        checkIncludeFee.tap = labelIncludeFee.tap
+        self.checkIncludeFee.isOn = UserDefaults.showNetworkFeesInOdds
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -165,16 +165,18 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.resignFirstResponder()
         adjustSlider()
+        recalculateReward()
     }
     
     func adjustSlider() {
         let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
         let minBet = Int(W.BetAmount.min)
         let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
-        
-        if (Int(amount)! < minBet)  { amount = String(minBet) }
-        if (Float(Int(amount)!) > maxBet)  { amount = String(Int(maxBet)) }
-        betSlider.setValue(Float(Int(amount)!), animated: true)
+        let nAmount = Int(amount) ?? minBet
+
+        if (nAmount <= minBet)  { amount = String(minBet) }
+        if (Float(nAmount) > maxBet)  { amount = String(Int(maxBet)) }
+        betSlider.setValue(Float(nAmount), animated: true)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

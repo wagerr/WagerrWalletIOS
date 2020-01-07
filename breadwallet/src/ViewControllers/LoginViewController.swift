@@ -127,6 +127,12 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
         Store.subscribe(self, name: .loginFromSend, callback: {_ in
             self.authenticationSucceded()
         })
+        NotificationCenter.default.addObserver(self, selector: #selector(self.willEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+    }
+
+    @objc func willEnterForeground() {
+        let nc = self.presentingViewController as? RootNavigationController
+        nc?.checkGitHubVersion(controller: self)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -141,6 +147,12 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let nc = self.presentingViewController as? RootNavigationController
+        nc?.checkGitHubVersion(controller: self)
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         unlockTimer?.invalidate()
@@ -178,7 +190,7 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
         backgroundView.constrain(toSuperviewEdges: nil)
         if walletManager != nil {
             addChildViewController(pinPad, layout: {
-                pinPadPottom = pinPad.view.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: E.isIPhoneX ? -C.padding[3] : 0.0)
+                pinPadPottom = pinPad.view.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: E.isIPhoneXOrBetter ? -C.padding[3] : 0.0)
                 pinPad.view.constrain([
                     pinPad.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
                     pinPad.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -188,7 +200,7 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
         }
         pinViewContainer.constrain(toSuperviewEdges: nil)
 
-        topControlTop = topControlContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: E.isIPhoneX ? C.padding[1] + 35.0 : C.padding[1] + 20.0)
+        topControlTop = topControlContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: E.isIPhoneXOrBetter ? C.padding[1] + 35.0 : C.padding[1] + 20.0)
         topControlContainer.constrain([
             topControlTop,
             topControlContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[2]),
@@ -223,6 +235,7 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
             activityView.startAnimating()
         }
         subheader.text = S.UnlockScreen.subheader
+        subheader.textColor = .white
 
         addressButton.addTarget(self, action: #selector(addressTapped), for: .touchUpInside)
         scanButton.addTarget(self, action: #selector(scanTapped), for: .touchUpInside)

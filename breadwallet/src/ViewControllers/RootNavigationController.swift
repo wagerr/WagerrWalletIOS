@@ -52,6 +52,52 @@ class RootNavigationController : UINavigationController {
         self.delegate = self
     }
 
+    func checkGitHubVersion(controller: UIViewController) {
+        self.fetchGitHubVersion( completion: { data in
+            guard let data = data else { return }
+            let appVersion  = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+            let appBuild  = Bundle.main.infoDictionary?["CFBundleVersion"] as! String
+            let nBuild = Int(appBuild) ?? 0
+            let nGithub = Int(data) ?? 0
+            if ( nBuild < nGithub )   {
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: S.BetSettings.newVersionTitle, message: S.BetSettings.newVersion, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: S.BetSettings.goTo, style: .default, handler: { _ in
+                        let url = URL(string:"http://iosapp.wagerr.com/")!
+                        if #available(iOS 10.0, *) {
+                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                        } else {
+                            UIApplication.shared.openURL(url)
+                        }
+                    }))
+                    controller.present(alert, animated: true, completion: { () -> Void in
+                        return
+                    })
+                }
+
+            }
+        })
+    }
+    
+    func fetchGitHubVersion(completion: @escaping (String?)->Void) {
+        let path = "https://api.github.com/repos/wagerr/WagerrWalletiOS/releases/latest";
+        let url = URL(string: path)!
+        var req = URLRequest(url: URL(string: path)!)
+        req.httpMethod = "GET"
+        //req.httpBody = "addrs=\(address)".data(using: .utf8)
+        let task = URLSession.shared.dataTask(with: url) {(data, resp, error) in
+            guard error == nil else { completion(""); return }
+            if  let data = data,
+                let jsonData = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: Any] {
+                if let version = jsonData["tag_name"] as? String {
+                    completion(version)
+                }
+            }
+            else { completion(""); return }
+        }
+        task.resume()
+    }
+
     func attemptShowWelcomeView() {
         //if !UserDefaults.hasShownWelcome {
         if (false)  {   // disable

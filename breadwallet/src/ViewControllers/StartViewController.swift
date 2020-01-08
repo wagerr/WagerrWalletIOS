@@ -45,13 +45,13 @@ class StartViewController : UIViewController {
 
     @objc func willEnterForeground() {
         let nc = self.presentingViewController as? RootNavigationController
-        nc?.checkGitHubVersion(controller: self)
+        nc?.checkGitHubVersion(controller: self,completion: {_ in } )
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let nc = self.presentingViewController as? RootNavigationController
-        nc?.checkGitHubVersion(controller: self)
+        nc?.checkGitHubVersion(controller: self, completion: {_ in } )
     }
     
     private func setData() {

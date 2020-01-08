@@ -52,7 +52,7 @@ class RootNavigationController : UINavigationController {
         self.delegate = self
     }
 
-    func checkGitHubVersion(controller: UIViewController) {
+    func checkGitHubVersion(controller: UIViewController,completion: @escaping (Bool)->Void) {
         self.fetchGitHubVersion( completion: { data in
             guard let data = data else { return }
             let appVersion  = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
@@ -63,7 +63,7 @@ class RootNavigationController : UINavigationController {
                 DispatchQueue.main.async {
                     let alert = UIAlertController(title: S.BetSettings.newVersionTitle, message: S.BetSettings.newVersion, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: S.BetSettings.goTo, style: .default, handler: { _ in
-                        let url = URL(string:"http://iosapp.wagerr.com/")!
+                        let url = URL(string:"https://iosapp.wagerr.com/")!
                         if #available(iOS 10.0, *) {
                             UIApplication.shared.open(url, options: [:], completionHandler: nil)
                         } else {
@@ -74,7 +74,10 @@ class RootNavigationController : UINavigationController {
                         return
                     })
                 }
-
+                completion(false)
+            }
+            else    {
+                completion(true)
             }
         })
     }

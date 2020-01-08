@@ -171,7 +171,10 @@ class EventBetOptionCell: EventDetailRowCell {
         option = .MoneyLine
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
-        addGestures()
+        let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
+        if Float(balanceAmount) >= W.BetAmount.min  {
+            addGestures()
+        }
     }
     
     // MARK: - Accessors

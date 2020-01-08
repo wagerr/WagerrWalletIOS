@@ -46,6 +46,9 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
     private let isPresentedForLock: Bool
     private let disabledView: WalletDisabledView
     private let activityView = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    
+    private var isViewAppear = false
+    private var isLoginAllowed = false
 
     private var logo: UIImageView = {
         let image = UIImageView(image: #imageLiteral(resourceName: "Logo"))
@@ -132,11 +135,23 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
 
     @objc func willEnterForeground() {
         let nc = self.presentingViewController as? RootNavigationController
-        nc?.checkGitHubVersion(controller: self)
+        nc?.checkGitHubVersion(controller: self, completion: { isLoginAllowed in
+            self.isLoginAllowed = isLoginAllowed
+            if self.isLoginAllowed && self.isViewAppear {
+                self.doPrepareLogin()
+            }
+        })
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        isViewAppear = true
+        if isLoginAllowed   {
+            doPrepareLogin()
+        }
+    }
+
+    func doPrepareLogin()   {
         guard UIApplication.shared.applicationState != .background else { return }
         if shouldUseBiometrics && !hasAttemptedToShowBiometrics && !isPresentedForLock && UserDefaults.hasShownWelcome {
             hasAttemptedToShowBiometrics = true
@@ -146,11 +161,16 @@ class LoginViewController : UIViewController, Subscriber, Trackable {
             lockIfNeeded()
         }
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let nc = self.presentingViewController as? RootNavigationController
-        nc?.checkGitHubVersion(controller: self)
+        nc?.checkGitHubVersion(controller: self, completion: { isLoginAllowed in
+            self.isLoginAllowed = isLoginAllowed
+            if self.isLoginAllowed && self.isViewAppear {
+                self.doPrepareLogin()
+            }
+        })
     }
     
     override func viewDidDisappear(_ animated: Bool) {

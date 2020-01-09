@@ -143,7 +143,20 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         Store.subscribe(self, name: .hideStatusBar, callback: { _ in
             self.shouldShowStatusBar = false
         })
+        
+        Store.subscribe(self, selector: { $0[self.currency]?.syncState != $1[self.currency]?.syncState },
+                        callback: { state in
+                            guard let syncState = state[self.currency]?.syncState else { return }
+                            switch syncState {
+                            case .success:
+                                (self.walletManager as! BTCWalletManager).updateEvents()
+                            default:
+                                break
+                            }
+        })
+        
         NotificationCenter.default.addObserver(self, selector: #selector(self.willEnterForeground), name: .UIApplicationWillEnterForeground, object: nil)
+        
     }
 
     @objc func willEnterForeground() {

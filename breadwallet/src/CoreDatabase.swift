@@ -630,6 +630,14 @@ class CoreDatabase {
     // Wagerr specific
     func saveBetMapping(_ ent: BetMapping) {
         queue.async {
+            var sql0: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select ZTXHASH from WGR_MAPPING where ZTXHASH = '\(ent.txHash)'", -1, &sql0, nil)
+            defer { sqlite3_finalize(sql0) }
+
+            if sqlite3_step(sql0) == SQLITE_ROW {   // mapping already exists... abandon
+                return
+            }
+            
             var sql: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.mappingEnt)", -1, &sql, nil)
             defer { sqlite3_finalize(sql) }
@@ -784,6 +792,14 @@ class CoreDatabase {
     
     func saveBetResult(_ ent: BetResult) {
         queue.async {
+            var sql0: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select ZTXHASH from WGR_RESULT where ZTXHASH = '\(ent.txHash)'", -1, &sql0, nil)
+            defer { sqlite3_finalize(sql0) }
+
+            if sqlite3_step(sql0) == SQLITE_ROW {   // result exists... abandon
+                return
+            }
+            
             var sql: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.resultEnt)", -1, &sql, nil)
             defer { sqlite3_finalize(sql) }
@@ -970,7 +986,7 @@ class CoreDatabase {
     
     func getEventsQuery(_ eventID : UInt64,_ eventTimestamp : TimeInterval ) -> String {
         
-        var QUERY = "SELECT a.ZTXHASH, a.ZTYPE, a.ZVERSION, a.ZEVENT_ID, a.ZEVENT_TIMESTAMP, a.ZSPORT_ID, a.ZTOURNAMENT_ID, a.ZROUND_ID, a.ZHOME_TEAM, a.ZAWAY_TEAM, a.ZHOME_ODDS, a.ZAWAY_ODDS, a.ZDRAW_ODDS, a.ZENTRY_PRICE, a.ZSPREAD_POINTS, a.ZSPREAD_HOME_ODDS, a.ZSPREAD_AWAY_ODDS, a.ZTOTAL_POINTS, a.ZTOTAL_OVER_ODDS, a.ZTOTAL_UNDER_ODDS, a.ZHEIGHT, a.ZTIMESTAMP, a.ZLAST_UPDATED"
+        var QUERY = "SELECT DISTINCT a.ZTXHASH, a.ZTYPE, a.ZVERSION, a.ZEVENT_ID, a.ZEVENT_TIMESTAMP, a.ZSPORT_ID, a.ZTOURNAMENT_ID, a.ZROUND_ID, a.ZHOME_TEAM, a.ZAWAY_TEAM, a.ZHOME_ODDS, a.ZAWAY_ODDS, a.ZDRAW_ODDS, a.ZENTRY_PRICE, a.ZSPREAD_POINTS, a.ZSPREAD_HOME_ODDS, a.ZSPREAD_AWAY_ODDS, a.ZTOTAL_POINTS, a.ZTOTAL_OVER_ODDS, a.ZTOTAL_UNDER_ODDS, a.ZHEIGHT, a.ZTIMESTAMP, a.ZLAST_UPDATED"
                 // event mappings
                 + ", s.ZSTRING, t.ZSTRING, r.ZSTRING, b.ZSTRING, c.ZSTRING "
                 // event results

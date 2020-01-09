@@ -142,6 +142,7 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
     
     // MARK: - Tap actions
     @objc func actionTappedOk(tapGestureRecognizer: UITapGestureRecognizer) {
+        textFieldDidEndEditing(amountLabel)
         self.cellDelegate?.didTapOk(choice: betChoice!, amount: Int(betSlider.value))
     }
     

@@ -106,9 +106,10 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     // bet option cell delegate
     func didTapBetOption(choice: EventBetChoice, isSelected: Bool) {
         let sliderPos = (dataSource?.prepareBetLayout(choice: choice))!
+        let sliderIndexPath = IndexPath(row: sliderPos, section: 0)
         tableView.beginUpdates()
         if sliderPosToRemove == 0  {
-            tableView.insertRows(at: [IndexPath(row: sliderPos, section: 0)], with: .automatic)
+            tableView.insertRows(at: [sliderIndexPath], with: .automatic)
             sliderPosToRemove = sliderPos
         }
         else    {
@@ -118,7 +119,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
                     sliderPosToRemove = sliderPos
                 }
                 else {
-                    tableView.deleteRows(at: [IndexPath(row: sliderPos, section: 0)], with: .none)
+                    tableView.deleteRows(at: [sliderIndexPath], with: .none)
                     sliderPosToRemove = 0
                 }
             }
@@ -127,6 +128,8 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             }
         }
         tableView.endUpdates()
+        tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
+        
         dataSource?.registerBetChoice(choice: choice)
     }
     

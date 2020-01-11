@@ -82,7 +82,8 @@ func ==(lhs: Transaction, rhs: Transaction) -> Bool {
     return lhs.hash == rhs.hash &&
         lhs.status == rhs.status &&
         lhs.comment == rhs.comment &&
-        lhs.hasKvStore == rhs.hasKvStore
+        lhs.hasKvStore == rhs.hasKvStore &&
+        lhs.confirmations == rhs.confirmations
 }
 
 func ==(lhs: [Transaction], rhs: [Transaction]) -> Bool {

@@ -244,6 +244,7 @@ extension TransactionsTableViewController {
         
         if transactionInfo[tx.hash] != nil  {
             transactionInfo[tx.hash]?.transaction = tx as! BtcTransaction
+            transactionInfo[tx.hash]?.currentHeight = walletManager.peerManager!.lastBlockHeight    // update currheight for payouts
             cell.setTransaction(viewModel,
                 isBtcSwapped: self.isBtcSwapped,
                 rate: rate,

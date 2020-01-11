@@ -98,7 +98,10 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             guard let oldEvents = $0[self.viewModel.currency]?.events else { return false }
             guard let newEvents = $1[self.viewModel.currency]?.events else { return false }
             return oldEvents != newEvents }, callback: { [unowned self] in
-            guard let event = $0[self.viewModel.currency]?.events.first(where: { $0.eventID == self.viewModel.eventID }) else { return }
+            guard let event = $0[self.viewModel.currency]?.events.first(where: { $0.eventID == self.viewModel.eventID }) else {
+                // close slip
+                self.close()
+                return }
             self.event = event
         })
     }
@@ -297,8 +300,8 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     private func reload() {
         viewModel = event
-        //dataSource = EventDetailDataSource(viewModel: viewModel)
-        //tableView.dataSource = dataSource
+        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self)
+        tableView.dataSource = dataSource
         tableView.reloadData()
     }
     
@@ -339,9 +342,15 @@ extension EventDetailViewController {
         */
         //Need to calculate keyboard exact size due to Apple suggestions
         self.tableView.isScrollEnabled = true
+        var offset = CGFloat(0)
+        if #available(iOS 11.0, *)   {
+            if E.isIPhoneXOrBetter  {
+                offset = view.safeAreaInsets.bottom
+            }
+        }
         let info : NSDictionary = notification.userInfo! as NSDictionary
         let keyboardSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
-        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height, 0.0)
+        let contentInsets : UIEdgeInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize!.height + offset, 0.0)
 
         self.tableView.contentInset = contentInsets
         self.tableView.scrollIndicatorInsets = contentInsets
@@ -353,12 +362,14 @@ extension EventDetailViewController {
         
 /*
         var aRect : CGRect = self.view.frame
-        aRect.size.height -= keyboardSize!.height
+        aRect.size.height -= keyboardSize!.height + offset
         if let activeFrame = self.dataSource?.sliderCell?.amountTextFrame
         {
             if (!aRect.contains(activeFrame.origin))
             {
-                self.tableView.scrollRectToVisible(activeFrame, animated: true)
+                DispatchQueue.main.async {
+                    self.tableView.scrollRectToVisible(activeFrame, animated: true)
+                }
             }
         }
  */

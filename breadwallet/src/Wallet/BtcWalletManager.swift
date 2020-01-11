@@ -20,6 +20,7 @@ class BTCWalletManager : WalletManager {
     private let progressUpdateInterval: TimeInterval = 0.5
     private let updateDebounceInterval: TimeInterval = 0.4
     private let updateEventInterval: TimeInterval = 5
+    private let minuteInterval: TimeInterval = 60
     private var progressTimer: Timer?
     private var lastBlockHeightKey: String {
         return "LastBlockHeightKey-\(currency.code)"
@@ -31,6 +32,7 @@ class BTCWalletManager : WalletManager {
     private var retryTimer: RetryTimer?
     private var updateTimer: Timer?
     private var eventUpdateTimer: Timer?
+    private var minuteTimer: Timer?
 
     var kvStore: BRReplicatedKVStore? {
         didSet { requestTxUpdate() }
@@ -110,6 +112,7 @@ class BTCWalletManager : WalletManager {
         } else {
             self.db = CoreDatabase()
         }
+        self.minuteTimer = Timer.scheduledTimer(timeInterval: minuteInterval, target: self, selector: #selector(updateTransactions), userInfo: nil, repeats: true)
     }
 
     var isWatchOnly: Bool {
@@ -286,7 +289,9 @@ extension BTCWalletManager : BRWalletListener {
     }
 
     @objc private func updateTransactions() {
-        updateTimer?.invalidate()
+        if updateTimer != nil   {
+            updateTimer?.invalidate()
+        }
         updateTimer = nil
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let myself = self else { return }

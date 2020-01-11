@@ -95,7 +95,9 @@ class ReScanViewController : UIViewController, Subscriber {
         body.append(NSAttributedString(string: "\(S.ReScan.subheader1)\n", attributes: headerAttributes))
         body.append(NSAttributedString(string: "\(S.ReScan.body1)\n\n", attributes: bodyAttributes))
         body.append(NSAttributedString(string: "\(S.ReScan.subheader2)\n", attributes: headerAttributes))
-        body.append(NSAttributedString(string: "\(S.ReScan.body2)\n\n\(S.ReScan.body3)", attributes: bodyAttributes))
+        body.append(NSAttributedString(string: "\(S.ReScan.body2)\n\n\(S.ReScan.body3)\n\n\n", attributes: bodyAttributes))
+        body.append(NSAttributedString(string: "\(S.ReScan.subheader4)\n", attributes: headerAttributes))
+        body.append(NSAttributedString(string: "\(S.ReScan.body4)\n\n", attributes: bodyAttributes))
         return body
     }
 

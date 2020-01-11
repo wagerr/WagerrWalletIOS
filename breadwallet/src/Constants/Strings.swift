@@ -326,7 +326,7 @@ enum S {
         static let notifications = NSLocalizedString("Settings.notifications", value:"Notifications", comment: "Notifications label")
         static let touchIdLimit = NSLocalizedString("Settings.touchIdLimit", value:"Touch ID Spending Limit", comment: "Touch ID spending limit label")
         static let currency = NSLocalizedString("Settings.currency", value:"Display Currency", comment: "Default currency label")
-        static let sync = NSLocalizedString("Settings.sync", value:"Sync Blockchain", comment: "Sync blockchain label")
+        static let sync = NSLocalizedString("Settings.sync", value:"Rescan Blockchain", comment: "Sync blockchain label")
         static let shareData = NSLocalizedString("Settings.shareData", value:"Share Anonymous Data", comment: "Share anonymous data label")
         static let earlyAccess = NSLocalizedString("Settings.earlyAccess", value:"Join Early Access", comment: "Join Early access label")
         static let about = NSLocalizedString("Settings.about", value:"About", comment: "About label")
@@ -371,13 +371,16 @@ enum S {
     }
 
     enum ReScan {
-        static let header = NSLocalizedString("ReScan.header", value:"Sync Blockchain", comment: "Sync Blockchain view header")
+        static let header = NSLocalizedString("ReScan.header", value:"Rescan Blockchain", comment: "Rescan Blockchain view header")
         static let subheader1 = NSLocalizedString("ReScan.subheader1", value:"Estimated time", comment: "Subheader label")
-        static let subheader2 = NSLocalizedString("ReScan.subheader2", value:"When to Sync?", comment: "Subheader label")
-        static let body1 = NSLocalizedString("ReScan.body1", value:"10-20 minutes", comment: "extimated time")
-        static let body2 = NSLocalizedString("ReScan.body2", value:"If a transaction shows as completed on the network but not in your Wagerr.", comment: "Syncing explanation")
+        static let subheader2 = NSLocalizedString("ReScan.subheader2", value:"When to Rescan?", comment: "Subheader label")
+        static let body1 = NSLocalizedString("ReScan.body1", value:"20 minutes", comment: "extimated time")
+        static let body2 = NSLocalizedString("ReScan.body2", value:"If a transaction shows as completed on the network but not in your Wagerr wallet.", comment: "Syncing explanation")
         static let body3 = NSLocalizedString("ReScan.body3", value:"You repeatedly get an error saying your transaction was rejected.", comment: "Syncing explanation")
-        static let buttonTitle = NSLocalizedString("ReScan.buttonTitle", value:"Start Sync", comment: "Start Sync button label")
+        static let subheader4 = NSLocalizedString("ReScan.subheader4", value:"Note:", comment: "Subheader label")
+        static let body4 = NSLocalizedString("ReScan.body4", value:"In order for this process to complete successfully, please do not minimise the application or switch to another application. It is advisable to keep your device plugged-in during the rescan process.", comment: "Subheader label")
+        
+        static let buttonTitle = NSLocalizedString("ReScan.buttonTitle", value:"Start Rescan", comment: "Start Sync button label")
         static let footer = NSLocalizedString("ReScan.footer", value:"You will not be able to send money while syncing with the blockchain.", comment: "Sync blockchain view footer")
         static let alertTitle = NSLocalizedString("ReScan.alertTitle", value:"Sync with Blockchain?", comment: "Alert message title")
         static let alertMessage = NSLocalizedString("ReScan.alertMessage", value:"You will not be able to send money while syncing.", comment: "Alert message body")
@@ -604,7 +607,7 @@ enum S {
         static let economyWarning = NSLocalizedString("FeeSelector.economyWarning", value: "This option is not recommended for time-sensitive transactions.", comment: "Warning message for economy fee")
         static let regular = NSLocalizedString("FeeSelector.regular", value: "Regular", comment: "Regular fee")
         static let economy = NSLocalizedString("FeeSelector.economy", value: "Economy", comment: "Economy fee")
-        static let economyTime = NSLocalizedString("FeeSelector.economyTime", value: "10-20 mins", comment: "E.g. [This transaction is predicted to complete in] 1-24 hours")
+        static let economyTime = NSLocalizedString("FeeSelector.economyTime", value: "20 mins", comment: "E.g. [This transaction is predicted to complete in] 1-24 hours")
         static let regularTime = NSLocalizedString("FeeSelector.regularTime", value: "1-5 minutes", comment: "E.g. [This transaction is predicted to complete in] 1-5 minutes")
         static let ethTime = NSLocalizedString("FeeSelector.ethTime", value: "2-5 minutes", comment: "E.g. [This transaction is predicted to complete in] 2-5 minutes")
     }

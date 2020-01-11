@@ -346,6 +346,12 @@ extension EventDetailViewController {
         self.tableView.contentInset = contentInsets
         self.tableView.scrollIndicatorInsets = contentInsets
 
+        DispatchQueue.main.async {
+            let sliderIndexPath = IndexPath(row: self.sliderPosToRemove, section: 0)
+            self.tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
+        }
+        
+/*
         var aRect : CGRect = self.view.frame
         aRect.size.height -= keyboardSize!.height
         if let activeFrame = self.dataSource?.sliderCell?.amountTextFrame
@@ -355,6 +361,7 @@ extension EventDetailViewController {
                 self.tableView.scrollRectToVisible(activeFrame, animated: true)
             }
         }
+ */
     }
     
     @objc fileprivate func keyboardWillHide(notification: NSNotification) {

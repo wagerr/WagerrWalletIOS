@@ -131,7 +131,9 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             }
         }
         tableView.endUpdates()
-        tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
+        if isSelected {
+            tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
+        }
         
         dataSource?.registerBetChoice(choice: choice)
     }

@@ -499,6 +499,10 @@ enum S {
             static let title = NSLocalizedString("Prompts.FaceId.title", value: "Enable Face ID", comment: "Enable face ID prompt title")
             static let body = NSLocalizedString("Prompts.FaceId.body", value: "Tap Continue to enable Face ID", comment: "Enable face ID prompt body")
         }
+        enum SyncWarning {
+            static let title = NSLocalizedString("Prompts.SyncWarning.title", value: "Initial sync warning", comment: "initial sync warning title")
+            static let body = NSLocalizedString("Prompts.SyncWarning.body", value: "Initial syncing may take about 15-20 minutes", comment: "initial sync warning body")
+        }
     }
 
     enum PaymentProtocol {

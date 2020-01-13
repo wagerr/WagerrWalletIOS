@@ -15,9 +15,10 @@ enum PromptType {
     case upgradePin
     case noPasscode
     case shareData
+    case syncWarning
 
     static var defaultOrder: [PromptType] = {
-        return [.upgradePin, .paperKey, .noPasscode, .biometrics /*, .shareData */]
+        return [.syncWarning, .upgradePin, .paperKey, .noPasscode, .biometrics /*, .shareData */]
     }()
     
     static func nextPrompt(walletManager: BTCWalletManager) -> PromptType? {
@@ -31,6 +32,7 @@ enum PromptType {
         case .upgradePin: return S.Prompts.UpgradePin.title
         case .noPasscode: return S.Prompts.NoPasscode.title
         case .shareData: return S.Prompts.ShareData.title
+        case .syncWarning: return S.Prompts.SyncWarning.title
         }
     }
     
@@ -41,6 +43,7 @@ enum PromptType {
         case .upgradePin: return "upgradePinPrompt"
         case .noPasscode: return "noPasscodePrompt"
         case .shareData: return "shareDataPrompt"
+        case .syncWarning: return "syncWarning"
         }
     }
 
@@ -51,6 +54,7 @@ enum PromptType {
         case .upgradePin: return S.Prompts.UpgradePin.body
         case .noPasscode: return S.Prompts.NoPasscode.body
         case .shareData: return S.Prompts.ShareData.body
+        case .syncWarning: return S.Prompts.SyncWarning.body
         }
     }
 
@@ -62,6 +66,7 @@ enum PromptType {
         case .upgradePin: return .promptUpgradePin
         case .noPasscode: return nil
         case .shareData: return .promptShareData
+        case .syncWarning: return nil
         }
     }
 
@@ -77,6 +82,9 @@ enum PromptType {
             return !LAContext.isPasscodeEnabled
         case .shareData:
             return !UserDefaults.hasAquiredShareDataPermission && !UserDefaults.hasPromptedShareData
+        case .syncWarning:
+            let oneMonthAgo = UInt32(NSDate().timeIntervalSince1970 - (30*24*3600))
+            return !UserDefaults.hasPromptedSyncWarning && walletManager.peerManager?.lastBlockTimestamp ?? 0 < oneMonthAgo
         }
     }
 }

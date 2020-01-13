@@ -259,6 +259,9 @@ class HomeScreenViewController : UIViewController, Subscriber, Trackable {
             if type == .shareData {
                 UserDefaults.hasPromptedShareData = true
             }
+            if type == .syncWarning {
+                UserDefaults.hasPromptedSyncWarning = true
+            }
         } else {
             currentPrompt = nil
         }

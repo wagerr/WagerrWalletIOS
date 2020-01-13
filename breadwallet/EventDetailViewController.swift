@@ -359,7 +359,9 @@ extension EventDetailViewController {
 
         DispatchQueue.main.async {
             let sliderIndexPath = IndexPath(row: self.sliderPosToRemove, section: 0)
-            self.tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
+            if let _ = self.tableView.cellForRow(at: sliderIndexPath) {
+                self.tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
+            }
         }
         
 /*

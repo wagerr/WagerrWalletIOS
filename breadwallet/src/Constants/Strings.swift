@@ -206,7 +206,7 @@ enum S {
     }
 
     enum BetSettings {
-        static let headerMessage = NSLocalizedString("BetSettings.headerMessage", value:"Wagerr Bet Display Settings", comment: "header message.")
+        static let headerMessage = NSLocalizedString("BetSettings.headerMessage", value:"Wagerr Pro Display Settings", comment: "header message.")
         static let useFeeCheck = NSLocalizedString("BetSettings.useFeeCheck", value:"Include Wagerr network share in betting odds", comment: "Use fee check text")
         static let newVersionTitle = NSLocalizedString("BetSettings.newVersion", value: "New version", comment: "New version available")
         static let newVersion = NSLocalizedString("BetSettings.newVersion", value: "There is a new version available!", comment: "New version available")

@@ -387,11 +387,13 @@ class ApplicationController : Subscriber, Trackable {
         }
 
         //State restoration
+        /*
         if let currency = Store.state.currencies.first(where: { $0.code == UserDefaults.selectedCurrencyCode }),
             let walletManager = self.walletManagers[currency.code] {
             let accountViewController = AccountViewController(currency: currency, walletManager: walletManager)
             nc.pushViewController(accountViewController, animated: true)
         }
+ */
 
         window.rootViewController = nc
     }

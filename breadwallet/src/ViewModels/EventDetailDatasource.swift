@@ -150,7 +150,7 @@ extension EventDetailDataSource: UITableViewDataSource {
         case .header:
             let headerCell = cell as! EventHeaderCell
             headerCell.header = viewModel.title
-            let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
+            let balanceAmount = Currencies.btc.state?.balance != nil ? (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis : 0
             headerCell.error = (Float(balanceAmount) < W.BetAmount.min) ? String.init(format: S.Betting.errorMinimum, Int(W.BetAmount.min), Currencies.btc.code) : ""
 
         case .date:

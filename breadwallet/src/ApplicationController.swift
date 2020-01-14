@@ -136,6 +136,8 @@ class ApplicationController : Subscriber, Trackable {
                 return
             }
             if currency.matches(Currencies.btc) {
+                guard self.primaryWalletManager != nil else { return }
+                guard self.primaryWalletManager!.apiClient != nil else { return }
                 self.exchangeUpdater = ExchangeUpdater(currencies: Store.state.currencies, apiClient: self.primaryWalletManager!.apiClient!)
             }
             walletManager.initPeerManager {

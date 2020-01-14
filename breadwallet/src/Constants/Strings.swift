@@ -193,7 +193,7 @@ enum S {
     }
     
     enum EventDetails {
-        static let emptyMessage = NSLocalizedString("EventDetails.emptyMessage", value:"Sports events will appear here.", comment: "Empty event list message.")
+        static let emptyMessage = NSLocalizedString("EventDetails.emptyMessage", value:"Please allow 10-20 minutes for sync to complete before sporting events appear", comment: "Empty event list message.")
         static let event = NSLocalizedString("EventDetails.event", value:"Event", comment: "Event")
         static let homeTeam = NSLocalizedString("EventDetails.homeTeam", value:"Home Team", comment: "Home Team")
         static let awayTeam = NSLocalizedString("EventDetails.awayTeam", value:"Away Team", comment: "Away Team")

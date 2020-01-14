@@ -18,7 +18,7 @@ enum PromptType {
     case syncWarning
 
     static var defaultOrder: [PromptType] = {
-        return [.syncWarning, .upgradePin, .paperKey, .noPasscode, .biometrics /*, .shareData */]
+        return [.upgradePin, .paperKey, .noPasscode, .biometrics /*, .shareData */]
     }()
     
     static func nextPrompt(walletManager: BTCWalletManager) -> PromptType? {

@@ -93,11 +93,10 @@ class EventListCell: UITableViewCell {
     
     private func setupStyle() {
         selectionStyle = .none
-        headerLabel.numberOfLines = 2
+        headerLabel.numberOfLines = 1
         headerLabel.textAlignment = .left
-        headerLabel.lineBreakMode = .byWordWrapping
-        homeTeamLabel.textAlignment = .left
         headerLabel.lineBreakMode = .byTruncatingTail
+        homeTeamLabel.textAlignment = .left
         awayTeamLabel.textAlignment = .left
         awayTeamLabel.lineBreakMode = .byTruncatingTail
         timestamp.setContentHuggingPriority(.required, for: .vertical)

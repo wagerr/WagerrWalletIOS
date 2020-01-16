@@ -896,7 +896,7 @@ class CoreDatabase {
     }
 
     func loadEvents(_ eventID : UInt64,_ eventTimestamp : TimeInterval, callback: @escaping ([BetEventViewModel?])->Void) {
-        queue.async {
+
             var events = [BetEventViewModel?]()
             var sql: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, self.getEventsQuery( eventID, eventTimestamp ), -1, &sql, nil)
@@ -944,7 +944,7 @@ class CoreDatabase {
                 if !event.zeroedOdds()  {
                     events.append(event)
                 }
-            }
+            
 
             if sqlite3_errcode(self.db) != SQLITE_DONE { print("SQLITE error loadEvents: " + String(cString: sqlite3_errmsg(self.db))) }
             DispatchQueue.main.async {

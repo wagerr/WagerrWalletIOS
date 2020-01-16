@@ -302,7 +302,9 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     private func reload() {
         viewModel = event
+        let currChoice = (self.dataSource as! EventDetailDataSource).currChoice
         self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self)
+        dataSource?.prepareBetLayout(choice: currChoice)
         tableView.dataSource = dataSource
         tableView.reloadData()
     }

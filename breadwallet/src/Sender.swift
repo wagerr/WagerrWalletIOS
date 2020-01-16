@@ -216,7 +216,8 @@ class BitcoinSender: SenderBase<Wagerr, BTCWalletManager>, Sender {
     }
     
     func sendTransaction(allowBiometrics: Bool, pinVerifier: @escaping PinVerifier, completion: @escaping SendCompletion) {
-        guard readyToSend, let tx = transaction else { return completion(.creationError("not ready")) }
+        guard readyToSend else { return completion(.creationError("Not ready to send yet.")) }
+        guard let tx = transaction else { return completion(.creationError("Please ensure there is sufficient WGR for transaction fees")) }
         
         if allowBiometrics && UserDefaults.isBiometricsEnabled && walletManager.canUseBiometrics(forTx: tx) {
             sendWithBiometricVerification(tx: tx, pinVerifier: pinVerifier, completion: completion)

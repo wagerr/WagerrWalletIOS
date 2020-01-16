@@ -42,6 +42,7 @@ class WalletDisabledView : UIView {
     }
 
     private let label = UILabel(font: .customBold(size: 20.0), color: .darkText)
+    private let label2 = UILabel(font: .customBody(size: 16.0), color: .darkText)
     private let faq: UIButton
     private let blur: UIVisualEffectView
     private let reset = ShadowButton(title: S.UnlockScreen.resetPin, type: .blackTransparent)
@@ -56,6 +57,7 @@ class WalletDisabledView : UIView {
     private func addSubviews() {
         addSubview(blur)
         addSubview(label)
+        addSubview(label2)
         addSubview(faq)
         addSubview(reset)
     }
@@ -65,6 +67,11 @@ class WalletDisabledView : UIView {
         label.constrain([
             label.centerYAnchor.constraint(equalTo: blur.centerYAnchor),
             label.centerXAnchor.constraint(equalTo: blur.centerXAnchor) ])
+        label2.constrain([
+            label2.topAnchor.constraint(equalTo: label.bottomAnchor, constant: C.padding[4]),
+            label2.leadingAnchor.constraint(equalTo: blur.leadingAnchor, constant: C.padding[2]),
+            label2.trailingAnchor.constraint(equalTo: blur.trailingAnchor, constant: -C.padding[2]),
+            label2.centerXAnchor.constraint(equalTo: blur.centerXAnchor) ])
         faq.constrain([
             faq.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[2]),
             faq.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -C.padding[2]),
@@ -75,11 +82,14 @@ class WalletDisabledView : UIView {
             reset.centerYAnchor.constraint(equalTo: faq.centerYAnchor),
             reset.heightAnchor.constraint(equalToConstant: C.Sizes.buttonHeight),
             reset.widthAnchor.constraint(equalToConstant: 200.0) ])
-
     }
 
     private func setData() {
         label.textAlignment = .center
+        
+        label2.textAlignment = .center
+        label2.numberOfLines = 4
+        label2.text = S.BetSettings.lockWarning
     }
 
     required init?(coder aDecoder: NSCoder) {

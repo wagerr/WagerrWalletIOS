@@ -74,10 +74,14 @@ class RootNavigationController : UINavigationController {
                         return
                     })
                 }
-                completion(false)
+                DispatchQueue.main.async    {   // completion affects UI
+                    completion(false)
+                }
             }
             else    {
-                completion(true)
+                DispatchQueue.main.async    {
+                    completion(true)
+                }
             }
         })
     }

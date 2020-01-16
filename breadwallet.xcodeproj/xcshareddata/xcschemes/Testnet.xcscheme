@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "75A2A78F1DA5934300A983D8"
-               BuildableName = "Wagerr Bet.app"
+               BuildableName = "Wagerr Pro.app"
                BlueprintName = "breadwallet"
                ReferencedContainer = "container:breadwallet.xcodeproj">
             </BuildableReference>
@@ -31,7 +31,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "75A2A78F1DA5934300A983D8"
-            BuildableName = "Wagerr Bet.app"
+            BuildableName = "Wagerr Pro.app"
             BlueprintName = "breadwallet"
             ReferencedContainer = "container:breadwallet.xcodeproj">
          </BuildableReference>
@@ -42,7 +42,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "75A2A7A31DA5934300A983D8"
-               BuildableName = "breadwalletTests.xctest"
+               BuildableName = "Wagerr Pro.xctest"
                BlueprintName = "breadwalletTests"
                ReferencedContainer = "container:breadwallet.xcodeproj">
             </BuildableReference>
@@ -74,7 +74,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "75A2A78F1DA5934300A983D8"
-            BuildableName = "Wagerr Bet.app"
+            BuildableName = "Wagerr Pro.app"
             BlueprintName = "breadwallet"
             ReferencedContainer = "container:breadwallet.xcodeproj">
          </BuildableReference>
@@ -91,7 +91,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "75A2A78F1DA5934300A983D8"
-            BuildableName = "Wagerr Bet.app"
+            BuildableName = "Wagerr Pro.app"
             BlueprintName = "breadwallet"
             ReferencedContainer = "container:breadwallet.xcodeproj">
          </BuildableReference>

@@ -208,7 +208,7 @@ extension BTCWalletManager : WalletAuthenticator {
             else if !BTCWalletManager.failedPins.contains(pin) { // unique failed attempt
                 BTCWalletManager.failedPins.append(pin)
                 
-                if (failCount >= 8) { // wipe wallet after 8 failed pin attempts and 24+ hours of lockout
+                if (failCount >= 7) { // WAGERR change to 7 (4hr) wipe wallet after 8 failed pin attempts and 24+ hours of lockout
                     Store.trigger(name: .wipeWalletNoPrompt)
                     return false
                 }

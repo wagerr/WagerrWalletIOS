@@ -941,7 +941,7 @@ class CoreDatabase {
                     homeScore: UInt32(bitPattern: sqlite3_column_int(sql, 29)),
                     awayScore: UInt32(bitPattern: sqlite3_column_int(sql, 30)) );
                 
-                if !event.zeroedOdds()  {
+                if eventID > 0 || !event.zeroedOdds()  {
                     events.append(event)
                 }
             

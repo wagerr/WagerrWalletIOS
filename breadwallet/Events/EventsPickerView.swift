@@ -9,7 +9,13 @@
 import Foundation
 import UIKit
  
-extension UITextField {
+class PaddedPickerTextField: UITextField {
+    
+     override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
+       var rect = super.rightViewRect(forBounds: bounds)
+       rect.origin.x -= 10 // Assume your right margin is 30
+       return rect
+     }
     func loadDropdownData(data: [ (Int,String) ], didChangePicker: @escaping ( Int ) -> Void) {
         self.inputView = EventPickerView(pickerData: data, dropdownField: self, didChangePicker: didChangePicker)
     }
@@ -22,12 +28,12 @@ extension UITextField {
 class EventPickerView : UIPickerView, UIPickerViewDataSource, UIPickerViewDelegate {
 
     var pickerData : [ (Int,String) ]!
-    var pickerTextField : UITextField!
+    var pickerTextField : PaddedPickerTextField!
     var selectedIndex : Int
     
     let didChangePicker: ( Int ) -> Void
  
-    init(pickerData: [ (Int, String) ], dropdownField: UITextField, didChangePicker: @escaping ( Int ) -> Void ) {
+    init(pickerData: [ (Int, String) ], dropdownField: PaddedPickerTextField, didChangePicker: @escaping ( Int ) -> Void ) {
         self.pickerData = pickerData
         self.pickerTextField = dropdownField
         self.selectedIndex = -1

@@ -206,7 +206,12 @@ struct BtcTransaction: Transaction {
             startingBalance = endingBalance.subtractingReportingOverflow(amount).0.subtractingReportingOverflow(fee).0
         case .sent:
             address = otherAddress
-            amount = amountSent - amountReceived - fee
+            if amountSent > (amountReceived + fee)  {   // avoid crash on corrupt data
+                amount = amountSent - amountReceived - fee
+            }
+            else    {
+                amount = 0
+            }
             startingBalance = endingBalance.addingReportingOverflow(amount).0.addingReportingOverflow(fee).0
         case .moved:
             address = myAddress

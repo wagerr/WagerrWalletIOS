@@ -10,7 +10,7 @@ import UIKit
 import BRCore
 import MachO
 
-let eventsHeaderHeight: CGFloat = 152.0
+let eventsHeaderHeight: CGFloat = 172.0
 let eventsFooterHeight: CGFloat = 0.0
 
 protocol BetSettingsDelegate    {
@@ -130,7 +130,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
     }
 
     private func addConstraints() {
-        headerContainer.constrainTopCorners(height: accountHeaderHeight)
+        headerContainer.constrainTopCorners(height: eventsHeaderHeight)
         headerView.constrain(toSuperviewEdges: nil)
         searchHeaderview.constrain(toSuperviewEdges: nil)
     }
@@ -196,7 +196,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
     }
     
     private func didChangeEvents(events: [BetEventViewModel]) -> Void {
-        var sports : [(Int, String)] = [(-1, "<Select sport>")]
+        var sports : [(Int, String)] = [(-1, "Sport")]
         let sportsTuples : [(Int, String)] = events.reduce([], { initialValue, collectionElement in
             let iv : [(Int, String)] = initialValue
             let tuple = (  Int(collectionElement.sportID), collectionElement.txSport )
@@ -208,7 +208,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         var tournaments = [ Int: [(Int,String)] ]()
         for (sportID, _) in sports {
             tournaments[sportID] = [(Int,String)]()
-            tournaments[sportID]?.append((-1, "<Select tournament>"))
+            tournaments[sportID]?.append((-1, "Tournament"))
             let sportTournaments : [(Int, String)] = events.filter { $0.sportID==sportID }.reduce([], { initialValue, collectionElement in
                 let iv : [(Int, String)] = initialValue
                 let tuple = (  Int(collectionElement.tournamentID), collectionElement.txTournament )

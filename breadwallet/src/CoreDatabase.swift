@@ -652,7 +652,9 @@ class CoreDatabase {
             var sql2: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
                 "(Z_PK, ZVERSION, ZNAMESPACEID, ZMAPPINGID, ZSTRING, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
-                "values (\(pk + 1), \(ent.version), \(ent.namespaceID.rawValue), \(ent.mappingID) , '\(ent.description)', \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+                "values (\(pk + 1), \(ent.version), \(ent.namespaceID.rawValue), \(ent.mappingID) , ? , \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+            sqlite3_bind_text(sql2, 1, ent.description, -1, SQLITE_TRANSIENT)
+            
             defer { sqlite3_finalize(sql2) }
             
             guard sqlite3_step(sql2) == SQLITE_DONE else {
@@ -865,34 +867,21 @@ class CoreDatabase {
             }
         }
     }
-    
-    func loadMappingsByNamespaceId( mappingID : Int32 ,  callback: @escaping ([BetMapping?])->Void) {
+        
+    func loadMappingsByNamespaceId( namespaceID : Int32 ,  mappingID : Int32 )  {
         queue.async {
             var mappings = [BetMapping?]()
             var sql: OpaquePointer? = nil
-            sqlite3_prepare_v2(self.db, "select * from WGR_MAPPING where ZNAMESPACEID = \(mappingID)", -1, &sql, nil)
+            //sqlite3_prepare_v2(self.db, "select ZTXHASH from WGR_MAPPING where ZNAMESPACEID = \(namespaceID) and ZMAPPINGID = \(mappingID)", -1, &sql, nil)
+            sqlite3_prepare_v2(self.db, "select ZTXHASH, ZNAMESPACEID from WGR_MAPPING where ZMAPPINGID = \(mappingID)", -1, &sql, nil)
             defer { sqlite3_finalize(sql) }
 
             while sqlite3_step(sql) == SQLITE_ROW {
-                /*
-                let len = Int(sqlite3_column_bytes(sql, 0))
-                let buf = sqlite3_column_blob(sql, 0).assumingMemoryBound(to: UInt8.self)
-                guard len >= MemoryLayout<UInt32>.size*2 else { return DispatchQueue.main.async { callback(transactions) }}
-                var off = len - MemoryLayout<UInt32>.size*2
-                guard let tx = BRTransactionParse(buf, off) else { return DispatchQueue.main.async { callback(transactions) }}
-                tx.pointee.blockHeight =
-                    UnsafeRawPointer(buf).advanced(by: off).assumingMemoryBound(to: UInt32.self).pointee.littleEndian
-                off = off + MemoryLayout<UInt32>.size
-                let timestamp = UnsafeRawPointer(buf).advanced(by: off).assumingMemoryBound(to: UInt32.self).pointee.littleEndian
-                tx.pointee.timestamp = (timestamp == 0) ? timestamp : timestamp + UInt32(NSTimeIntervalSince1970)
-                transactions.append(tx)
- */
+                let txHash = String(cString: sqlite3_column_text(sql, 0))
+                let namespace = UInt32(bitPattern: sqlite3_column_int(sql, 1))
             }
 
             if sqlite3_errcode(self.db) != SQLITE_DONE { print(String(cString: sqlite3_errmsg(self.db))) }
-            DispatchQueue.main.async {
-                callback(mappings)
-            }
         }
     }
 
@@ -943,6 +932,9 @@ class CoreDatabase {
                     awayScore: UInt32(bitPattern: sqlite3_column_int(sql, 30)) );
                 
                 if eventID > 0 || !event.zeroedOdds()  {
+                   // if event.homeTeamID == 1449     {
+                    //    loadMappingsByNamespaceId(namespaceID: 3,mappingID: 1449)
+                //   }
                     events.append(event)
                 }
             

@@ -12,6 +12,7 @@ enum PhraseEntryReason {
     case setSeed(EnterPhraseCallback)
     case validateForResettingPin(EnterPhraseCallback)
     case validateForWipingWallet(()->Void)
+    case validateSeed(()->Void)
 }
 
 typealias EnterPhraseCallback = (String) -> Void
@@ -31,6 +32,8 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
             self.customTitle = S.RecoverWallet.headerResetPin
         case .validateForWipingWallet(_):
             self.customTitle = S.WipeWallet.title
+        case .validateSeed(_):
+            self.customTitle = S.ConfirmPaperPhrase.title
         }
 
         super.init(nibName: nil, bundle: nil)
@@ -148,6 +151,10 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
             saveEvent("enterPhrase.wipeWallet")
             titleLabel.text = S.WipeWallet.title
             subheader.text = S.WipeWallet.instruction
+        case .validateSeed(_):
+            saveEvent("enterPhrase.validateSeed")
+            titleLabel.text = S.ConfirmPaperPhrase.title
+            subheader.text = S.ConfirmPaperPhrase.label12words
         }
 
         scrollView.delegate = self
@@ -178,7 +185,14 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
         case .validateForWipingWallet(let callback):
             guard self.walletManager.authenticate(phrase: phrase) else { errorLabel.isHidden = false; return }
             return callback()
+        case .validateSeed(let callback):
+            guard self.walletManager.authenticate(phrase: phrase) else { errorLabel.isHidden = false; return }
+            Store.perform(action: Alert.Show(.paperKeySet(callback: {
+                Store.perform(action: HideStartFlow())
+            })))
+            return callback()
         }
+        
     }
 
     @objc private func keyboardWillShow(notification: Notification) {

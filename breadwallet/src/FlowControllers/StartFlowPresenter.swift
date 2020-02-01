@@ -169,12 +169,14 @@ class StartFlowPresenter : Subscriber {
     }
 
     private func pushConfirmPaperPhraseViewController(pin: String) {
-        
+        /*
         let confirmViewController = ConfirmPaperPhraseViewController(walletManager: walletManager, pin: pin, callback: {
             Store.perform(action: Alert.Show(.paperKeySet(callback: {
                 Store.perform(action: HideStartFlow())
             })))
         })
+        */
+        let confirmViewController = EnterPhraseViewController(walletManager: walletManager, reason: .validateSeed({ return }) )
         
         confirmViewController.title = S.SecurityCenter.Cells.paperKeyTitle
         navigationController?.navigationBar.tintColor = .white

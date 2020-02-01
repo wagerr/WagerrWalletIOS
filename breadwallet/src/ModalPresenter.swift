@@ -626,7 +626,7 @@ class ModalPresenter : Subscriber, Trackable {
         let walletManager = primaryWalletManager
         var writeViewController: WritePaperPhraseViewController?
         writeViewController = WritePaperPhraseViewController(walletManager: walletManager, pin: pin, callback: {
-            
+            /*
             var confirm: ConfirmPaperPhraseViewController?
             confirm = ConfirmPaperPhraseViewController(walletManager: walletManager, pin: pin, callback: {
                 confirm?.dismiss(animated: true, completion: {
@@ -635,6 +635,9 @@ class ModalPresenter : Subscriber, Trackable {
                     })))
                 })
             })
+            */
+            var confirm: EnterPhraseViewController?
+            confirm = EnterPhraseViewController(walletManager: walletManager, reason: .validateSeed({confirm?.dismiss(animated: true) }) )
             
             writeViewController?.navigationItem.title = S.SecurityCenter.Cells.paperKeyTitle
             if let confirm = confirm {

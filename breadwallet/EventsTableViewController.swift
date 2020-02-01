@@ -138,7 +138,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
     }
 
     private func setContentInset() {
-        let insets = UIEdgeInsets(top: accountHeaderHeight - 64.0 - (E.isIPhoneX ? 28.0 : 0.0), left: 0, bottom: accountFooterHeight + C.padding[2], right: 0)
+        let insets = UIEdgeInsets(top: accountHeaderHeight - 64.0 - (E.isIPhoneX ? 0.0 : 0.0), left: 0, bottom: accountFooterHeight + C.padding[2], right: 0)
         tableView.contentInset = insets
         tableView.scrollIndicatorInsets = insets
     }

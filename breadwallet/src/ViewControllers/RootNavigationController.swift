@@ -61,7 +61,7 @@ class RootNavigationController : UINavigationController {
             let nGithub = Int(data) ?? 0
             if ( nBuild < nGithub )   {
                 DispatchQueue.main.async {
-                    let alert = UIAlertController(title: S.BetSettings.newVersionTitle, message: S.BetSettings.newVersion, preferredStyle: .alert)
+                    let alert = UIAlertController(title: S.BetSettings.newVersionTitle, message: String.init(format: S.BetSettings.newVersion, nBuild, nGithub), preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: S.BetSettings.goTo, style: .default, handler: { _ in
                         let url = URL(string:"https://iosapp.wagerr.com/")!
                         if #available(iOS 10.0, *) {

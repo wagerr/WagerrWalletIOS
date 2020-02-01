@@ -208,7 +208,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         var tournaments = [ Int: [(Int,String)] ]()
         for (sportID, _) in sports {
             tournaments[sportID] = [(Int,String)]()
-            tournaments[sportID]?.append((-1, "Tournament"))
+            tournaments[sportID]?.append((-1, "League"))
             let sportTournaments : [(Int, String)] = events.filter { $0.sportID==sportID }.reduce([], { initialValue, collectionElement in
                 let iv : [(Int, String)] = initialValue
                 let tuple = (  Int(collectionElement.tournamentID), collectionElement.txTournament )

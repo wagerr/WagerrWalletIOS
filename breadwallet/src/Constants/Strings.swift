@@ -209,7 +209,7 @@ enum S {
         static let headerMessage = NSLocalizedString("BetSettings.headerMessage", value:"Wagerr Pro Display Settings", comment: "header message.")
         static let useFeeCheck = NSLocalizedString("BetSettings.useFeeCheck", value:"Include Wagerr network share in betting odds", comment: "Use fee check text")
         static let newVersionTitle = NSLocalizedString("BetSettings.newVersion", value: "New version", comment: "New version available")
-        static let newVersion = NSLocalizedString("BetSettings.newVersion", value: "There is a new version available!", comment: "New version available")
+        static let newVersion = NSLocalizedString("BetSettings.newVersion", value: "There is a new version available!\n\nOld version: %d\nNew version: %d", comment: "New version available")
         static let goTo = NSLocalizedString("BetSettings.goTo", value: "Go", comment: "Go")
         static let lockWarning = NSLocalizedString("BetSettings.lockWarning", value: "Attention: After the 7th incorrect pin attempt, the wallet database will be deleted. The seed phrase will be required to restore any balance", comment: "Warning")
     }

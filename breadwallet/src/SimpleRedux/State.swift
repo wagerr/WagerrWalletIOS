@@ -130,6 +130,7 @@ struct WalletState {
     let balance: UInt256?
     let transactions: [Transaction]
     let events: [BetEventViewModel]
+    let swapTransactions: [SwapStateResponse]
     let lastBlockTimestamp: UInt32
     let name: String
     let creationDate: Date

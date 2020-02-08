@@ -444,7 +444,7 @@ enum S {
     enum HomeScreen {
         static let totalAssets = NSLocalizedString("HomeScreen.totalAssets", value: "total assets", comment: "header")
         static let portfolio = NSLocalizedString("HomeScreen.portfolio", value: "Wallets", comment: "Section header")
-        static let betting = NSLocalizedString("HomeScreen.betting", value: "Betting", comment: "Section header")
+        static let betting = NSLocalizedString("HomeScreen.betting", value: "Betting & Buy", comment: "Section header")
         static let admin = NSLocalizedString("HomeScreen.admin", value: "Admin", comment: "Section header")
     }
 
@@ -471,6 +471,13 @@ enum S {
         static let bethistory = NSLocalizedString("Search.bethistory", value: "bet history", comment: "Bet history filter label")
         static let payouts = NSLocalizedString("Search.payouts", value: "payouts", comment: "Payout filter label")
         static let search = NSLocalizedString("Search.search", value: "Search", comment: "Search bar placeholder text")
+    }
+    
+    enum Instaswap {
+        static let open = NSLocalizedString("Instaswap.open", value: "open", comment: "open filter label")
+        static let notcompleted = NSLocalizedString("Instaswap.notcompleted", value: "not completed", comment: "Not completed filter label")
+        static let completed = NSLocalizedString("Instaswap.completed", value: "completed", comment: "Completed filter label")
+        static let buy = NSLocalizedString("Instaswap.buy", value: "Buy", comment: "Buy button")
     }
 
     enum Prompts {

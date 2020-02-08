@@ -12,6 +12,7 @@ class AssetListTableView: UITableViewController, Subscriber {
 
     var didSelectCurrency: ((CurrencyDef) -> Void)?
     var didTapBet: ((CurrencyDef) -> Void)?
+    var didTapBuy: ((CurrencyDef) -> Void)?
     var didTapSecurity: (() -> Void)?
     var didTapSupport: (() -> Void)?
     var didTapSettings: (() -> Void)?
@@ -114,7 +115,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             return Store.state.displayCurrencies.count  // remove +1 to hide "Manage wallets" menu
         case .events:
-            return 1
+            return 2
         case .menu:
             return Menu.allItems.count
         }
@@ -152,7 +153,13 @@ class AssetListTableView: UITableViewController, Subscriber {
             return cell
             
         case .events:
-            let viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
+            var viewModel : HomeEventViewModel!
+            if indexPath.row == 1 {
+                viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
+            }
+            else    {   // Instaswap
+                viewModel = HomeEventViewModel(currency: Currencies.btc, title: "InstaSwap")
+            }
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
             cell.set(viewModel: viewModel)
             return cell
@@ -197,7 +204,12 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             isAddWalletRow(row: indexPath.row) ? didTapAddWallet?() : didSelectCurrency?(Store.state.displayCurrencies[indexPath.row])
         case .events:
-            didTapBet?( Currencies.btc )
+            if indexPath.row == 1   {
+                didTapBet?( Currencies.btc )
+            }
+            else    {   // instaswap
+                didTapBuy?( Currencies.btc )
+            }
         case .menu:
             guard let item = Menu(rawValue: indexPath.row) else { return }
             switch item {

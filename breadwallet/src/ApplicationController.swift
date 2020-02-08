@@ -368,6 +368,12 @@ class ApplicationController : Subscriber, Trackable {
             nc.pushViewController(eventListController, animated: true)
         }
         
+        home.didTapBuy = { currency in
+            guard let walletManager = self.walletManagers[currency.code] else { return }
+            let swapListController = SwapListController(currency: currency, walletManager: walletManager)
+            nc.pushViewController(swapListController, animated: true)
+        }
+        
         home.didTapSupport = {
             self.modalPresenter?.presentFaq()
         }

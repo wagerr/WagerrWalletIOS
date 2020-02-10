@@ -444,7 +444,7 @@ enum S {
     enum HomeScreen {
         static let totalAssets = NSLocalizedString("HomeScreen.totalAssets", value: "total assets", comment: "header")
         static let portfolio = NSLocalizedString("HomeScreen.portfolio", value: "Wallets", comment: "Section header")
-        static let betting = NSLocalizedString("HomeScreen.betting", value: "Betting & Buy", comment: "Section header")
+        static let betting = NSLocalizedString("HomeScreen.betting", value: "Betting & Swap", comment: "Section header")
         static let admin = NSLocalizedString("HomeScreen.admin", value: "Admin", comment: "Section header")
     }
 
@@ -477,7 +477,16 @@ enum S {
         static let open = NSLocalizedString("Instaswap.open", value: "open", comment: "open filter label")
         static let notcompleted = NSLocalizedString("Instaswap.notcompleted", value: "not completed", comment: "Not completed filter label")
         static let completed = NSLocalizedString("Instaswap.completed", value: "completed", comment: "Completed filter label")
-        static let buy = NSLocalizedString("Instaswap.buy", value: "Buy", comment: "Buy button")
+        static let buy = NSLocalizedString("Instaswap.buy", value: "Create Swap", comment: "Swap button")
+        static let transactionId = NSLocalizedString("Instaswap.transactionId", value: "Transaction ID", comment: "Transaction Id cell")
+        static let status = NSLocalizedString("Instaswap.status", value: "Status", comment: "Status cell")
+        static let deposit = NSLocalizedString("Instaswap.deposit", value: "Deposit %@", comment: "Deposit cell")
+        static let receive = NSLocalizedString("Instaswap.receive", value: "Receive %@", comment: "Receive cell")
+        static let depositWallet = NSLocalizedString("Instaswap.depositWallet", value: "Deposit wallet", comment: "Deposit wallet cell")
+        static let receiveWallet = NSLocalizedString("Instaswap.receiveWallet", value: "Receive wallet", comment: "Receive wallet cell")
+        static let refundWallet = NSLocalizedString("Instaswap.refundWallet", value: "Refund wallet", comment: "Refund wallet cell")
+        static let emptyMessage = NSLocalizedString("Instaswap.emptyMessage", value:"Swap operations will show here once submitted", comment: "Empty swap list message.")
+        
     }
 
     enum Prompts {

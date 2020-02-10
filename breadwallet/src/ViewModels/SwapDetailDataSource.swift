@@ -14,30 +14,17 @@ class SwapDetailDataSource: NSObject {
     
     enum Field: String {
         case transactionId
-        case depositCoin
-        case receiveCoin
-        case depositAmount
-        case receivingAmount
+        case deposit
+        case receive
         case refundWallet
         case receiveWallet
         case depositWallet
-        case transactionState
-        case timestamp
+        case stateTimestamp
         
         var cellType: UITableViewCell.Type {
             switch self {
-            case .receiveCoin:
-                return TxAmountCell.self
-            case .status:
-                return TxStatusCell.self
-            case .memo:
-                return TxMemoCell.self
-            case .address, .transactionId:
+            case .refundWallet, .receiveWallet, .depositWallet, .transactionId:
                 return TxAddressCell.self
-            case .event:
-                return EventDateCell.self
-            case .transactionLink:
-                return LinkCell.self
             default:
                 return TxLabelCell.self
             }
@@ -51,41 +38,15 @@ class SwapDetailDataSource: NSObject {
     // MARK: - Vars
     
     fileprivate var fields: [Field]
-    fileprivate let viewModel: TxDetailViewModel
-    fileprivate let transactionInfo: WgrTransactionInfo
+    fileprivate let viewModel: SwapViewModel
     
     // MARK: - Init
     
-    init(viewModel: TxDetailViewModel, txInfo: WgrTransactionInfo) {
+    init(viewModel: SwapViewModel) {
         self.viewModel = viewModel
-        self.transactionInfo = txInfo
         
         // define visible rows and order
-        fields = [.amount]
-        
-        if viewModel.status != .complete && viewModel.status != .invalid {
-            fields.append(.status)
-        }
-        
-        fields.append(.timestamp)
-        
-        if txInfo.betEvent != nil   {
-            fields.append(.event)
-            fields.append(.eventDetail)
-        }
-        
-        fields.append(.address)
-        
-        if viewModel.comment != nil      { fields.append(.memo) }
-        if viewModel.gasPrice != nil     { fields.append(.gasPrice) }
-        if viewModel.gasLimit != nil     { fields.append(.gasLimit) }
-        if viewModel.fee != nil          { fields.append(.fee) }
-        if viewModel.total != nil        { fields.append(.total) }
-        if viewModel.exchangeRate != nil { fields.append(.exchangeRate) }
-        
-        fields.append(.blockHeight)
-        fields.append(.transactionId)
-        fields.append(.transactionLink)
+        fields = [.transactionId, .stateTimestamp, .deposit, .depositWallet, .receive, .receiveWallet, .refundWallet ]
     }
     
     func registerCells(forTableView tableView: UITableView) {
@@ -94,32 +55,20 @@ class SwapDetailDataSource: NSObject {
     
     fileprivate func title(forField field: Field) -> String {
         switch field {
-        case .status:
-            return S.TransactionDetails.statusHeader
-        case .memo:
-            return S.TransactionDetails.commentsHeader
-        case .event:
-            return transactionInfo.eventDateString
-        case .eventDetail:
-            return ""
-        case .address:
-            return viewModel.addressHeader
-        case .exchangeRate:
-            return S.TransactionDetails.exchangeRateHeader
-        case .blockHeight:
-            return S.TransactionDetails.blockHeightLabel
         case .transactionId:
-            return S.TransactionDetails.txHashHeader
-        case .transactionLink:
-            return ""
-        case .gasPrice:
-            return S.TransactionDetails.gasPriceHeader
-        case .gasLimit:
-            return S.TransactionDetails.gasLimitHeader
-        case .fee:
-            return S.TransactionDetails.feeHeader
-        case .total:
-            return S.TransactionDetails.totalHeader
+            return S.Instaswap.transactionId
+        case .deposit:
+            return String.init(format: S.Instaswap.deposit, viewModel.response.depositCoin)
+        case .receive:
+            return String.init(format: S.Instaswap.receive, viewModel.response.receiveCoin)
+        case .refundWallet:
+            return S.Instaswap.refundWallet
+        case .receiveWallet:
+            return S.Instaswap.receiveWallet
+        case .depositWallet:
+            return S.Instaswap.depositWallet
+        case .stateTimestamp:
+            return viewModel.response.transactionState.rawValue
         default:
             return ""
         }
@@ -127,7 +76,7 @@ class SwapDetailDataSource: NSObject {
 }
 
 // MARK: -
-extension TxDetailDataSource: UITableViewDataSource {
+extension SwapDetailDataSource: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return fields.count
@@ -148,71 +97,27 @@ extension TxDetailDataSource: UITableViewDataSource {
         }
 
         switch field {
-        case .amount:
-            let amountCell = cell as! TxAmountCell
-            amountCell.set(viewModel: viewModel)
-    
-        case .status:
-            let statusCell = cell as! TxStatusCell
-            statusCell.set(txInfo: viewModel)
-            
-        case .memo:
-            let memoCell = cell as! TxMemoCell
-            memoCell.set(viewModel: viewModel, tableView: tableView)
-        
-        case .event:
-            let eventCell = cell as! EventDateCell
-            eventCell.set(event: transactionInfo.betEvent!.eventID)
-            
-        case .eventDetail:
-            let labelCell = cell as! TxLabelCell
-            labelCell.value = transactionInfo.eventDetailString
-        
-        case .timestamp:
-            let labelCell = cell as! TxLabelCell
-            if (transactionInfo.isInmature && transactionInfo.isCoinbase) {
-                labelCell.titleLabel.attributedText = NSAttributedString(string: S.Betting.payoutImmature)
-            }
-            else    {
-                labelCell.titleLabel.attributedText = viewModel.timestampHeader
-            }
-            labelCell.value = viewModel.longTimestamp
-            
-        case .address:
-            let addressCell = cell as! TxAddressCell
-            addressCell.set(address: viewModel.displayAddress)
-            
-        case .exchangeRate:
-            let labelCell = cell as! TxLabelCell
-            labelCell.value = viewModel.exchangeRate ?? ""
-            
-        case .blockHeight:
-            let labelCell = cell as! TxLabelCell
-            labelCell.value = viewModel.blockHeight
-            
+        case .refundWallet:
+            let refundWalletCell = cell as! TxAddressCell
+            refundWalletCell.set(address: viewModel.response.refundWallet)
+        case .receiveWallet:
+            let receiveWalletCell = cell as! TxAddressCell
+            receiveWalletCell.set(address: viewModel.response.receiveWallet)
+        case .depositWallet:
+            let depositWalletCell = cell as! TxAddressCell
+            depositWalletCell.set(address: viewModel.response.depositWallet)
         case .transactionId:
-            let addressCell = cell as! TxAddressCell
-            addressCell.set(address: viewModel.transactionHash)
-            
-        case .transactionLink:
-            let txLinkCell = cell as! LinkCell
-            txLinkCell.set(text: "See in explorer", txHash: viewModel.transactionHash)
-            
-        case .gasPrice:
-            let labelCell = cell as! TxLabelCell
-            labelCell.value = viewModel.gasPrice ?? ""
-            
-        case .gasLimit:
-            let labelCell = cell as! TxLabelCell
-            labelCell.value = viewModel.gasLimit ?? ""
-            
-        case .fee:
-            let labelCell = cell as! TxLabelCell
-            labelCell.value = viewModel.fee ?? ""
-            
-        case .total:
-            let labelCell = cell as! TxLabelCell
-            labelCell.value = viewModel.total ?? ""
+            let transactionCell = cell as! TxAddressCell
+            transactionCell.set(address: viewModel.response.transactionId)
+        case .deposit:
+            let depositCell = cell as! TxLabelCell
+            depositCell.value = String(format: "%f", viewModel.response.depositAmount)
+        case .receive:
+            let receiveCell = cell as! TxLabelCell
+            receiveCell.value = viewModel.response.receiveCoin
+        case .stateTimestamp:
+            let stateTSCell = cell as! TxLabelCell
+            stateTSCell.value = viewModel.response.timestamp
         }
         
         return cell

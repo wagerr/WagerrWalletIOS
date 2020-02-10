@@ -112,6 +112,7 @@ enum RootModal {
     case requestAmount(currency: CurrencyDef, address: String)
     case buy(currency: CurrencyDef)
     case sell(currency: CurrencyDef)
+    case swap(currency: CurrencyDef)
 }
 
 enum SyncState {
@@ -130,7 +131,7 @@ struct WalletState {
     let balance: UInt256?
     let transactions: [Transaction]
     let events: [BetEventViewModel]
-    let swapTransactions: [SwapStateResponse]
+    let swapTransactions: [SwapViewModel]
     let lastBlockTimestamp: UInt32
     let name: String
     let creationDate: Date
@@ -152,6 +153,7 @@ struct WalletState {
                            balance: nil,
                            transactions: [],
                            events: [],
+                           swapTransactions: [],
                            lastBlockTimestamp: 0,
                            name: S.AccountHeader.defaultWalletName,
                            creationDate: Date.zeroValue(),
@@ -190,6 +192,7 @@ struct WalletState {
                            balance: balance ?? self.balance,
                            transactions: transactions ?? self.transactions,
                            events: events ?? self.events,
+                           swapTransactions: swapTransactions ?? self.swapTransactions,
                            lastBlockTimestamp: lastBlockTimestamp ?? self.lastBlockTimestamp,
                            name: name ?? self.name,
                            creationDate: creationDate ?? self.creationDate,
@@ -244,6 +247,8 @@ func ==(lhs: RootModal, rhs: RootModal) -> Bool {
     case (.buy(let lhsCurrency), .buy(let rhsCurrency)):
         return lhsCurrency.code == rhsCurrency.code
     case (.sell(let lhsCurrency), .sell(let rhsCurrency)):
+        return lhsCurrency.code == rhsCurrency.code
+    case (.swap(let lhsCurrency), .swap(let rhsCurrency)):
         return lhsCurrency.code == rhsCurrency.code
     default:
         return false

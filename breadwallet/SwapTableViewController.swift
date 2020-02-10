@@ -14,7 +14,7 @@ private let promptDelay: TimeInterval = 0.6
 class SwapTableViewController : UITableViewController, Subscriber, Trackable {
 
     //MARK: - Public
-    init(currency: CurrencyDef, walletManager: WalletManager, didSelectSwap: @escaping ([SwapStateResponse]) -> Void) {
+    init(currency: CurrencyDef, walletManager: WalletManager, didSelectSwap: @escaping ([SwapViewModel], Int) -> Void) {
         self.currency = currency
         self.walletManager = walletManager
         self.didSelectSwap = didSelectSwap
@@ -22,10 +22,10 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         super.init(nibName: nil, bundle: nil)
     }
 
-    let didSelectSwap: ([SwapStateResponse], String) -> Void
+    let didSelectSwap: ([SwapViewModel], Int) -> Void
     
     func doFilter()    {
-        events = filters.reduce(allEvents, { $0.filter($1) })
+        swapTransactions = filters.reduce(allSwapTransactions, { $0.filter($1) })
         self.reload()
     }
     
@@ -42,9 +42,9 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
     
     private let headerCellIdentifier = "HeaderCellIdentifier"
     private let swapCellIdentifier = "SwapCellIdentifier"
-    private var swapTransactions: [SwapStateResponse] = []
-    private var allSwapTransactions: [SwapStateResponse] = [] {
-        didSet { events = allEvents }
+    private var swapTransactions: [SwapViewModel] = []
+    private var allSwapTransactions: [SwapViewModel] = [] {
+        didSet { swapTransactions = allSwapTransactions }
     }
     private var isBtcSwapped: Bool {
         didSet { reload() }
@@ -75,8 +75,8 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.register(EventListCell.self, forCellReuseIdentifier: eventCellIdentifier)
-        tableView.register(EventListCell.self, forCellReuseIdentifier: headerCellIdentifier)
+        tableView.register(SwapListCell.self, forCellReuseIdentifier: swapCellIdentifier)
+        tableView.register(SwapListCell.self, forCellReuseIdentifier: headerCellIdentifier)
 
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = 80.0
@@ -84,7 +84,7 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         tableView.backgroundColor = .whiteBackground
         
         emptyMessage.textAlignment = .center
-        emptyMessage.text = S.EventDetails.emptyMessage
+        emptyMessage.text = S.Instaswap.emptyMessage
         
         setContentInset()
 
@@ -116,14 +116,12 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         })
         
         Store.subscribe(self, selector: {
-            guard let oldEvents = $0[self.currency]?.events else { return false }
-            guard let newEvents = $1[self.currency]?.events else { return false }
-            return oldEvents != newEvents },
+            guard let oldSwaps = $0[self.currency]?.events else { return false }
+            guard let newSwaps = $1[self.currency]?.events else { return false }
+            return oldSwaps != newSwaps },
                         callback: { state in
-                            self.allEvents = state[self.currency]?.swapTransactions ?? [SwapStateResponse]()
-                            self.didChangeEvents(self.allEvents)
-                            //self.reload()
-                            self.doFilter()
+                            self.allSwapTransactions = state[self.currency]?.swapTransactions ?? [SwapViewModel]()
+                            self.reload()
         })
     }
 
@@ -134,8 +132,8 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
     }
 
     private func reload(txHash: String) {
-        self.events.enumerated().forEach { i, event in
-            if event.txHash == txHash {
+        self.swapTransactions.enumerated().forEach { i, swap in
+            if swap.response.transactionId == txHash {
                 DispatchQueue.main.async {
                     self.tableView.reload(row: i, section: self.hasExtraSection ? 1 : 0)
                 }
@@ -152,7 +150,7 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         if hasExtraSection && section == 0 {
             return 1
         } else {
-            return events.count
+            return swapTransactions.count
         }
     }
 
@@ -160,7 +158,7 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         if hasExtraSection && indexPath.section == 0 {
             return headerCell(tableView: tableView, indexPath: indexPath)
         } else {
-            return eventCell(tableView: tableView, indexPath: indexPath)
+            return swapCell(tableView: tableView, indexPath: indexPath)
         }
     }
 
@@ -190,12 +188,12 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
             self.showAlert(title: S.Alert.error, message: S.Betting.errorSyncinc, buttonLabel: S.Button.ok)
             return
         }
-        didSelectEvent(events, indexPath.row)
+        didSelectSwap(swapTransactions, indexPath.row)
     }
 
     public func reload() {
         tableView.reloadData()
-        if events.count == 0 {
+        if swapTransactions.count == 0 {
             if emptyMessage.superview == nil {
                 tableView.addSubview(emptyMessage)
                 emptyMessage.constrain([
@@ -214,7 +212,7 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
 }
 
 //MARK: - Cell Builders
-extension EventsTableViewController {
+extension SwapTableViewController {
 
     private func headerCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: headerCellIdentifier, for: indexPath)
@@ -227,11 +225,10 @@ extension EventsTableViewController {
         return cell
     }
 
-    private func eventCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: eventCellIdentifier, for: indexPath) as! EventListCell
-        let viewModel = events[indexPath.row]
-        cell.setEvent(viewModel,
-                      isSyncing: currency.state?.syncState != .success)
+    private func swapCell(tableView: UITableView, indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: swapCellIdentifier, for: indexPath) as! SwapListCell
+        let viewModel = swapTransactions[indexPath.row]
+        cell.setSwap(viewModel, isSyncing: currency.state?.syncState != .success)
         return cell
     }
 }

@@ -29,17 +29,18 @@ class SwapDetailViewController: UIViewController, Subscriber {
     private var containerHeightConstraint: NSLayoutConstraint!
     private var walletManager: BTCWalletManager?
     
-    private var transaction: SwapStateResponse {
+    private var transaction: SwapViewModel {
         didSet {
             reload()
         }
     }
-    private var viewModel: TxDetailViewModel
-    private var dataSource: TxDetailDataSource
+    private var viewModel: SwapViewModel
+    private var dataSource: SwapDetailDataSource
     private var isExpanded: Bool = false
     
     private var compactContainerHeight: CGFloat {
-        return (viewModel.status == .complete || viewModel.status == .invalid) ? C.compactContainerHeight : C.compactContainerHeight + C.statusRowHeight
+        //return (viewModel.transactionState == .complete || viewModel.status == .invalid) ? C.compactContainerHeight :
+        return C.compactContainerHeight + C.statusRowHeight
     }
     
     private var expandedContainerHeight: CGFloat {
@@ -51,13 +52,12 @@ class SwapDetailViewController: UIViewController, Subscriber {
     
     // MARK: - Init
     
-    init(txInfo: WgrTransactionInfo, wm: BTCWalletManager) {
-        self.transactionInfo = txInfo
-        self.transaction = txInfo.transaction
+    init(txInfo: SwapViewModel, wm: BTCWalletManager) {
+        self.transaction = txInfo
         self.walletManager = wm
-        self.viewModel = TxDetailViewModel(tx: transaction)
-        self.dataSource = TxDetailDataSource(viewModel: viewModel, txInfo: txInfo)
-        self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails, currency: transaction.currency)
+        self.viewModel = txInfo
+        self.dataSource = SwapDetailDataSource(viewModel: viewModel)
+        self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails, currency: viewModel.currency)
         
         super.init(nibName: nil, bundle: nil)
         
@@ -77,14 +77,11 @@ class SwapDetailViewController: UIViewController, Subscriber {
         Store.lazySubscribe(self, selector: { $0[self.viewModel.currency]?.currentRate != $1[self.viewModel.currency]?.currentRate }, callback: { _ in self.reload() })
         // refresh if tx state changes
         Store.lazySubscribe(self, selector: {
-            guard let oldTransactions = $0[self.viewModel.currency]?.transactions else { return false }
-            guard let newTransactions = $1[self.viewModel.currency]?.transactions else { return false }
+            guard let oldTransactions = $0[self.viewModel.currency]?.swapTransactions else { return false }
+            guard let newTransactions = $1[self.viewModel.currency]?.swapTransactions else { return false }
             return oldTransactions != newTransactions }, callback: { [unowned self] in
-            guard let tx = $0[self.viewModel.currency]?.transactions.first(where: { $0.hash == self.viewModel.transactionHash }) else { return }
-                WgrTransactionInfo.create(tx: tx as! BtcTransaction, wm: self.walletManager as! BTCWalletManager, callback: { txInfo in
-                    self.transactionInfo = txInfo!
-                    self.transaction = tx
-                })
+                guard let tx = $0[self.viewModel.currency]?.swapTransactions.first(where: { $0.response.transactionId == self.viewModel.response.transactionId }) else { return }
+                self.transaction = tx
         })
     }
     
@@ -165,17 +162,12 @@ class SwapDetailViewController: UIViewController, Subscriber {
         detailsButton.setTitle(S.TransactionDetails.showDetails, for: .normal)
         detailsButton.setTitle(S.TransactionDetails.hideDetails, for: .selected)
         detailsButton.addTarget(self, action: #selector(onToggleDetails), for: .touchUpInside)
-        
-        let strings = transactionInfo.getDescriptionStrings()
-        //let txDate = strings.date
-        let txDesc = strings.description
 
-        header.setTitle( (txDesc.isEmpty) ? viewModel.title : transactionInfo.getDescriptionStrings().date )
+        header.setTitle( viewModel.title )
     }
     
     private func reload() {
-        viewModel = TxDetailViewModel(tx: transaction)
-        dataSource = TxDetailDataSource(viewModel: viewModel, txInfo: self.transactionInfo)
+        dataSource = SwapDetailDataSource(viewModel: viewModel)
         tableView.dataSource = dataSource
         tableView.reloadData()
     }
@@ -214,7 +206,7 @@ class SwapDetailViewController: UIViewController, Subscriber {
 }
 
 //MARK: - Keyboard Handler
-extension TxDetailViewController {
+extension SwapDetailViewController {
     fileprivate func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)

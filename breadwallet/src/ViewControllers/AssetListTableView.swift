@@ -32,6 +32,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         tableView.backgroundColor = .whiteBackground
         tableView.register(HomeScreenCell.self, forCellReuseIdentifier: HomeScreenCell.cellIdentifier)
         tableView.register(HomeBetEventCell.self, forCellReuseIdentifier: HomeBetEventCell.cellIdentifier)
+        tableView.register(HomeSwapCell.self, forCellReuseIdentifier: HomeSwapCell.cellIdentifier)
         tableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.cellIdentifier)
         tableView.separatorStyle = .none
         
@@ -154,15 +155,18 @@ class AssetListTableView: UITableViewController, Subscriber {
             
         case .events:
             var viewModel : HomeEventViewModel!
-            if indexPath.row == 1 {
+            if indexPath.row == 0 {
                 viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
+                let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
+                cell.set(viewModel: viewModel)
+                return cell
             }
             else    {   // Instaswap
                 viewModel = HomeEventViewModel(currency: Currencies.btc, title: "InstaSwap")
+                let cell = tableView.dequeueReusableCell(withIdentifier: HomeSwapCell.cellIdentifier, for: indexPath) as! HomeSwapCell
+                cell.set(viewModel: viewModel)
+                return cell
             }
-            let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
-            cell.set(viewModel: viewModel)
-            return cell
             
         case .menu:
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.cellIdentifier, for: indexPath) as! MenuCell
@@ -204,7 +208,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             isAddWalletRow(row: indexPath.row) ? didTapAddWallet?() : didSelectCurrency?(Store.state.displayCurrencies[indexPath.row])
         case .events:
-            if indexPath.row == 1   {
+            if indexPath.row == 0   {
                 didTapBet?( Currencies.btc )
             }
             else    {   // instaswap

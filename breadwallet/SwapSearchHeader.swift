@@ -30,15 +30,15 @@ enum SwapSearchFilterType {
     var filter: SwapFilter {
         switch self {
         case .open:
-            return { $0.transactionState != .completed && $0.transactionState != .notcompleted }
+            return { $0.response.transactionState != .completed && $0.response.transactionState != .notcompleted }
         case .notcompleted:
-            return { $0.transactionState == .notcompleted }
+            return { $0.response.transactionState == .notcompleted }
         case .completed:
-            return { $0.transactionState == .completed }
+            return { $0.response.transactionState == .completed }
         case .text(let text):
             return { swapInfo in
                 let loweredText = text.lowercased()
-                if swapInfo.transactionId.lowercased().contains(loweredText) {
+                if swapInfo.response.transactionId.lowercased().contains(loweredText) {
                     return true
                 }
                 return false
@@ -64,7 +64,7 @@ func ==(lhs: SwapSearchFilterType, rhs: SwapSearchFilterType) -> Bool {
     }
 }
 
-typealias SwapFilter = (SwapStateResponse) -> Bool
+typealias SwapFilter = (SwapViewModel) -> Bool
 
 class SwapSearchHeaderView : UIView {
 
@@ -92,9 +92,9 @@ class SwapSearchHeaderView : UIView {
         }
     }
 
-    private let openFilter: SwapFilter = { return $0.transactionState != .completed && $0.transactionState != .notcompleted }
-    private let notcompletedFilter: SwapFilter = { return $0.transactionState == .notcompleted }
-    private let completedFilter: SwapFilter = { return $0.transactionState == .completed }
+    private let openFilter: SwapFilter = { return $0.response.transactionState != .completed && $0.response.transactionState != .notcompleted }
+    private let notcompletedFilter: SwapFilter = { return $0.response.transactionState == .notcompleted }
+    private let completedFilter: SwapFilter = { return $0.response.transactionState == .completed }
 
     override func layoutSubviews() {
         guard !hasSetup else { return }
@@ -215,8 +215,8 @@ class SwapSearchHeaderView : UIView {
             addSubview(notcompleted)
             addSubview(completed)
             open.constrain([
-                sent.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor, constant: C.padding[2]),
-                sent.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[4]) ])
+                open.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor, constant: C.padding[2]),
+                open.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[4]) ])
             notcompleted.constrain([
                 notcompleted.leadingAnchor.constraint(equalTo: open.trailingAnchor, constant: C.padding[1]),
                 notcompleted.topAnchor.constraint(equalTo: open.topAnchor)])

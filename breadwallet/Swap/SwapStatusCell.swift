@@ -19,7 +19,7 @@ class SwapStatusCell: UITableViewCell, Subscriber {
         label.textAlignment = .center
         return label
     }()
-    private let statusIndicator = TxStatusIndicator(width: 238.0)
+    //private let statusIndicator = TxStatusIndicator(width: 238.0)
     
     // MARK: - Init
     
@@ -36,7 +36,6 @@ class SwapStatusCell: UITableViewCell, Subscriber {
     private func addSubviews() {
         contentView.addSubview(container)
         container.addSubview(statusLabel)
-        container.addSubview(statusIndicator)
     }
     
     private func addConstraints() {
@@ -46,25 +45,17 @@ class SwapStatusCell: UITableViewCell, Subscriber {
                                                            bottom: -C.padding[2],
                                                            right: -C.padding[1]))
         
-        
-        statusIndicator.constrain([
-            statusIndicator.topAnchor.constraint(equalTo: container.topAnchor),
-            statusIndicator.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            statusIndicator.widthAnchor.constraint(equalToConstant: statusIndicator.width),
-            statusIndicator.heightAnchor.constraint(equalToConstant: statusIndicator.height)
-            ])
-        
         statusLabel.constrain([
             statusLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             statusLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            statusLabel.topAnchor.constraint(equalTo: statusIndicator.bottomAnchor),
+            statusLabel.topAnchor.constraint(equalTo: container.topAnchor),
             statusLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor)
             ])
     }
     
     // MARK: -
     
-    func set(txInfo: SwapStateResponse) {
+    func set(txInfo: SwapViewModel) {
         Store.lazySubscribe(self,
                             selector: {
                                 guard let oldTransactions = $0[txInfo.currency]?.swapTransactions else { return false}
@@ -72,18 +63,18 @@ class SwapStatusCell: UITableViewCell, Subscriber {
                                 return oldTransactions != newTransactions },
                             callback: { [weak self] state in
                                 guard let `self` = self,
-                                    let updatedTx = state[txInfo.currency]?.swapTransactions.filter({ $0.transactionId == txInfo.transactionId }).first else { return }
+                                    let updatedTx = state[txInfo.currency]?.swapTransactions.filter({ $0.response.transactionId == txInfo.response.transactionId }).first else { return }
                                 DispatchQueue.main.async {
-                                    self.update(status: updatedTx.transactionState)
+                                    self.update(status: updatedTx.response.transactionState)
                                 }
         })
         
-        update(status: txInfo.status)
+        update(status: txInfo.response.transactionState)
     }
     
     private func update(status: SwapTransactionState) {
-        statusIndicator.status = status
-        statusLabel.text = status
+        //statusIndicator.status = status
+        statusLabel.text = status.rawValue
     }
     
     deinit {

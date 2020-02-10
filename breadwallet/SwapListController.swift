@@ -13,7 +13,7 @@ import MachO
 let swapHeaderHeight: CGFloat = 152.0
 let swapFooterHeight: CGFloat = 67.0
 
-class SwapViewController : UIViewController, Subscriber {
+class SwapListController : UIViewController, Subscriber {
 
     //MARK: - Public
     let currency: CurrencyDef
@@ -24,7 +24,7 @@ class SwapViewController : UIViewController, Subscriber {
         self.headerView = SwapHeaderView(currency: currency)
         self.footerView = SwapFooterView(currency: currency)
         super.init(nibName: nil, bundle: nil)
-        self.transactionsTableView = SwapTableViewController(currency: currency, walletManager: walletManager, didSelectBuy: didSelectBuy)
+        self.transactionsTableView = SwapTableViewController(currency: currency, walletManager: walletManager, didSelectSwap: didSelectSwap)
 
         if let btcWalletManager = walletManager as? BTCWalletManager {
             headerView.isWatchOnly = btcWalletManager.isWatchOnly
@@ -86,6 +86,14 @@ class SwapViewController : UIViewController, Subscriber {
         setInitialData()
     }
 
+    private func didSelectSwap(txInfo: [SwapViewModel], selectedIndex: Int) -> Void {
+        let transactionDetails = SwapDetailViewController(txInfo: txInfo[selectedIndex], wm: walletManager as! BTCWalletManager)
+        transactionDetails.modalPresentationStyle = .overCurrentContext
+        transactionDetails.transitioningDelegate = transitionDelegate
+        transactionDetails.modalPresentationCapturesStatusBarAppearance = true
+        present(transactionDetails, animated: true, completion: nil)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         shouldShowStatusBar = true
@@ -176,14 +184,6 @@ class SwapViewController : UIViewController, Subscriber {
                 transactionsTableView.view.constrain(toSuperviewEdges: nil)
             }
         })
-    }
-    
-    private func didSelectTransaction(txInfo: SwapStateResponse, selectedIndex: Int) -> Void {
-        let transactionDetails = SwapDetailViewController(txInfo: txInfo, wm: walletManager as! BTCWalletManager)
-        transactionDetails.modalPresentationStyle = .overCurrentContext
-        transactionDetails.transitioningDelegate = transitionDelegate
-        transactionDetails.modalPresentationCapturesStatusBarAppearance = true
-        present(transactionDetails, animated: true, completion: nil)
     }
 
     private func showJailbreakWarnings(isJailbroken: Bool) {

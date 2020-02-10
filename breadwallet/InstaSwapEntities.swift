@@ -69,6 +69,31 @@ struct SwapStateResponse : Codable {
     var timestamp : String
 }
 
+class SwapViewModel : Equatable {
+    let response : SwapStateResponse
+    
+    init(response: SwapStateResponse) {
+        self.response = response
+    }
+    
+    var currency : CurrencyDef  {
+        return Currencies.btc
+    }
+    
+    var title : String {
+        return response.transactionId
+    }
+    
+    static func ==(lhs: SwapViewModel, rhs: SwapViewModel) -> Bool {
+        return  lhs.response.transactionId == rhs.response.transactionId &&
+            lhs.response.transactionState == rhs.response.transactionState
+    }
+
+    static func !=(lhs: SwapViewModel, rhs: SwapViewModel) -> Bool {
+        return !(lhs == rhs)
+    }
+}
+
 struct ReportSwapHistoryData : Codable  {
     var apiInfo : String
     var response : [SwapStateResponse]

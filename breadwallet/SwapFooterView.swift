@@ -49,7 +49,7 @@ class SwapFooterView: UIView, Subscriber, Trackable {
     
     private func setupToolbarButtons() {
         
-        let buttons = [(S.Button.buy, #selector(SwapFooterView.buy))].map { (title, selector) -> UIBarButtonItem in
+        let buttons = [(S.Instaswap.buy, #selector(SwapFooterView.buy))].map { (title, selector) -> UIBarButtonItem in
                         let button = UIButton.rounded(title: title)
                         button.tintColor = .white
                         button.backgroundColor = currency.colors.1

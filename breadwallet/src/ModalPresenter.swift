@@ -341,29 +341,10 @@ class ModalPresenter : Subscriber, Trackable {
             return nil
         }
         guard let walletManager = walletManagers[currency.code] else { return nil }
-        guard let kvStore = walletManager.apiClient?.kv else { return nil }
-        guard let sender = currency.createSender(walletManager: walletManager, kvStore: kvStore) else { return nil }
-        let sendVC = SendViewController(sender: sender,
-                                        initialRequest: currentRequest,
-                                        currency: currency)
+        let sendVC = SwapViewController(wm: walletManager as! BTCWalletManager, currency: currency)
         currentRequest = nil
 
-        if Store.state.isLoginRequired {
-            sendVC.isPresentedFromLock = true
-        }
-
         let root = ModalViewController(childViewController: sendVC)
-        sendVC.presentScan = presentScan(parent: root, currency: currency)
-        sendVC.presentVerifyPin = { [weak self, weak root] bodyText, success in
-            guard let myself = self else { return }
-            let walletManager = myself.primaryWalletManager
-            let vc = VerifyPinViewController(bodyText: bodyText, pinLength: Store.state.pinLength, walletManager: walletManager, success: success)
-            vc.transitioningDelegate = self?.verifyPinTransitionDelegate
-            vc.modalPresentationStyle = .overFullScreen
-            vc.modalPresentationCapturesStatusBarAppearance = true
-            root?.view.isFrameChangeBlocked = true
-            root?.present(vc, animated: true, completion: nil)
-        }
         sendVC.onPublishSuccess = { [weak self] in
             self?.presentAlert(.sendSuccess, completion: {})
         }

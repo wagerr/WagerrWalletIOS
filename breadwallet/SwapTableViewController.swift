@@ -10,6 +10,7 @@ import UIKit
 import SafariServices
 
 private let promptDelay: TimeInterval = 0.6
+private let minuteInterval: TimeInterval = 60
 
 class SwapTableViewController : UITableViewController, Subscriber, Trackable {
 
@@ -20,6 +21,9 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         self.didSelectSwap = didSelectSwap
         self.isBtcSwapped = Store.state.isBtcSwapped
         super.init(nibName: nil, bundle: nil)
+        
+        // due to restrictions in number of calls to Instaswap API we set a timed refresh
+        self.minuteTimer = Timer.scheduledTimer(timeInterval: minuteInterval, target: self, selector: #selector(updateSwapTransactions), userInfo: nil, repeats: true)
     }
 
     let didSelectSwap: ([SwapViewModel], Int) -> Void
@@ -39,6 +43,7 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
     //MARK: - Private
     private let walletManager: WalletManager
     private let currency: CurrencyDef
+    private var minuteTimer: Timer?
     
     private let headerCellIdentifier = "HeaderCellIdentifier"
     private let swapCellIdentifier = "SwapCellIdentifier"
@@ -89,6 +94,7 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         setContentInset()
 
         setupSubscriptions()
+        updateSwapTransactions()
     }
     
     private func setupSubscriptions() {
@@ -125,6 +131,20 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         })
     }
 
+    var receiveAddress : String {
+        return (walletManager.wallet?.allAddresses[0] ?? "")
+    }
+    
+    @objc private func updateSwapTransactions() {
+        self.walletManager.apiClient!.InstaswapListSwaps(wallet: receiveAddress, handler: { [weak self] result in
+            guard let `self` = self,
+            case .success(let listData) = result else { return }
+            DispatchQueue.main.async {
+                self.allSwapTransactions = listData.response.map { SwapViewModel(response: $0) }
+            }
+        })
+    }
+    
     private func setContentInset() {
         let insets = UIEdgeInsets(top: accountHeaderHeight - 64.0 - (E.isIPhoneX ? 0.0 : 0.0), left: 0, bottom: accountFooterHeight + C.padding[2], right: 0)
         tableView.contentInset = insets

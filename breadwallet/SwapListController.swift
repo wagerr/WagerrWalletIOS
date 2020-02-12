@@ -32,7 +32,7 @@ class SwapListController : UIViewController, Subscriber {
             headerView.isWatchOnly = false
         }
 
-        footerView.buyCallback = { Store.perform(action: RootModalActions.Present(modal: .buy(currency: self.currency))) }
+        footerView.buyCallback = { Store.perform(action: RootModalActions.Present(modal: .swap(currency: self.currency))) }
     }
 
     //MARK: - Private

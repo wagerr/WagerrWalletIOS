@@ -73,7 +73,7 @@ class AmountViewController : UIViewController, Trackable {
     private let placeholder = UILabel(font: .customBody(size: 16.0), color: .grayTextTint)
     private let amountLabel = UILabel(font: .customBody(size: 26.0), color: .darkText)
     private let pinPad: PinPadViewController
-    private let currencyToggle: ShadowButton
+    internal var currencyToggle: ShadowButton
     private let border = UIView(color: .secondaryShadow)
     private let bottomBorder = UIView(color: .secondaryShadow)
     private let cursor = BlinkingView(blinkColor: C.defaultTintColor)
@@ -215,7 +215,7 @@ class AmountViewController : UIViewController, Trackable {
         feeLabel.lineBreakMode = .byWordWrapping
     }
 
-    private func toggleCurrency() {
+    internal func toggleCurrency() {
         saveEvent("amount.swapCurrency")
         selectedRate = selectedRate == nil ? currency.state?.currentRate : nil
         updateCurrencyToggleTitle()

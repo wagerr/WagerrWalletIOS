@@ -22,25 +22,43 @@ struct ReportAllowedPairsResponse : Codable {
 }
 
 struct TickersData : Codable {
-    var apiInfo : String
-    var response : TickersResponse
+    var error : String?
+    var apiInfo : String?
+    var response : TickersResponse?
+}
+
+enum TickersResult {
+    case success(TickersData)
+    case error(String)
+}
+
+enum SwapResult {
+    case success(SwapData)
+    case error(String)
+}
+
+enum SwapHistoryResult {
+    case success(ReportSwapHistoryData)
+    case error(String)
 }
 
 struct TickersResponse : Codable {
     var min : Double
-    var getAmount : Double
-    var minDigitsAfterDecimal : Int
+    var getAmount : String
+    var maxDigitsAfterDecimal : String
+    var TransactionSumFee : String
 }
 
 struct SwapData : Codable {
-    var apiInfo : String
-    var response : SwapStateResponse
+    var error : String?
+    var apiInfo : String?
+    var response : SwapResponse?
 }
 
 struct SwapResponse : Codable {
     var TransactionId : String
     var depositWallet : String
-    var receivingAmount : Double
+    var receivingAmount : String
 }
 
 struct SwapStateData : Codable {
@@ -95,7 +113,8 @@ class SwapViewModel : Equatable {
 }
 
 struct ReportSwapHistoryData : Codable  {
-    var apiInfo : String
+    var error : String?
+    var apiInfo : String?
     var response : [SwapStateResponse]
 }
 

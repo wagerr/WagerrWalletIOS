@@ -9,6 +9,7 @@
 import Foundation
 
 private let fallbackRatesURL = "https://bitpay.com/api/rates"
+private let instaswapURL = "https://instaswap.wagerr.com/instaswap_service.php?s="
 
 enum RatesResult {
     case success([Rate])
@@ -140,6 +141,86 @@ extension BRAPIClient {
         return
     }
 
+    func InstaswapTickers(getCoin: String, giveCoin: String, sendAmount: String, handler: @escaping (TickersResult) -> Void) {
+        let urlString = instaswapURL + "InstaswapTickers&getCoin=\(getCoin)&giveCoin=\(giveCoin)&sendAmount=\(sendAmount)"
+        var ret : TickersData?
+
+        guard let requestUrl = URL(string:urlString) else { return handler(.error("Error connecting to Instaswap")) }
+        let request = URLRequest(url:requestUrl)
+        let task = URLSession.shared.dataTask(with: request) {
+           (data, response, error) in
+           if error == nil,let usableData = data {
+               do {
+                    let decoder = JSONDecoder()
+                    let objData = try decoder.decode(TickersData.self, from: usableData)
+                    guard objData.error == nil else  { return handler(.error(objData.error!)) }
+                    ret = objData
+                    handler(.success(ret!))
+               }
+               catch let ex{
+                   handler(.error(ex.localizedDescription))
+               }
+           }
+        }
+
+        task.resume()
+        return
+    }
+
+    func InstaswapSendSwap(getCoin: String, giveCoin: String, sendAmount: String, receiveWallet: String, refundWallet: String, handler: @escaping (SwapResult) -> Void) {
+
+        let urlString = instaswapURL + "InstaswapSwap&getCoin=\(getCoin)&giveCoin=\(giveCoin)&sendAmount=\(sendAmount)&receiveWallet=\(receiveWallet)&refundWallet=\(refundWallet)&memo="
+        var ret : SwapData?
+
+        guard let requestUrl = URL(string:urlString) else { return handler(.error("Error connecting to Instaswap")) }
+        let request = URLRequest(url:requestUrl)
+        let task = URLSession.shared.dataTask(with: request) {
+           (data, response, error) in
+           if error == nil,let usableData = data {
+               do {
+                    let decoder = JSONDecoder()
+                    let objData = try decoder.decode(SwapData.self, from: usableData)
+                    guard objData.error == nil else  { return handler(.error(objData.error!)) }
+                    ret = objData
+                    handler(.success(ret!))
+               }
+               catch let ex{
+                   handler(.error(ex.localizedDescription))
+               }
+           }
+        }
+
+        task.resume()
+        return
+    }
+    
+    func InstaswapListSwaps(wallet: String, handler: @escaping (SwapHistoryResult) -> Void) {
+
+        let urlString = instaswapURL + "InstaswapReportWalletHistory&wallet=\(wallet)"
+        var ret : ReportSwapHistoryData?
+
+        guard let requestUrl = URL(string:urlString) else { return handler(.error("Error connecting to Instaswap")) }
+        let request = URLRequest(url:requestUrl)
+        let task = URLSession.shared.dataTask(with: request) {
+           (data, response, error) in
+           if error == nil,let usableData = data {
+               do {
+                    let decoder = JSONDecoder()
+                    let objData = try decoder.decode(ReportSwapHistoryData.self, from: usableData)
+                    guard objData.error == nil else  { return handler(.error(objData.error!)) }
+                    ret = objData
+                    handler(.success(ret!))
+               }
+               catch let ex{
+                   handler(.error(ex.localizedDescription))
+               }
+           }
+        }
+
+        task.resume()
+        return
+    }
+    
     /// Fetches all token exchange rates in BTC from CoinMarketCap
     func tokenExchangeRates(_ handler: @escaping (RatesResult) -> Void) {
         let request = URLRequest(url: URL(string: "https://api.coinmarketcap.com/v1/ticker/?limit=1000&convert=BTC")!)

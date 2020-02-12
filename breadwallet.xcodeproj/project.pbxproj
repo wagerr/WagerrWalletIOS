@@ -23,6 +23,8 @@
 		062D29B023A65DDD009ADC9E /* EventSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AF23A65DDD009ADC9E /* EventSliderCell.swift */; };
 		0642675023EECFF90022A143 /* SwapListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642674F23EECFF90022A143 /* SwapListCell.swift */; };
 		0642675223F174E60022A143 /* HomeSwapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642675123F174E60022A143 /* HomeSwapCell.swift */; };
+		0642675423F1BA250022A143 /* SwapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642675323F1BA250022A143 /* SwapViewController.swift */; };
+		0642675623F2BE120022A143 /* SwapAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642675523F2BE120022A143 /* SwapAmountViewController.swift */; };
 		06673E8E2377EA8500549005 /* WagerrOpCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */; };
 		06673E902377F25200549005 /* WagerrEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06673E8F2377F25200549005 /* WagerrEntities.swift */; };
 		0670668423AE787100D4238D /* LinkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668323AE787100D4238D /* LinkCell.swift */; };
@@ -709,6 +711,8 @@
 		063B76EC20C33A3100B3CB35 /* hash9.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hash9.h; sourceTree = "<group>"; };
 		0642674F23EECFF90022A143 /* SwapListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwapListCell.swift; sourceTree = "<group>"; };
 		0642675123F174E60022A143 /* HomeSwapCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeSwapCell.swift; sourceTree = "<group>"; };
+		0642675323F1BA250022A143 /* SwapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwapViewController.swift; path = src/ViewControllers/RootModals/SwapViewController.swift; sourceTree = "<group>"; };
+		0642675523F2BE120022A143 /* SwapAmountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwapAmountViewController.swift; path = src/ViewControllers/SwapAmountViewController.swift; sourceTree = "<group>"; };
 		06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrOpCodeManager.swift; sourceTree = "<group>"; };
 		06673E8F2377F25200549005 /* WagerrEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WagerrEntities.swift; sourceTree = "<group>"; };
 		0670668323AE787100D4238D /* LinkCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkCell.swift; sourceTree = "<group>"; };
@@ -3350,6 +3354,7 @@
 				CE20C9061DBC587200C8397A /* StartViewController.swift */,
 				CEC4CF061F0C48DD00E5C82E /* StartWipeWalletViewController.swift */,
 				CE5E6C951EB8CCF500A476DB /* SupportCenterContainer.swift */,
+				0642675523F2BE120022A143 /* SwapAmountViewController.swift */,
 				06C729D023EE9B5E00E55360 /* SwapDetailViewController.swift */,
 				06C729C223EAEC1A00E55360 /* SwapListController.swift */,
 				06C729CE23EE918700E55360 /* SwapTableViewController.swift */,
@@ -3663,6 +3668,7 @@
 			children = (
 				CEC6AA431DEFCDE900EE5AFD /* ModalViewController.swift */,
 				CEC6AA3F1DEFC87300EE5AFD /* SendViewController.swift */,
+				0642675323F1BA250022A143 /* SwapViewController.swift */,
 				CEC6AA411DEFC88F00EE5AFD /* ReceiveViewController.swift */,
 				CEC6AA4C1DF0741100EE5AFD /* ModalDisplayable.swift */,
 			);
@@ -4688,6 +4694,7 @@
 				CE760EDC1E561DF900EFAC2B /* SecurityCenterViewController.swift in Sources */,
 				0608622A238B11B1002F4E9B /* EventDetailDatasource.swift in Sources */,
 				CEEC70861E94397D00EF788E /* UserDefaults+Additions.swift in Sources */,
+				0642675423F1BA250022A143 /* SwapViewController.swift in Sources */,
 				22A9A9501DF61945000F0016 /* BRHTTPServer.swift in Sources */,
 				CE1E7A9A20938DFD00C86BB7 /* MenuButton.swift in Sources */,
 				22A9A9531DF61945000F0016 /* BRLinkPlugin.swift in Sources */,
@@ -4729,6 +4736,7 @@
 				06C729D323EE9CAE00E55360 /* SwapDetailDataSource.swift in Sources */,
 				CE6D0F971DE8B73A00BD4BCF /* ModalTransitionDelegate.swift in Sources */,
 				1B1AFFA01FB7EF7C00E61908 /* BiometricsSettingsViewController.swift in Sources */,
+				0642675623F2BE120022A143 /* SwapAmountViewController.swift in Sources */,
 				1B1AFFA11FB7EF7C00E61908 /* BiometricsSpendingLimitViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

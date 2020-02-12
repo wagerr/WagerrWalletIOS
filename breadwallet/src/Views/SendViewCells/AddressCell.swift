@@ -28,6 +28,10 @@ class AddressCell : UIView {
         textField.text = content
     }
 
+    func setLabel(_ content: String?) {
+        label.text = content
+    }
+
     var isEditable = false {
         didSet {
             gr.isEnabled = isEditable

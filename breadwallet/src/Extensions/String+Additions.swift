@@ -31,6 +31,18 @@ extension String {
         return String(cString: addr)
     }
     
+    func isValidBitcoinAddress() -> Bool {
+        let fullAddress = self.components(separatedBy: ":")
+        if fullAddress.count == 2 && fullAddress[0] == "bitcoin" {
+            let pattern = "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$"
+            let r = fullAddress[1].startIndex..<fullAddress[1].endIndex
+            let r2 = fullAddress[1].range(of: pattern, options: .regularExpression)
+            return r == r2
+        } else {
+            return false
+        }
+    }
+    
     var isValidEthAddress: Bool {
         let pattern = "^0[xX][0-9a-fA-F]{40}$"
         return range(of: pattern, options: .regularExpression) != nil
@@ -61,6 +73,8 @@ extension String {
         let length = utf16.distance(from: range.lowerBound, to: range.upperBound)
         return NSRange(location: location, length: length)
     }
+    
+     var isNumeric: Bool { return Int(self) != nil || Double(self) != nil }
 }
 
 private let startTag = "<b>"

@@ -219,8 +219,14 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
                 return
             }
             
-            self.onPublishSuccess?()
             UIPasteboard.general.string = swapData.response?.depositWallet
+            
+            DispatchQueue.main.async {
+                self.dismiss(animated: true, completion: {
+                    Store.trigger(name: .showStatusBar)
+                    self.onPublishSuccess?()
+                })
+            }
         })
         
 /*

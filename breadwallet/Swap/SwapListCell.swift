@@ -33,9 +33,9 @@ class SwapListCell: UITableViewCell {
         func setSwap(_ viewModel: SwapViewModel, isSyncing: Bool ) {
             self.viewModel = viewModel
             
-            descriptionLabel.text = viewModel.response.transactionId
-            amount.text = viewModel.response.receiveCoin
-            timestamp.text = viewModel.response.timestamp
+            descriptionLabel.text = "ID: " + viewModel.response.transactionId
+            amount.attributedText = viewModel.response.getAttrAmount()
+            timestamp.attributedText = viewModel.response.getAttrTimestamp()
             
             status.text = viewModel.response.transactionState.rawValue
             NSLayoutConstraint.activate(completeConstraints)
@@ -59,10 +59,10 @@ class SwapListCell: UITableViewCell {
         
         private func addConstraints() {
             timestamp.constrain([
-                timestamp.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[2]),
+                timestamp.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[1]),
                 timestamp.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[2])])
             descriptionLabel.constrain([
-                descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -C.padding[2]),
+                descriptionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: C.padding[1]),
                 descriptionLabel.trailingAnchor.constraint(equalTo: timestamp.trailingAnchor)])
             pendingConstraints = [
                 descriptionLabel.centerYAnchor.constraint(equalTo: status.centerYAnchor),

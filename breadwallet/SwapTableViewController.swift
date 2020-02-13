@@ -122,8 +122,8 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         })
         
         Store.subscribe(self, selector: {
-            guard let oldSwaps = $0[self.currency]?.events else { return false }
-            guard let newSwaps = $1[self.currency]?.events else { return false }
+            guard let oldSwaps = $0[self.currency]?.swapTransactions else { return false }
+            guard let newSwaps = $1[self.currency]?.swapTransactions else { return false }
             return oldSwaps != newSwaps },
                         callback: { state in
                             self.allSwapTransactions = state[self.currency]?.swapTransactions ?? [SwapViewModel]()
@@ -140,7 +140,8 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
             guard let `self` = self,
             case .success(let listData) = result else { return }
             DispatchQueue.main.async {
-                self.allSwapTransactions = listData.response.map { SwapViewModel(response: $0) }
+                let allSwaps = listData.response.map { SwapViewModel(response: $0) }
+                Store.perform(action: WalletChange(self.currency).setSwapTransactions(allSwaps))
             }
         })
     }

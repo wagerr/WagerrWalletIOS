@@ -173,6 +173,7 @@ struct WalletState {
                     balance: UInt256? = nil,
                     transactions: [Transaction]? = nil,
                     events: [BetEventViewModel]? = nil,
+                    swapTransactions: [SwapViewModel]? = nil,
                     lastBlockTimestamp: UInt32? = nil,
                     name: String? = nil,
                     creationDate: Date? = nil,

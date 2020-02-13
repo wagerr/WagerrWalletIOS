@@ -75,16 +75,35 @@ enum SwapTransactionState : String, Codable{
 }
 
 struct SwapStateResponse : Codable {
+    var moonpayProfit : String?
+    var ourTransactionKeyId : String
+    var externalTransactionId : String?
+    var btcGetVal : String?
+    var isFiatTransaction : String?
+    var fiatResponse : String?
     var transactionId : String
     var depositCoin : String
     var receiveCoin : String
-    var depositAmount : Double
+    var depositAmount : String
+    var receivingAmount : String
     var refundWallet : String
     var receiveWallet : String
     var depositWallet : String
     var memo_tag : String
     var transactionState : SwapTransactionState
     var timestamp : String
+    
+    func getAttrTimestamp() -> NSAttributedString  {
+        let tsAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.colorDraw]
+        let ret = NSMutableAttributedString(string: timestamp, attributes: tsAttrs)
+        return ret
+    }
+    
+    func getAttrAmount() -> NSAttributedString  {
+        let tsAttrs: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.receivedGreen]
+        let ret = NSMutableAttributedString(string: receivingAmount + " " + receiveCoin, attributes: tsAttrs)
+        return ret
+    }
 }
 
 class SwapViewModel : Equatable {

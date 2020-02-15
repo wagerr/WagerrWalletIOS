@@ -118,7 +118,7 @@ class SwapViewModel : Equatable {
     }
     
     var title : String {
-        return response.transactionId
+        return S.Instaswap.ID + ": " + response.transactionId
     }
     
     static func ==(lhs: SwapViewModel, rhs: SwapViewModel) -> Bool {

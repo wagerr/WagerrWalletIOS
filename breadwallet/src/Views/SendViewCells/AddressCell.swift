@@ -10,8 +10,9 @@ import UIKit
 
 class AddressCell : UIView {
 
-    init(currency: CurrencyDef) {
+    init(currency: CurrencyDef, noScan: Bool = false) {
         self.currency = currency
+        self.noScan = noScan
         super.init(frame: .zero)
         setupViews()
     }
@@ -41,6 +42,7 @@ class AddressCell : UIView {
     let textField = UITextField()
     let paste = ShadowButton(title: S.Send.pasteLabel, type: .tertiary)
     let scan = ShadowButton(title: S.Send.scanLabel, type: .tertiary)
+    let noScan : Bool
     fileprivate let contentLabel = UILabel(font: .customBody(size: 14.0), color: .darkText)
     private let label = UILabel(font: .customBody(size: 16.0))
     fileprivate let gr = UITapGestureRecognizer()
@@ -82,12 +84,19 @@ class AddressCell : UIView {
             tapView.topAnchor.constraint(equalTo: topAnchor),
             tapView.bottomAnchor.constraint(equalTo: bottomAnchor),
             tapView.trailingAnchor.constraint(equalTo: paste.leadingAnchor) ])
-        scan.constrain([
-            scan.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
-            scan.centerYAnchor.constraint(equalTo: centerYAnchor) ])
-        paste.constrain([
-            paste.centerYAnchor.constraint(equalTo: centerYAnchor),
-            paste.trailingAnchor.constraint(equalTo: scan.leadingAnchor, constant: -C.padding[1]) ])
+        if noScan   {
+            paste.constrain([
+                paste.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
+                paste.centerYAnchor.constraint(equalTo: centerYAnchor) ])
+        }
+        else {
+            scan.constrain([
+                scan.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
+                scan.centerYAnchor.constraint(equalTo: centerYAnchor) ])
+            paste.constrain([
+                paste.centerYAnchor.constraint(equalTo: centerYAnchor),
+                paste.trailingAnchor.constraint(equalTo: scan.leadingAnchor, constant: -C.padding[1]) ])
+        }
         border.constrain([
             border.leadingAnchor.constraint(equalTo: leadingAnchor),
             border.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -113,6 +122,9 @@ class AddressCell : UIView {
             myself.contentLabel.text = myself.textField.text
         }
 
+        if noScan   {
+            scan.isHidden = true
+        }
         //GR to start editing label
         gr.addTarget(self, action: #selector(didTap))
         tapView.addGestureRecognizer(gr)

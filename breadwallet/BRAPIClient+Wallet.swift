@@ -145,7 +145,9 @@ extension BRAPIClient {
         let urlString = instaswapURL + "InstaswapTickers&getCoin=\(getCoin)&giveCoin=\(giveCoin)&sendAmount=\(sendAmount)"
         var ret : TickersData?
 
-        guard let requestUrl = URL(string:urlString) else { return handler(.error("Error connecting to Instaswap")) }
+        guard let requestUrl = URL(string:urlString) else {
+            return handler(.error("Error connecting to Instaswap"))
+        }
         let request = URLRequest(url:requestUrl)
         let task = URLSession.shared.dataTask(with: request) {
            (data, response, error) in

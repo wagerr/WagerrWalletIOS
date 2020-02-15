@@ -345,8 +345,9 @@ class ModalPresenter : Subscriber, Trackable {
         currentRequest = nil
 
         let root = ModalViewController(childViewController: sendVC)
+        //sendVC.presentScan = presentScan(parent: root, currency: currency)
         sendVC.onPublishSuccess = { [weak self] in
-            self?.presentAlert(.sendSuccess, completion: {})
+            self?.presentAlert(.swapSuccess, completion: {})
         }
         return root
     }

@@ -126,6 +126,13 @@ struct Amount {
         return formattedValue
     }
     
+    /// Token value in specified units as formatted string without symbol and always dot as separator
+    var tokenInstaswapFormattedValue : String {
+        var ret = tokenFormattedValue.replacingOccurrences(of: ",", with: ".")
+        ret = ret.trimmingCharacters(in: NSCharacterSet.whitespaces)
+        return ret
+    }
+    
     /// Token value in specified units as formatted string with currency ticker symbol suffix
     func tokenDescription(inUnit unit: CurrencyUnit) -> String {
         return "\(tokenFormattedValue(inUnit: unit)) \(currency.name(forUnit: unit))"
@@ -135,6 +142,7 @@ struct Amount {
         let format = NumberFormatter()
         format.isLenient = true
         format.numberStyle = .currency
+        format.decimalSeparator = "."
         format.generatesDecimalNumbers = true
         format.negativeFormat = "-\(format.positiveFormat!)"
         format.currencyCode = currency.code

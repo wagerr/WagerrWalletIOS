@@ -111,10 +111,10 @@ extension SwapDetailDataSource: UITableViewDataSource {
             transactionCell.set(address: viewModel.response.transactionId)
         case .deposit:
             let depositCell = cell as! TxLabelCell
-            depositCell.value = String(format: "%f", viewModel.response.depositAmount)
+            depositCell.value = viewModel.response.depositAmount
         case .receive:
             let receiveCell = cell as! TxLabelCell
-            receiveCell.value = viewModel.response.receiveCoin
+            receiveCell.value = viewModel.response.receivingAmount + " " + viewModel.response.receiveCoin
         case .stateTimestamp:
             let stateTSCell = cell as! TxLabelCell
             stateTSCell.value = viewModel.response.timestamp

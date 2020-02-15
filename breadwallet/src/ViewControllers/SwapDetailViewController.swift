@@ -11,7 +11,7 @@ import UIKit
 private extension C {
     static let statusRowHeight: CGFloat = 48.0
     static let compactContainerHeight: CGFloat = 322.0
-    static let expandedContainerHeight: CGFloat = 546.0
+    static let expandedContainerHeight: CGFloat = 446.0
     static let detailsButtonHeight: CGFloat = 65.0
 }
 
@@ -36,7 +36,7 @@ class SwapDetailViewController: UIViewController, Subscriber {
     }
     private var viewModel: SwapViewModel
     private var dataSource: SwapDetailDataSource
-    private var isExpanded: Bool = false
+    private var isExpanded: Bool = true
     
     private var compactContainerHeight: CGFloat {
         //return (viewModel.transactionState == .complete || viewModel.status == .invalid) ? C.compactContainerHeight :
@@ -110,7 +110,7 @@ class SwapDetailViewController: UIViewController, Subscriber {
             container.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
         
-        containerHeightConstraint = container.heightAnchor.constraint(equalToConstant: compactContainerHeight)
+        containerHeightConstraint = container.heightAnchor.constraint(equalToConstant: C.expandedContainerHeight)
         containerHeightConstraint.isActive = true
         
         header.constrainTopCorners(height: C.Sizes.headerHeight)
@@ -164,6 +164,7 @@ class SwapDetailViewController: UIViewController, Subscriber {
         detailsButton.addTarget(self, action: #selector(onToggleDetails), for: .touchUpInside)
 
         header.setTitle( viewModel.title )
+        footer.isHidden = true
     }
     
     private func reload() {

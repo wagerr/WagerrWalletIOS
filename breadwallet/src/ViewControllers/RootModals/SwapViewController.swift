@@ -16,6 +16,7 @@ private let buttonSize = CGSize(width: 52.0, height: 32.0)
 class SwapViewController : UIViewController, Subscriber, ModalPresentable, Trackable {
 
     //MARK - Public
+    var presentScan: PresentScan?
     var onPublishSuccess: (()->Void)?
     var parentView: UIView? //ModalPresentable
     
@@ -23,7 +24,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         self.currency = currency
         self.walletManager = wm
         amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false)
-        refundWalletCell = AddressCell(currency: currency)
+        refundWalletCell = AddressCell(currency: currency, noScan: true)
 
         super.init(nibName: nil, bundle: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
@@ -142,8 +143,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         }
         amountView.didUpdateAmount = { [weak self] amount in
             self?.amount = amount
-            if amount!.tokenFormattedValue.isNumeric && (amount!.tokenFormattedValue as NSString).doubleValue > 0.0   {
-                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: "BTC", sendAmount: amount!.tokenFormattedValue, handler: { [weak self] result in
+            if amount!.tokenValue > 0.0   {
+                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: "BTC", sendAmount: amount!.tokenInstaswapFormattedValue, handler: { [weak self] result in
                         guard let `self` = self,
                         case .success(let tickersData) = result else { return }
                         DispatchQueue.main.async {
@@ -178,7 +179,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         refundWalletCell.textField.resignFirstResponder()
         presentScan? { [weak self] paymentRequest in
             guard let request = paymentRequest else { return }
-            self?.handleRequest(request)
+            self!.refundWalletCell.setContent(request.displayAddress)
         }
     }
  */
@@ -207,7 +208,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
             let amount = amount,
             let refundAddress = refundWalletCell.address else { return }
         
-        walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: "BTC", sendAmount: amount.tokenFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
+        walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: "BTC", sendAmount: amount.tokenInstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
             guard let `self` = self,
                 case .success(let swapData) = result, swapData.apiInfo! == "OK" else { return }
                     

@@ -490,6 +490,9 @@ enum S {
         static let receiveAmount = NSLocalizedString("Instaswap.receiveAmount", value:"Amount to receive", comment: "Empty swap list message.")
         static let noAddress = NSLocalizedString("Instaswap.noAddress", value: "Please enter the refund address.", comment: "Empty address alert message")
         static let errorSwap = NSLocalizedString("Instaswap.errorSwap", value: "An error ocurred while sending swap data: %@", comment: "Swap error message")
+        static let sendSuccess = NSLocalizedString("Instaswap.sendSuccess", value:"Swap order sent", comment: "swap success alert header label (confirmation that the swap happened)")
+        static let sendSuccessSubHeader = NSLocalizedString("Instaswap.sendSuccessSubheader", value:"Deposit address pasted to clipboard", comment: "swap success alert header label (confirmation that the swap happened)")
+        static let ID = NSLocalizedString("Instaswap.ID", value:"ID", comment: "transaction id")
         
     }
 

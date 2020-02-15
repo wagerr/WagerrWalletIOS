@@ -12,7 +12,7 @@ class HomeBetEventCell : UITableViewCell {
     
     static let cellIdentifier = "BetEventCell"
 
-    private let check = UIImageView(image: #imageLiteral(resourceName: "CircleCheck").withRenderingMode(.alwaysTemplate))
+    private let check = UIImageView(frame: CGRect(x: 0, y: 0, width: 16, height: 16))
     private let titleLabel = UILabel(font: .customBold(size: 18.0), color: .white)
     private let container = Background()
     
@@ -40,6 +40,8 @@ class HomeBetEventCell : UITableViewCell {
 
     private func addSubviews() {
         contentView.addSubview(container)
+        let checkImage = #imageLiteral(resourceName: "BetIcon").withRenderingMode(.alwaysTemplate)
+        check.image = checkImage
         container.addSubview(check)
         container.addSubview(titleLabel)
     }
@@ -51,7 +53,9 @@ class HomeBetEventCell : UITableViewCell {
                                                            right: -C.padding[2]))
         check.constrain([
             check.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: C.padding[2]),
-            check.topAnchor.constraint(equalTo: container.topAnchor, constant: C.padding[2.5])
+            check.topAnchor.constraint(equalTo: container.topAnchor, constant: C.padding[2.5]),
+            check.widthAnchor.constraint(equalToConstant: CGFloat(16.0)),
+            check.heightAnchor.constraint(equalToConstant: CGFloat(16.0))
         ])
         
         titleLabel.constrain([

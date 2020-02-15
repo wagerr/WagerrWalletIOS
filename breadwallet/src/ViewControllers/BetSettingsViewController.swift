@@ -16,6 +16,8 @@ class BetSettingsViewController : UIViewController {
     //private let checkIncludeFee = UIButton(type: .system)
     private let checkIncludeFee = UISwitch(frame: CGRect(x: 163, y: 150, width: 0, height: 0))
     private let labelIncludeFee = UILabel(font: UIFont.customBody(size: 14.0), color: .primaryText)
+    private let checkUseAmerican = UISwitch(frame: CGRect(x: 163, y: 150, width: 0, height: 0))
+    private let labelUseAmerican = UILabel(font: UIFont.customBody(size: 14.0), color: .primaryText)
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -36,6 +38,8 @@ class BetSettingsViewController : UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(checkIncludeFee)
         view.addSubview(labelIncludeFee)
+        view.addSubview(checkUseAmerican)
+        view.addSubview(labelUseAmerican)
     }
 
     @objc func back(sender: UIBarButtonItem) {
@@ -64,6 +68,17 @@ class BetSettingsViewController : UIViewController {
             labelIncludeFee.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[4]),
             labelIncludeFee.trailingAnchor.constraint(equalTo: checkIncludeFee.leadingAnchor, constant: -C.padding[2]),
         ])
+        
+        checkUseAmerican.constrain([
+            checkUseAmerican.topAnchor.constraint(equalTo: labelIncludeFee.bottomAnchor, constant: C.padding[2]),
+            checkUseAmerican.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
+        ])
+        
+        labelUseAmerican.constrain([
+            labelUseAmerican.topAnchor.constraint(equalTo: checkUseAmerican.topAnchor, constant: -C.padding[1]/2 ),
+            labelUseAmerican.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[4]),
+            labelUseAmerican.trailingAnchor.constraint(equalTo: checkUseAmerican.leadingAnchor, constant: -C.padding[2]),
+        ])
     }
 
     private func setInitialData() {
@@ -78,6 +93,15 @@ class BetSettingsViewController : UIViewController {
         }
         
         self.checkIncludeFee.isOn = UserDefaults.showNetworkFeesInOdds
+        
+        labelUseAmerican.text = S.BetSettings.useAmerican
+        labelUseAmerican.lineBreakMode = .byWordWrapping
+        labelUseAmerican.numberOfLines = 2
+        checkUseAmerican.tap = strongify(self) { myself in
+            UserDefaults.showAmericanNotationInOdds = self.checkUseAmerican.isOn
+        }
+        
+        self.checkUseAmerican.isOn = UserDefaults.showAmericanNotationInOdds
     }
 
     required init?(coder aDecoder: NSCoder) {

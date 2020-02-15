@@ -148,20 +148,35 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txHomeOdds : String {
-        return (homeOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(homeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
+        return (homeOdds==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd: Float(homeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txAwayOdds : String {
-        return (awayOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd:Float(awayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
+        return (awayOdds==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd:Float(awayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txDrawOdds : String {
-        return (drawOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd:Float(drawOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
+        return (drawOdds==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd:Float(drawOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txSpreadPoints : String {
         return (spreadPoints==0) ? "N/A" : String(format: "%.1f", Float(spreadPoints) / Float(EventMultipliers.SPREAD_MULTIPLIER) )
     }
     
-    func getOdd( odd : Float ) -> Float   {
-        return (UserDefaults.showNetworkFeesInOdds) ? odd : ((odd-1)*0.94)+1
+    var getOddFormatString : String   {
+        return (UserDefaults.showAmericanNotationInOdds) ? "%.0f" : "%.2f" ;
+    }
+    
+    private func getOdd( odd : Float ) -> Float   {
+        var ret = (UserDefaults.showNetworkFeesInOdds) ? odd : ((odd-1)*0.94)+1
+        ret = (UserDefaults.showAmericanNotationInOdds) ? DecimalToAmerican(odd: ret) : ret
+        return ret
+    }
+    
+    func DecimalToAmerican( odd : Float ) -> Float    {
+        if odd > 2.0    {
+            return (odd - 1.0) * 100.0
+        }
+        else    {
+            return  (-100) / (odd - 1)
+        }
     }
     
     var txSpreadPointsFormatted : String    {
@@ -170,19 +185,19 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txHomeSpread : String {
-        return (spreadHomeOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(spreadHomeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
+        return (spreadHomeOdds==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd: Float(spreadHomeOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ) )
     }
     var txAwaySpread : String {
-        return (spreadAwayOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(spreadAwayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
+        return (spreadAwayOdds==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd: Float(spreadAwayOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
     }
     var txTotalPoints : String {
         return (totalPoints==0) ? "N/A" : String(format: "%.1f", Float(totalPoints) / Float(EventMultipliers.TOTAL_MULTIPLIER) )
     }
     var txOverOdds : String {
-        return (overOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(overOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
+        return (overOdds==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd: Float(overOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
     }
     var txUnderOdds : String {
-        return (underOdds==0) ? "N/A" : String(format: "%.2f", getOdd(odd: Float(underOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
+        return (underOdds==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd: Float(underOdds) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
     }
     
     var hasSpreads : Bool   {

@@ -34,6 +34,7 @@ private let hasBchConnectedKey = "hasBchConnectedKey"
 
 // Wagerr's
 private let showNetworkFeesInOddsKey = "showNetworkFeesInOddsKey"
+private let showAmericanNotationInOddsKey = "showAmericanNotationInOddsKey"
 
 extension UserDefaults {
 
@@ -261,5 +262,9 @@ extension UserDefaults {
     static var showNetworkFeesInOdds: Bool {
         get { return defaults.bool(forKey: showNetworkFeesInOddsKey) }
         set { defaults.setValue(newValue, forKey: showNetworkFeesInOddsKey) }
+    }
+    static var showAmericanNotationInOdds: Bool {
+        get { return defaults.bool(forKey: showAmericanNotationInOddsKey) }
+        set { defaults.setValue(newValue, forKey: showAmericanNotationInOddsKey) }
     }
 }

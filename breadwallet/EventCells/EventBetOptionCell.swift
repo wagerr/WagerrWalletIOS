@@ -73,12 +73,25 @@ struct EventBetChoice {
     }
     
     func potentialReward(stake: Int) -> (cryptoAmount: String, fiatAmount: String )   {
-        let winningAmount: Float = (UserDefaults.showNetworkFeesInOdds) ? Float(stake) * (odd - 1) * 0.94 : Float(stake) * (odd - 1)
+        var decimalOdd = odd
+        if UserDefaults.showAmericanNotationInOdds  {
+            decimalOdd = AmericanToDecimal( odd: decimalOdd )
+        }
+        var winningAmount: Float = (UserDefaults.showNetworkFeesInOdds) ? Float(stake) * (decimalOdd - 1) * 0.94 : Float(stake) * (decimalOdd - 1)
         let cryptoAmount: Float = Float(stake) + winningAmount
         let currency = Currencies.btc
         let rate = currency.state?.currentRate
         let amount = Amount(amount: UInt256(UInt64(cryptoAmount*Float(C.satoshis))), currency: currency, rate: rate)
         return (String.init(format: "%.2f %@", cryptoAmount, currency.code), amount.fiatDescription)
+    }
+    
+    func AmericanToDecimal( odd: Float ) -> Float   {
+        if odd > 0  {
+            return  round( ((odd / 100) + 1.0)*100 )/100
+        }
+        else    {
+            return round( ((100 / -odd) + 1.0)*100 )/100
+        }
     }
 }
 

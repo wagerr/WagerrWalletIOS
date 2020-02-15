@@ -445,7 +445,7 @@ enum S {
     enum HomeScreen {
         static let totalAssets = NSLocalizedString("HomeScreen.totalAssets", value: "total assets", comment: "header")
         static let portfolio = NSLocalizedString("HomeScreen.portfolio", value: "Wallets", comment: "Section header")
-        static let betting = NSLocalizedString("HomeScreen.betting", value: "Betting", comment: "Section header")
+        static let betting = NSLocalizedString("HomeScreen.betting", value: "Betting & Swap", comment: "Section header")
         static let admin = NSLocalizedString("HomeScreen.admin", value: "Admin", comment: "Section header")
     }
 
@@ -472,6 +472,29 @@ enum S {
         static let bethistory = NSLocalizedString("Search.bethistory", value: "bet history", comment: "Bet history filter label")
         static let payouts = NSLocalizedString("Search.payouts", value: "payouts", comment: "Payout filter label")
         static let search = NSLocalizedString("Search.search", value: "Search", comment: "Search bar placeholder text")
+    }
+    
+    enum Instaswap {
+        static let title = NSLocalizedString("Instaswap.title", value: "Instaswap transaction", comment: "open filter label")
+        static let open = NSLocalizedString("Instaswap.open", value: "open", comment: "open filter label")
+        static let notcompleted = NSLocalizedString("Instaswap.notcompleted", value: "not completed", comment: "Not completed filter label")
+        static let completed = NSLocalizedString("Instaswap.completed", value: "completed", comment: "Completed filter label")
+        static let buy = NSLocalizedString("Instaswap.buy", value: "Create Swap", comment: "Swap button")
+        static let transactionId = NSLocalizedString("Instaswap.transactionId", value: "Transaction ID", comment: "Transaction Id cell")
+        static let status = NSLocalizedString("Instaswap.status", value: "Status", comment: "Status cell")
+        static let deposit = NSLocalizedString("Instaswap.deposit", value: "Deposit %@", comment: "Deposit cell")
+        static let receive = NSLocalizedString("Instaswap.receive", value: "Receive %@", comment: "Receive cell")
+        static let depositWallet = NSLocalizedString("Instaswap.depositWallet", value: "Deposit address", comment: "Deposit wallet cell")
+        static let receiveWallet = NSLocalizedString("Instaswap.receiveWallet", value: "Receive at", comment: "Receive wallet cell")
+        static let refundWallet = NSLocalizedString("Instaswap.refundWallet", value: "Refund address", comment: "Refund wallet cell")
+        static let emptyMessage = NSLocalizedString("Instaswap.emptyMessage", value:"Swap operations will show here once submitted", comment: "Empty swap list message.")
+        static let receiveAmount = NSLocalizedString("Instaswap.receiveAmount", value:"Amount to receive", comment: "Empty swap list message.")
+        static let noAddress = NSLocalizedString("Instaswap.noAddress", value: "Please enter the refund address.", comment: "Empty address alert message")
+        static let errorSwap = NSLocalizedString("Instaswap.errorSwap", value: "An error ocurred while sending swap data: %@", comment: "Swap error message")
+        static let sendSuccess = NSLocalizedString("Instaswap.sendSuccess", value:"Swap order sent", comment: "swap success alert header label (confirmation that the swap happened)")
+        static let sendSuccessSubHeader = NSLocalizedString("Instaswap.sendSuccessSubheader", value:"Deposit address pasted to clipboard", comment: "swap success alert header label (confirmation that the swap happened)")
+        static let ID = NSLocalizedString("Instaswap.ID", value:"ID", comment: "transaction id")
+        
     }
 
     enum Prompts {

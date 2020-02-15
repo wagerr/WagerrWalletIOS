@@ -1,19 +1,19 @@
 //
-//  AccountViewController.swift
+//  EventListController.swift
 //  breadwallet
 //
-//  Created by Adrian Corscadden on 2016-11-16.
-//  Copyright © 2016 breadwallet LLC. All rights reserved.
+//  Created by MIP on 24/11/2019.
+//  Copyright © 2019 Wagerr Ltd.. All rights reserved.
 //
 
 import UIKit
 import BRCore
 import MachO
 
-let accountHeaderHeight: CGFloat = 152.0
-let accountFooterHeight: CGFloat = 67.0
+let swapHeaderHeight: CGFloat = 152.0
+let swapFooterHeight: CGFloat = 67.0
 
-class AccountViewController : UIViewController, Subscriber {
+class SwapListController : UIViewController, Subscriber {
 
     //MARK: - Public
     let currency: CurrencyDef
@@ -21,10 +21,10 @@ class AccountViewController : UIViewController, Subscriber {
     init(currency: CurrencyDef, walletManager: WalletManager) {
         self.walletManager = walletManager
         self.currency = currency
-        self.headerView = AccountHeaderView(currency: currency)
-        self.footerView = AccountFooterView(currency: currency)
+        self.headerView = SwapHeaderView(currency: currency)
+        self.footerView = SwapFooterView(currency: currency)
         super.init(nibName: nil, bundle: nil)
-        self.transactionsTableView = TransactionsTableViewController(currency: currency, walletManager: walletManager, didSelectTransaction: didSelectTransaction)
+        self.transactionsTableView = SwapTableViewController(currency: currency, walletManager: walletManager, didSelectSwap: didSelectSwap)
 
         if let btcWalletManager = walletManager as? BTCWalletManager {
             headerView.isWatchOnly = btcWalletManager.isWatchOnly
@@ -32,21 +32,18 @@ class AccountViewController : UIViewController, Subscriber {
             headerView.isWatchOnly = false
         }
 
-        footerView.sendCallback = { Store.perform(action: RootModalActions.Present(modal: .send(currency: self.currency))) }
-        footerView.receiveCallback = { Store.perform(action: RootModalActions.Present(modal: .receive(currency: self.currency))) }
         footerView.buyCallback = { Store.perform(action: RootModalActions.Present(modal: .swap(currency: self.currency))) }
-        footerView.sellCallback = { Store.perform(action: RootModalActions.Present(modal: .sell(currency: self.currency))) }
     }
 
     //MARK: - Private
     private let walletManager: WalletManager
-    private let headerView: AccountHeaderView
-    private let footerView: AccountFooterView
+    private let headerView: SwapHeaderView
+    private let footerView: SwapFooterView
     private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
-    private var transactionsTableView: TransactionsTableViewController!
+    private var transactionsTableView: SwapTableViewController!
     private var isLoginRequired = false
-    private let searchHeaderview: SearchHeaderView = {
-        let view = SearchHeaderView()
+    private let searchHeaderview: SwapSearchHeaderView = {
+        let view = SwapSearchHeaderView()
         view.isHidden = true
         return view
     }()
@@ -89,6 +86,14 @@ class AccountViewController : UIViewController, Subscriber {
         setInitialData()
     }
 
+    private func didSelectSwap(txInfo: [SwapViewModel], selectedIndex: Int) -> Void {
+        let transactionDetails = SwapDetailViewController(txInfo: txInfo[selectedIndex], wm: walletManager as! BTCWalletManager)
+        transactionDetails.modalPresentationStyle = .overCurrentContext
+        transactionDetails.transitioningDelegate = transitionDelegate
+        transactionDetails.modalPresentationCapturesStatusBarAppearance = true
+        present(transactionDetails, animated: true, completion: nil)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         shouldShowStatusBar = true
@@ -127,7 +132,7 @@ class AccountViewController : UIViewController, Subscriber {
     }
 
     private func addConstraints() {
-        headerContainer.constrainTopCorners(height: accountHeaderHeight)
+        headerContainer.constrainTopCorners(height: swapHeaderHeight)
         headerView.constrain(toSuperviewEdges: nil)
         searchHeaderview.constrain(toSuperviewEdges: nil)
 
@@ -179,14 +184,6 @@ class AccountViewController : UIViewController, Subscriber {
                 transactionsTableView.view.constrain(toSuperviewEdges: nil)
             }
         })
-    }
-    
-    private func didSelectTransaction(txInfo: WgrTransactionInfo, selectedIndex: Int) -> Void {
-        let transactionDetails = TxDetailViewController(txInfo: txInfo, wm: walletManager as! BTCWalletManager)
-        transactionDetails.modalPresentationStyle = .overCurrentContext
-        transactionDetails.transitioningDelegate = transitionDelegate
-        transactionDetails.modalPresentationCapturesStatusBarAppearance = true
-        present(transactionDetails, animated: true, completion: nil)
     }
 
     private func showJailbreakWarnings(isJailbroken: Bool) {

@@ -290,6 +290,8 @@ class ModalPresenter : Subscriber, Trackable {
         case .sell(let currency):
             presentPlatformWebViewController("/sell?currency=\(currency.code)")
             return nil
+        case .swap(let currency):
+            return makeSwapView(currency: currency)
         }
         
     }
@@ -327,6 +329,25 @@ class ModalPresenter : Subscriber, Trackable {
         }
         sendVC.onPublishSuccess = { [weak self] in
             self?.presentAlert(.sendSuccess, completion: {})
+        }
+        return root
+    }
+    
+    private func makeSwapView(currency: CurrencyDef) -> UIViewController? {
+        guard !(currency.state?.isRescanning ?? false) else {
+            let alert = UIAlertController(title: S.Alert.error, message: S.Send.isRescanning, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: S.Button.ok, style: .cancel, handler: nil))
+            topViewController?.present(alert, animated: true, completion: nil)
+            return nil
+        }
+        guard let walletManager = walletManagers[currency.code] else { return nil }
+        let sendVC = SwapViewController(wm: walletManager as! BTCWalletManager, currency: currency)
+        currentRequest = nil
+
+        let root = ModalViewController(childViewController: sendVC)
+        //sendVC.presentScan = presentScan(parent: root, currency: currency)
+        sendVC.onPublishSuccess = { [weak self] in
+            self?.presentAlert(.swapSuccess, completion: {})
         }
         return root
     }

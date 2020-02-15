@@ -12,6 +12,7 @@ class AssetListTableView: UITableViewController, Subscriber {
 
     var didSelectCurrency: ((CurrencyDef) -> Void)?
     var didTapBet: ((CurrencyDef) -> Void)?
+    var didTapBuy: ((CurrencyDef) -> Void)?
     var didTapSecurity: (() -> Void)?
     var didTapSupport: (() -> Void)?
     var didTapSettings: (() -> Void)?
@@ -31,6 +32,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         tableView.backgroundColor = .whiteBackground
         tableView.register(HomeScreenCell.self, forCellReuseIdentifier: HomeScreenCell.cellIdentifier)
         tableView.register(HomeBetEventCell.self, forCellReuseIdentifier: HomeBetEventCell.cellIdentifier)
+        tableView.register(HomeSwapCell.self, forCellReuseIdentifier: HomeSwapCell.cellIdentifier)
         tableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.cellIdentifier)
         tableView.separatorStyle = .none
         
@@ -114,7 +116,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             return Store.state.displayCurrencies.count  // remove +1 to hide "Manage wallets" menu
         case .events:
-            return 1
+            return 2
         case .menu:
             return Menu.allItems.count
         }
@@ -152,10 +154,19 @@ class AssetListTableView: UITableViewController, Subscriber {
             return cell
             
         case .events:
-            let viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
-            let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
-            cell.set(viewModel: viewModel)
-            return cell
+            var viewModel : HomeEventViewModel!
+            if indexPath.row == 0 {
+                viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
+                let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
+                cell.set(viewModel: viewModel)
+                return cell
+            }
+            else    {   // Instaswap
+                viewModel = HomeEventViewModel(currency: Currencies.btc, title: "InstaSwap")
+                let cell = tableView.dequeueReusableCell(withIdentifier: HomeSwapCell.cellIdentifier, for: indexPath) as! HomeSwapCell
+                cell.set(viewModel: viewModel)
+                return cell
+            }
             
         case .menu:
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.cellIdentifier, for: indexPath) as! MenuCell
@@ -197,7 +208,12 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             isAddWalletRow(row: indexPath.row) ? didTapAddWallet?() : didSelectCurrency?(Store.state.displayCurrencies[indexPath.row])
         case .events:
-            didTapBet?( Currencies.btc )
+            if indexPath.row == 0   {
+                didTapBet?( Currencies.btc )
+            }
+            else    {   // instaswap
+                didTapBuy?( Currencies.btc )
+            }
         case .menu:
             guard let item = Menu(rawValue: indexPath.row) else { return }
             switch item {

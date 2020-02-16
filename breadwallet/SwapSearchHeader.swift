@@ -81,9 +81,9 @@ class SwapSearchHeaderView : UIView {
     }
 
     private let searchBar = UISearchBar()
-    private let open = ShadowButton(title: S.Instaswap.open, type: .search, YCompressionFactor: 2.0)
-    private let notcompleted = ShadowButton(title: S.Instaswap.notcompleted, type: .search, YCompressionFactor: 2.0)
-    private let completed = ShadowButton(title: S.Instaswap.completed, type: .search, YCompressionFactor: 2.0)
+    private let open = ShadowButton(title: S.Instaswap.open, type: .search, YCompressionFactor: 1.0)
+    private let notcompleted = ShadowButton(title: S.Instaswap.notcompleted, type: .search, YCompressionFactor: 1.0)
+    private let completed = ShadowButton(title: S.Instaswap.completed, type: .search, YCompressionFactor: 1.0)
     
     private let cancel = UIButton(type: .system)
     fileprivate var filters: [SwapSearchFilterType] = [] {
@@ -216,7 +216,7 @@ class SwapSearchHeaderView : UIView {
             addSubview(completed)
             open.constrain([
                 open.leadingAnchor.constraint(equalTo: searchBar.leadingAnchor, constant: C.padding[2]),
-                open.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[4]) ])
+                open.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: C.padding[2]) ])
             notcompleted.constrain([
                 notcompleted.leadingAnchor.constraint(equalTo: open.trailingAnchor, constant: C.padding[1]),
                 notcompleted.topAnchor.constraint(equalTo: open.topAnchor)])

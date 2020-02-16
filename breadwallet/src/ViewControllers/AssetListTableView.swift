@@ -35,6 +35,8 @@ class AssetListTableView: UITableViewController, Subscriber {
         tableView.register(HomeSwapCell.self, forCellReuseIdentifier: HomeSwapCell.cellIdentifier)
         tableView.register(MenuCell.self, forCellReuseIdentifier: MenuCell.cellIdentifier)
         tableView.separatorStyle = .none
+        tableView.sectionHeaderHeight = CGFloat(30.0)
+        tableView.sectionFooterHeight = CGFloat(40.0)
         
         tableView.reloadData()
         
@@ -83,6 +85,7 @@ class AssetListTableView: UITableViewController, Subscriber {
     enum Section: Int {
         case assets
         case events
+        case buy
         case menu
     }
 
@@ -106,7 +109,7 @@ class AssetListTableView: UITableViewController, Subscriber {
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 4
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -116,10 +119,16 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             return Store.state.displayCurrencies.count  // remove +1 to hide "Manage wallets" menu
         case .events:
-            return 2
+            return 1
+        case .buy:
+            return 1
         case .menu:
             return Menu.allItems.count
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return .leastNormalMagnitude
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -128,6 +137,8 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             return isAddWalletRow(row: indexPath.row) ? menuHeight : assetHeight
         case .events:
+            return bettingHeight
+        case .buy:
             return bettingHeight
         case .menu:
             return menuHeight
@@ -155,19 +166,16 @@ class AssetListTableView: UITableViewController, Subscriber {
             
         case .events:
             var viewModel : HomeEventViewModel!
-            if indexPath.row == 0 {
-                viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
-                let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
-                cell.set(viewModel: viewModel)
-                return cell
-            }
-            else    {   // Instaswap
-                viewModel = HomeEventViewModel(currency: Currencies.btc, title: "InstaSwap")
-                let cell = tableView.dequeueReusableCell(withIdentifier: HomeSwapCell.cellIdentifier, for: indexPath) as! HomeSwapCell
-                cell.set(viewModel: viewModel)
-                return cell
-            }
-            
+            viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
+            let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
+            cell.set(viewModel: viewModel)
+            return cell
+        case .buy:
+            var viewModel : HomeEventViewModel!
+            viewModel = HomeEventViewModel(currency: Currencies.btc, title: "InstaSwap")
+            let cell = tableView.dequeueReusableCell(withIdentifier: HomeSwapCell.cellIdentifier, for: indexPath) as! HomeSwapCell
+            cell.set(viewModel: viewModel)
+            return cell
         case .menu:
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.cellIdentifier, for: indexPath) as! MenuCell
             guard let item = Menu(rawValue: indexPath.row) else { return cell }
@@ -185,6 +193,8 @@ class AssetListTableView: UITableViewController, Subscriber {
             return S.HomeScreen.portfolio
         case .events:
             return S.HomeScreen.betting
+        case .buy:
+            return S.HomeScreen.buy
         case .menu:
             return S.HomeScreen.admin
         }
@@ -208,12 +218,9 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .assets:
             isAddWalletRow(row: indexPath.row) ? didTapAddWallet?() : didSelectCurrency?(Store.state.displayCurrencies[indexPath.row])
         case .events:
-            if indexPath.row == 0   {
-                didTapBet?( Currencies.btc )
-            }
-            else    {   // instaswap
-                didTapBuy?( Currencies.btc )
-            }
+            didTapBet?( Currencies.btc )
+        case .buy:
+            didTapBuy?( Currencies.btc )
         case .menu:
             guard let item = Menu(rawValue: indexPath.row) else { return }
             switch item {

@@ -16,8 +16,10 @@ class BetSettingsViewController : UIViewController {
     //private let checkIncludeFee = UIButton(type: .system)
     private let checkIncludeFee = UISwitch(frame: CGRect(x: 163, y: 150, width: 0, height: 0))
     private let labelIncludeFee = UILabel(font: UIFont.customBody(size: 14.0), color: .primaryText)
+    private let separator1 = UIView(color: .secondaryShadow)
     private let checkUseAmerican = UISwitch(frame: CGRect(x: 163, y: 150, width: 0, height: 0))
     private let labelUseAmerican = UILabel(font: UIFont.customBody(size: 14.0), color: .primaryText)
+    private let separator2 = UIView(color: .secondaryShadow)
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -38,8 +40,10 @@ class BetSettingsViewController : UIViewController {
         view.addSubview(titleLabel)
         view.addSubview(checkIncludeFee)
         view.addSubview(labelIncludeFee)
+        view.addSubview(separator1)
         view.addSubview(checkUseAmerican)
         view.addSubview(labelUseAmerican)
+        view.addSubview(separator2)
     }
 
     @objc func back(sender: UIBarButtonItem) {
@@ -63,6 +67,12 @@ class BetSettingsViewController : UIViewController {
             checkIncludeFee.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
         ])
         
+        separator1.constrain([
+            separator1.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[2]),
+            separator1.topAnchor.constraint(equalTo: checkIncludeFee.bottomAnchor, constant: C.padding[1]),
+            separator1.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
+            separator1.heightAnchor.constraint(equalToConstant: 1.0) ])
+        
         labelIncludeFee.constrain([
             labelIncludeFee.topAnchor.constraint(equalTo: checkIncludeFee.topAnchor, constant: -C.padding[1]/2 ),
             labelIncludeFee.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[4]),
@@ -70,10 +80,16 @@ class BetSettingsViewController : UIViewController {
         ])
         
         checkUseAmerican.constrain([
-            checkUseAmerican.topAnchor.constraint(equalTo: labelIncludeFee.bottomAnchor, constant: C.padding[2]),
+            checkUseAmerican.topAnchor.constraint(equalTo: separator1.bottomAnchor, constant: C.padding[2]),
             checkUseAmerican.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
         ])
         
+        separator2.constrain([
+            separator2.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[2]),
+            separator2.topAnchor.constraint(equalTo: checkUseAmerican.bottomAnchor, constant: C.padding[1]),
+            separator2.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -C.padding[2]),
+            separator2.heightAnchor.constraint(equalToConstant: 1.0) ])
+            
         labelUseAmerican.constrain([
             labelUseAmerican.topAnchor.constraint(equalTo: checkUseAmerican.topAnchor, constant: -C.padding[1]/2 ),
             labelUseAmerican.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[4]),

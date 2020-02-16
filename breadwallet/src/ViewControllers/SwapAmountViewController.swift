@@ -17,6 +17,7 @@ class SwapAmountViewController : AmountViewController {
     override init(currency: CurrencyDef, isPinPadExpandedAtLaunch: Bool, isRequesting: Bool = false) {
         super.init(currency: currency, isPinPadExpandedAtLaunch: isPinPadExpandedAtLaunch, isRequesting: isRequesting)
         self.currencyToggle = ShadowButton(title: "BTC", type: .tertiary)
+        self.canEditFee = false
     }
 
     override internal func toggleCurrency() {

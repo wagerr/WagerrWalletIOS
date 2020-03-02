@@ -290,13 +290,13 @@ class ModalPresenter : Subscriber, Trackable {
         case .sell(let currency):
             presentPlatformWebViewController("/sell?currency=\(currency.code)")
             return nil
-        case .swap(let currency):
-            return makeSwapView(currency: currency)
+        case .swap(let currency, let didFinishSwap):
+            return makeSwapView(currency: currency, didFinishSwap: didFinishSwap!)
         }
         
     }
 
-    private func makeSendView(currency: CurrencyDef) -> UIViewController? {
+    private func makeSendView(currency: CurrencyDef ) -> UIViewController? {
         guard !(currency.state?.isRescanning ?? false) else {
             let alert = UIAlertController(title: S.Alert.error, message: S.Send.isRescanning, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: S.Button.ok, style: .cancel, handler: nil))
@@ -333,7 +333,7 @@ class ModalPresenter : Subscriber, Trackable {
         return root
     }
     
-    private func makeSwapView(currency: CurrencyDef) -> UIViewController? {
+    private func makeSwapView(currency: CurrencyDef, didFinishSwap: @escaping (()-> Void) ) -> UIViewController? {
         guard !(currency.state?.isRescanning ?? false) else {
             let alert = UIAlertController(title: S.Alert.error, message: S.Send.isRescanning, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: S.Button.ok, style: .cancel, handler: nil))
@@ -348,6 +348,7 @@ class ModalPresenter : Subscriber, Trackable {
         //sendVC.presentScan = presentScan(parent: root, currency: currency)
         sendVC.onPublishSuccess = { [weak self] in
             self?.presentAlert(.swapSuccess, completion: {})
+            didFinishSwap()
         }
         return root
     }

@@ -135,7 +135,7 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
         return (walletManager.wallet?.allAddresses[0] ?? "")
     }
     
-    @objc private func updateSwapTransactions() {
+    @objc public func updateSwapTransactions() {
         self.walletManager.apiClient!.InstaswapListSwaps(wallet: receiveAddress, handler: { [weak self] result in
             guard let `self` = self,
             case .success(let listData) = result else { return }

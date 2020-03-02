@@ -485,7 +485,7 @@ enum S {
         static let status = NSLocalizedString("Instaswap.status", value: "Status", comment: "Status cell")
         static let deposit = NSLocalizedString("Instaswap.deposit", value: "Deposit %@", comment: "Deposit cell")
         static let receive = NSLocalizedString("Instaswap.receive", value: "Receive %@", comment: "Receive cell")
-        static let depositWallet = NSLocalizedString("Instaswap.depositWallet", value: "Deposit address", comment: "Deposit wallet cell")
+        static let depositWallet = NSLocalizedString("Instaswap.depositWallet", value: "Deposit BTC to", comment: "Deposit wallet cell")
         static let receiveWallet = NSLocalizedString("Instaswap.receiveWallet", value: "Receive at", comment: "Receive wallet cell")
         static let refundWallet = NSLocalizedString("Instaswap.refundWallet", value: "Refund address", comment: "Refund wallet cell")
         static let emptyMessage = NSLocalizedString("Instaswap.emptyMessage", value:"Swap operations will show here once submitted", comment: "Empty swap list message.")
@@ -495,6 +495,8 @@ enum S {
         static let sendSuccess = NSLocalizedString("Instaswap.sendSuccess", value:"Swap order sent", comment: "swap success alert header label (confirmation that the swap happened)")
         static let sendSuccessSubHeader = NSLocalizedString("Instaswap.sendSuccessSubheader", value:"Deposit address pasted to clipboard", comment: "swap success alert header label (confirmation that the swap happened)")
         static let ID = NSLocalizedString("Instaswap.ID", value:"ID", comment: "transaction id")
+        static let timestampTitle = NSLocalizedString("Instaswap.timestampTitle", value:"Swap created at", comment: "timestamp title")
+        static let stateTitle = NSLocalizedString("Instaswap.stateTitle", value:"Status", comment: "state title")
         
     }
 

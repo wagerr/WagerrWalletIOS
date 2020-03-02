@@ -19,7 +19,8 @@ class SwapDetailDataSource: NSObject {
         case refundWallet
         case receiveWallet
         case depositWallet
-        case stateTimestamp
+        case state
+        case timestamp
         
         var cellType: UITableViewCell.Type {
             switch self {
@@ -46,7 +47,7 @@ class SwapDetailDataSource: NSObject {
         self.viewModel = viewModel
         
         // define visible rows and order
-        fields = [.transactionId, .stateTimestamp, .deposit, .depositWallet, .receive, .receiveWallet, .refundWallet ]
+        fields = [.transactionId, .timestamp, .state, .deposit, .depositWallet, .receive, .receiveWallet, .refundWallet ]
     }
     
     func registerCells(forTableView tableView: UITableView) {
@@ -67,8 +68,10 @@ class SwapDetailDataSource: NSObject {
             return S.Instaswap.receiveWallet
         case .depositWallet:
             return S.Instaswap.depositWallet
-        case .stateTimestamp:
-            return viewModel.response.transactionState.rawValue
+        case .timestamp:
+            return S.Instaswap.timestampTitle
+        case .state:
+            return S.Instaswap.stateTitle
         default:
             return ""
         }
@@ -88,11 +91,11 @@ extension SwapDetailDataSource: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: field.rawValue,
                                                  for: indexPath)
         
-        if let rowCell = cell as? TxDetailRowCell {
+        if let rowCell = cell as? TxAddressCell {
             rowCell.title = title(forField: field)
         }
         
-        if let rowCell = cell as? EventDetailRowCell {
+        if let rowCell = cell as? TxLabelCell {
             rowCell.title = title(forField: field)
         }
 
@@ -115,9 +118,12 @@ extension SwapDetailDataSource: UITableViewDataSource {
         case .receive:
             let receiveCell = cell as! TxLabelCell
             receiveCell.value = viewModel.response.receivingAmount + " " + viewModel.response.receiveCoin
-        case .stateTimestamp:
-            let stateTSCell = cell as! TxLabelCell
-            stateTSCell.value = viewModel.response.timestamp
+        case .timestamp:
+            let timestampCell = cell as! TxLabelCell
+            timestampCell.value = viewModel.response.timestamp
+        case .state:
+            let stateCell = cell as! TxLabelCell
+            stateCell.value = viewModel.response.transactionState.rawValue
         }
         
         return cell

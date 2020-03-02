@@ -183,7 +183,7 @@ struct Amount {
         let format = NumberFormatter()
         format.isLenient = true
         format.numberStyle = .currency
-        format.maximumFractionDigits = 4  // smaller cap alt-coins
+        format.maximumFractionDigits = 2  // smaller cap alt-coins
         format.generatesDecimalNumbers = true
         format.negativeFormat = "-\(format.positiveFormat!)"
         if let rate = rate {

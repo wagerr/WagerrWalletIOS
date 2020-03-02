@@ -189,6 +189,8 @@ class EnterPhraseViewController : UIViewController, UIScrollViewDelegate, Custom
             guard self.walletManager.authenticate(phrase: phrase) else { errorLabel.isHidden = false; return }
             Store.perform(action: Alert.Show(.paperKeySet(callback: {
                 Store.perform(action: HideStartFlow())
+                UserDefaults.writePaperPhraseDate = Date()
+                Store.trigger(name: .didWritePaperKey)
             })))
             return callback()
         }

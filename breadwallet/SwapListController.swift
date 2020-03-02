@@ -32,7 +32,7 @@ class SwapListController : UIViewController, Subscriber {
             headerView.isWatchOnly = false
         }
 
-        footerView.buyCallback = { Store.perform(action: RootModalActions.Present(modal: .swap(currency: self.currency))) }
+        footerView.buyCallback = { Store.perform(action: RootModalActions.Present(modal: .swap(currency: self.currency, didFinishSwap: self.refreshTable))) }
     }
 
     //MARK: - Private
@@ -236,6 +236,10 @@ class SwapListController : UIViewController, Subscriber {
         })
     }
 
+    func refreshTable() {
+        transactionsTableView.updateSwapTransactions()
+    }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return searchHeaderview.isHidden ? .lightContent : .default
     }

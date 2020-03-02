@@ -21,10 +21,10 @@ class HomeSwapCell : UITableViewCell {
         setupViews()
     }
 
-    func set( viewModel: HomeEventViewModel ) {
-        accessibilityIdentifier = viewModel.title
+    func set( viewModel: HomeSwapViewModel ) {
+        accessibilityIdentifier = "Instaswap"
         container.currency = viewModel.currency
-        titleLabel.text = viewModel.title
+        titleLabel.attributedText = viewModel.title
         container.setNeedsDisplay()
         check.tintColor = .white
     }

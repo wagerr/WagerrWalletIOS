@@ -128,10 +128,6 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         //refundWalletCell.scan.addTarget(self, action: #selector(SwapViewController.scanTapped), for: .touchUpInside)
         sendButton.addTarget(self, action: #selector(sendTapped), for: .touchUpInside)
         
-        refundWalletCell.didBeginEditing = strongify(self) { myself in
-            myself.amountView.closePinPad()
-        }
-
         sendButton.addTarget(self, action: #selector(sendTapped), for: .touchUpInside)
         
         refundWalletCell.didBeginEditing = { [weak self] in
@@ -156,7 +152,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         
         amountView.didChangeFirstResponder = { [weak self] isFirstResponder in
             if isFirstResponder {
-                self?.refundWalletCell.resignFirstResponder()
+                //self?.refundWalletCell.resignFirstResponder()
+                self?.view.endEditing(true)
             }
         }
     }

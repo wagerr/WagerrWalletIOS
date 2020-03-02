@@ -171,8 +171,11 @@ class AssetListTableView: UITableViewController, Subscriber {
             cell.set(viewModel: viewModel)
             return cell
         case .buy:
-            var viewModel : HomeEventViewModel!
-            viewModel = HomeEventViewModel(currency: Currencies.btc, title: "InstaSwap")
+            var viewModel : HomeSwapViewModel!
+            viewModel = HomeSwapViewModel(currency: Currencies.btc, title:
+                NSMutableAttributedString()
+                    .bold("InstaSwap")
+                    .normal(" by instaswap.io"))
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeSwapCell.cellIdentifier, for: indexPath) as! HomeSwapCell
             cell.set(viewModel: viewModel)
             return cell

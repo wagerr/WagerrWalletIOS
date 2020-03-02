@@ -10,8 +10,8 @@ import UIKit
 
 private extension C {
     static let statusRowHeight: CGFloat = 48.0
-    static let compactContainerHeight: CGFloat = 322.0
-    static let expandedContainerHeight: CGFloat = 446.0
+    static let compactContainerHeight: CGFloat = 352.0
+    static let expandedContainerHeight: CGFloat = 476.0
     static let detailsButtonHeight: CGFloat = 65.0
 }
 

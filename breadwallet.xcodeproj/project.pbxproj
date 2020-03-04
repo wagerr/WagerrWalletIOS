@@ -21,6 +21,7 @@
 		062D29AC23A528FF009ADC9E /* EventTeamsLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AB23A528FF009ADC9E /* EventTeamsLabelCell.swift */; };
 		062D29AE23A62EBC009ADC9E /* EventBetOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AD23A62EBC009ADC9E /* EventBetOptionCell.swift */; };
 		062D29B023A65DDD009ADC9E /* EventSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AF23A65DDD009ADC9E /* EventSliderCell.swift */; };
+		0635AF9C240F98AB009C12F5 /* TOSCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AF9B240F98AB009C12F5 /* TOSCell.swift */; };
 		0642675023EECFF90022A143 /* SwapListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642674F23EECFF90022A143 /* SwapListCell.swift */; };
 		0642675223F174E60022A143 /* HomeSwapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642675123F174E60022A143 /* HomeSwapCell.swift */; };
 		0642675423F1BA250022A143 /* SwapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642675323F1BA250022A143 /* SwapViewController.swift */; };
@@ -705,6 +706,7 @@
 		062D29AB23A528FF009ADC9E /* EventTeamsLabelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTeamsLabelCell.swift; sourceTree = "<group>"; };
 		062D29AD23A62EBC009ADC9E /* EventBetOptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventBetOptionCell.swift; sourceTree = "<group>"; };
 		062D29AF23A65DDD009ADC9E /* EventSliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSliderCell.swift; sourceTree = "<group>"; };
+		0635AF9B240F98AB009C12F5 /* TOSCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TOSCell.swift; sourceTree = "<group>"; };
 		063B76E820C282A600B3CB35 /* neoscrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = neoscrypt.h; sourceTree = "<group>"; };
 		063B76E920C282A600B3CB35 /* neoscrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = neoscrypt.c; sourceTree = "<group>"; };
 		063B76EB20C33A3000B3CB35 /* hash9.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash9.c; sourceTree = "<group>"; };
@@ -2089,6 +2091,7 @@
 		06C729D423EE9E2800E55360 /* Swap */ = {
 			isa = PBXGroup;
 			children = (
+				0635AF9B240F98AB009C12F5 /* TOSCell.swift */,
 				0642674F23EECFF90022A143 /* SwapListCell.swift */,
 				06C729D523EE9E4600E55360 /* SwapStatusCell.swift */,
 			);
@@ -4579,6 +4582,7 @@
 				062D29AA23A515A6009ADC9E /* EventDateCell.swift in Sources */,
 				7C67B6382056FBFA006487BE /* JSONRPC.swift in Sources */,
 				CEAA9E951DC1659F0066731D /* UILabel+BRWAdditions.swift in Sources */,
+				0635AF9C240F98AB009C12F5 /* TOSCell.swift in Sources */,
 				0670668623AF585200D4238D /* BetSettingsViewController.swift in Sources */,
 				06086221238AA1C2002F4E9B /* EventsTableViewController.swift in Sources */,
 				062D29B023A65DDD009ADC9E /* EventSliderCell.swift in Sources */,
@@ -5488,12 +5492,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -5508,12 +5512,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -5531,12 +5535,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE = "";
@@ -5556,12 +5560,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5581,12 +5585,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				OTHER_SWIFT_FLAGS = "-DDebug";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -5607,12 +5611,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -5685,12 +5689,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5701,12 +5705,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5717,11 +5721,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5732,11 +5736,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5746,12 +5750,12 @@
 		75A2A8251DA5938500A983D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5762,12 +5766,12 @@
 		75A2A8261DA5938500A983D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5919,12 +5923,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				OTHER_SWIFT_FLAGS = "-DDebug -DScreenshots -DTestnet";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -5972,12 +5976,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5992,12 +5996,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -6012,12 +6016,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6028,11 +6032,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6042,12 +6046,12 @@
 		CEA7E6901F09AC6A001F8C27 /* Screenshots */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6248,12 +6252,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				OTHER_SWIFT_FLAGS = "-DDebug -DTestnet";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -6301,12 +6305,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -6321,12 +6325,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -6341,12 +6345,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6357,11 +6361,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6371,12 +6375,12 @@
 		CEA7E6A31F0AAA84001F8C27 /* Testnet */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6570,12 +6574,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				OTHER_SWIFT_FLAGS = "-DTestflight -DDebug";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -6623,12 +6627,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -6643,12 +6647,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -6663,12 +6667,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6679,11 +6683,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6693,12 +6697,12 @@
 		CEE0EF5C1EBF8D7F0018DB36 /* Testflight */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 320;
+				CURRENT_PROJECT_VERSION = 321;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;

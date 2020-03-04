@@ -36,6 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         redirectStdOut()
         UIView.swizzleSetFrame()
+        NSSetUncaughtExceptionHandler { exception in
+           print(exception)
+           print(exception.callStackSymbols)
+        }
         applicationController.launch(application: application, options: launchOptions)
         return true
     }

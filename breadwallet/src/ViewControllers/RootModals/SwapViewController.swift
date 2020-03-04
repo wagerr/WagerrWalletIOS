@@ -41,6 +41,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     private let addressCell = UILabel(font: .customBody(size: 14.0))
     private let receiveCell = UILabel(font: .customBody(size: 18.0))
     private let refundWalletCell : AddressCell
+    private let tosCell = TOSCell()
     private let sendButton = ShadowButton(title: S.Send.sendLabel, type: .primary)
     private let currencyBorder = UIView(color: .secondaryShadow)
     private var currencySwitcherHeightConstraint: NSLayoutConstraint?
@@ -60,6 +61,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         view.addSubview(addressCell)
         view.addSubview(receiveCell)
         view.addSubview(refundWalletCell)
+        view.addSubview(tosCell)
         view.addSubview(sendButton)
 
         addressCell.textColor = .grayTextTint
@@ -70,6 +72,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         
         refundWalletCell.setLabel( S.Instaswap.refundWallet )
 
+        tosCell.didTapAccept = didTapAcceptTOS
+        
         addChildViewController(amountView, layout: {
             amountView.view.constrain([
                 amountView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -100,13 +104,16 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
             refundWalletCell.leadingAnchor.constraint(equalTo: receiveCell.leadingAnchor, constant: -C.padding[2]),
             refundWalletCell.heightAnchor.constraint(equalTo: addressCell.heightAnchor, constant: C.padding[2]) ])
 
-        //refundWalletCell.accessoryView.constrain([
-        //        refundWalletCell.accessoryView.constraint(.width, constant: 0.0) ])
+        tosCell.constrain([
+            tosCell.widthAnchor.constraint(equalTo: amountView.view.widthAnchor),
+            tosCell.topAnchor.constraint(equalTo: refundWalletCell.bottomAnchor),
+            tosCell.leadingAnchor.constraint(equalTo: receiveCell.leadingAnchor, constant: -C.padding[2]),
+            tosCell.heightAnchor.constraint(equalTo: addressCell.heightAnchor, constant: C.padding[2]) ])
 
         sendButton.constrain([
             sendButton.constraint(.leading, toView: view, constant: C.padding[2]),
             sendButton.constraint(.trailing, toView: view, constant: -C.padding[2]),
-            sendButton.constraint(toBottom: refundWalletCell, constant: verticalButtonPadding),
+            sendButton.constraint(toBottom: tosCell, constant: verticalButtonPadding),
             sendButton.constraint(.height, constant: C.Sizes.buttonHeight),
             sendButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: E.isIPhoneXOrBetter ? -C.padding[5] : -C.padding[2]) ])
         addButtonActions()
@@ -127,8 +134,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         refundWalletCell.paste.addTarget(self, action: #selector(SwapViewController.pasteTapped), for: .touchUpInside)
         //refundWalletCell.scan.addTarget(self, action: #selector(SwapViewController.scanTapped), for: .touchUpInside)
         sendButton.addTarget(self, action: #selector(sendTapped), for: .touchUpInside)
-        
         sendButton.addTarget(self, action: #selector(sendTapped), for: .touchUpInside)
+        didTapAcceptTOS(isAccepted: false)
         
         refundWalletCell.didBeginEditing = { [weak self] in
             self?.amountView.closePinPad()
@@ -195,6 +202,11 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         }
         
         return true
+    }
+    
+    private func didTapAcceptTOS(isAccepted: Bool)  {
+        sendButton.isEnabled = isAccepted
+        sendButton.alpha = (isAccepted) ? 1.0 : 0.5
     }
 
     @objc private func sendTapped() {

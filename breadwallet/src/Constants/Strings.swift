@@ -497,7 +497,8 @@ enum S {
         static let ID = NSLocalizedString("Instaswap.ID", value:"ID", comment: "transaction id")
         static let timestampTitle = NSLocalizedString("Instaswap.timestampTitle", value:"Swap created at", comment: "timestamp title")
         static let stateTitle = NSLocalizedString("Instaswap.stateTitle", value:"Status", comment: "state title")
-        
+        static let TOScontent = NSLocalizedString("Instaswap.TOScontent", value:"I have read and accept the ", comment: "")
+        static let TOSlink = NSLocalizedString("Instaswap.TOSlink", value:"Terms of Service", comment: "")
     }
 
     enum Prompts {

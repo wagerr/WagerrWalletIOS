@@ -34,7 +34,7 @@ extension String {
     func isValidBitcoinAddress() -> Bool {
         let fullAddress = self.components(separatedBy: ":")
         if fullAddress.count == 2 && fullAddress[0] == "bitcoin" {
-            let pattern = "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$"
+            let pattern = "^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$"
             let r = fullAddress[1].startIndex..<fullAddress[1].endIndex
             let r2 = fullAddress[1].range(of: pattern, options: .regularExpression)
             return r == r2

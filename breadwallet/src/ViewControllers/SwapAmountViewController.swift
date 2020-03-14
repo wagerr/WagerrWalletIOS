@@ -27,4 +27,9 @@ class SwapAmountViewController : AmountViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func setInitialData() {
+        super.setInitialData()
+        placeholder.text = S.Instaswap.amountLabel
+    }
 }

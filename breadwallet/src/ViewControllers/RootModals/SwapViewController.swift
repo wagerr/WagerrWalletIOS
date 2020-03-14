@@ -54,6 +54,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     private var feeSelection: FeeLevel? = nil
     private var balance: UInt256 = 0
     private var amount: Amount?
+    private var isTOSAccepted = false
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -70,7 +71,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         receiveCell.textColor = .grayTextTint
         receiveCell.text = S.Instaswap.receiveAmount
         
-        refundWalletCell.setLabel( S.Instaswap.refundWallet )
+        refundWalletCell.setLabel( S.Instaswap.enterRefundWallet )
 
         tosCell.didTapAccept = didTapAcceptTOS
         
@@ -155,6 +156,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
                         }
                     })
             }
+            self?.enableSendButton(isEnabled: self!.canEnableSend )
         }
         
         amountView.didChangeFirstResponder = { [weak self] isFirstResponder in
@@ -166,6 +168,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     }
     
     @objc private func pasteTapped() {
+        refundWalletCell.textField.resignFirstResponder()
         guard let pasteboard = UIPasteboard.general.string, pasteboard.utf8.count > 0 else {
             return showAlert(title: S.Alert.error, message: S.Send.emptyPasteboard, buttonLabel: S.Button.ok)
         }
@@ -174,6 +177,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         //guard let request = PaymentRequest(string: pasteboard, currency: currency) else {
         guard validateAddress.isValidBitcoinAddress() else {
             let message = String.init(format: S.Send.invalidAddressOnPasteboard, "Bitcoin")
+            //self.refundWalletCell .refundAddress.becomeFirstResponder()
             return showAlert(title: S.Send.invalidAddressTitle, message: message, buttonLabel: S.Button.ok)
         }
         refundWalletCell.setContent( pasteboard )
@@ -195,8 +199,10 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     }
         
     private func validateSendForm() -> Bool {
-            
-        guard let address = refundWalletCell.address, address.count > 0 else {
+        refundWalletCell.textField.resignFirstResponder()
+        let validateAddress = "bitcoin:" + (refundWalletCell.address ?? "")
+        
+        guard let address = refundWalletCell.address, address.count > 0, validateAddress.isValidBitcoinAddress() else {
             showAlert(title: S.Alert.error, message: S.Instaswap.noAddress, buttonLabel: S.Button.ok)
             return false
         }
@@ -205,8 +211,17 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     }
     
     private func didTapAcceptTOS(isAccepted: Bool)  {
-        sendButton.isEnabled = isAccepted
-        sendButton.alpha = (isAccepted) ? 1.0 : 0.5
+        isTOSAccepted = isAccepted
+        enableSendButton(isEnabled: canEnableSend )
+    }
+    
+    var canEnableSend : Bool    {
+        return isTOSAccepted && (amount?.tokenValue ?? 0.0) > 0.0
+    }
+    
+    private func enableSendButton(isEnabled : Bool)  {
+        sendButton.isEnabled = isEnabled
+        sendButton.alpha = (isEnabled) ? 1.0 : 0.5
     }
 
     @objc private func sendTapped() {
@@ -217,6 +232,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
             let amount = amount,
             let refundAddress = refundWalletCell.address else { return }
         
+        enableSendButton(isEnabled: false)
+        
         walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: "BTC", sendAmount: amount.tokenInstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
             guard let `self` = self,
                 case .success(let swapData) = result, swapData.apiInfo! == "OK" else { return }
@@ -226,6 +243,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
                 let alert = UIAlertController(title: S.Alert.error, message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: S.Button.cancel, style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
+                self.enableSendButton(isEnabled: true)
                 return
             }
             

@@ -70,7 +70,7 @@ class AmountViewController : UIViewController, Trackable {
     private var pinPadHeight: NSLayoutConstraint?
     private var feeSelectorHeight: NSLayoutConstraint?
     private var feeSelectorTop: NSLayoutConstraint?
-    private let placeholder = UILabel(font: .customBody(size: 16.0), color: .grayTextTint)
+    let placeholder = UILabel(font: .customBody(size: 16.0), color: .grayTextTint)
     private let amountLabel = UILabel(font: .customBody(size: 26.0), color: .darkText)
     private let pinPad: PinPadViewController
     internal var currencyToggle: ShadowButton
@@ -178,7 +178,7 @@ class AmountViewController : UIViewController, Trackable {
         preventAmountOverflow()
     }
 
-    private func setInitialData() {
+    func setInitialData() {
         cursor.isHidden = true
         cursor.startBlinking()
         amountLabel.text = ""

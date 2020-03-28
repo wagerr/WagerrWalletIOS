@@ -16,7 +16,7 @@ private extension C {
     static let detailsButtonHeight: CGFloat = 65.0
 }
 
-class WebViewController: UIViewController, Subscriber {
+class WebViewController: UIViewController, WKNavigationDelegate {
     
     // MARK: - Private Vars
     
@@ -28,7 +28,7 @@ class WebViewController: UIViewController, Subscriber {
         let webConfiguration = WKWebViewConfiguration()
         let webView = WKWebView(frame: .zero, configuration: webConfiguration)
         //webView.uiDelegate = self
-        //webView.navigationDelegate = self
+        webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
         return webView
     }()
@@ -60,6 +60,29 @@ class WebViewController: UIViewController, Subscriber {
         }
         
         setup()
+    }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if navigationAction.navigationType == .linkActivated  {
+            if let url = navigationAction.request.url,
+                let host = url.host, !host.hasPrefix("www.betsmart.app"),
+                UIApplication.shared.canOpenURL(url) {
+                if #available(iOS 10.0, *) {
+                    UIApplication.shared.open(url)
+                } else {
+                    // Fallback on earlier versions
+                }
+                print(url)
+                print("Redirected to browser. No need to open it locally")
+                decisionHandler(.cancel)
+            } else {
+                print("Open it locally")
+                decisionHandler(.allow)
+            }
+        } else {
+            print("not a user click")
+            decisionHandler(.allow)
+        }
     }
     
     override func viewDidLoad() {

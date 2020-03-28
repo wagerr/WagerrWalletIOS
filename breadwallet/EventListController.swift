@@ -27,7 +27,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         self.currency = currency
         self.headerView = EventsHeaderView(currency: currency)
         super.init(nibName: nil, bundle: nil)
-        self.eventsTableView = EventsTableViewController(currency: currency, walletManager: walletManager, didSelectEvent: didSelectEvent, didChangeEvents: didChangeEvents )
+        self.eventsTableView = EventsTableViewController(currency: currency, walletManager: walletManager, didSelectEvent: didSelectEvent, didChangeEvents: didChangeEvents, didTapBetsmart: didTapBetsmart )
 
         if let btcWalletManager = walletManager as? BTCWalletManager {
             headerView.isWatchOnly = btcWalletManager.isWatchOnly
@@ -230,6 +230,22 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         present(eventDetails, animated: true, completion: nil)
  */
     }
+    
+    func didTapBetsmart(eventID : UInt64)   {
+        var style = "light"
+        if #available(iOS 13.0, *) {
+            if UIScreen.main.traitCollection.userInterfaceStyle == .dark    {
+                style="dark"
+            }
+        }
+        
+        let betsmartDetails = WebViewController(theURL: String.init(format: "https://betsmart.app/teaser-event?id=%d&mode=%@&source=wagerr", eventID, style))
+        betsmartDetails.modalPresentationStyle = .overCurrentContext
+        betsmartDetails.transitioningDelegate = transitionDelegate
+        betsmartDetails.modalPresentationCapturesStatusBarAppearance = true
+        present(betsmartDetails, animated: true, completion: nil)
+    }
+    
 
     private func showJailbreakWarnings(isJailbroken: Bool) {
         guard isJailbroken else { return }

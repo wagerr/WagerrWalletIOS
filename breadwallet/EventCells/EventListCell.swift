@@ -20,15 +20,18 @@ class EventListCell: UITableViewCell {
     //private let awayResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
     private let oddsLabel = UILabel(font: .customBold(size: 18.0))
     private let separator = UIView(color: .separatorGray)
+    private let betsmart = UIButton(type: .system)
     
     // MARK: Vars
     private var viewModel: BetEventViewModel!
     private var isSyncing : Bool
-
+    
     // MARK: - Init
+    var didTapBetsmart : (UInt64) -> Void
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         self.isSyncing = true
+        self.didTapBetsmart = { eventID in }
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
     }
@@ -63,22 +66,29 @@ class EventListCell: UITableViewCell {
         //contentView.addSubview(homeResultLabel)
         //contentView.addSubview(awayResultLabel)
         contentView.addSubview(separator)
+        contentView.addSubview(betsmart)
     }
     
     private func addConstraints() {
         timestamp.constrain([
             timestamp.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[1]/2),
             timestamp.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
+        betsmart.constrain([
+            betsmart.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[1]/2),
+            betsmart.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[1]),
+            betsmart.constraint(.width, constant: 48.0),
+            betsmart.constraint(.height, constant: 48.0)
+        ])
         headerLabel.constrain([
-            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[1]/2),
-            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[1]),
+            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: C.padding[1]),
+            headerLabel.leadingAnchor.constraint(equalTo: betsmart.leadingAnchor, constant: C.padding[5]),
             headerLabel.trailingAnchor.constraint(lessThanOrEqualTo: timestamp.leadingAnchor)])
         homeTeamLabel.constrain([
-            homeTeamLabel.topAnchor.constraint(equalTo: headerLabel.bottomAnchor, constant: C.padding[1]/2),
-            homeTeamLabel.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor, constant: C.padding[1])])
+            homeTeamLabel.topAnchor.constraint(equalTo: betsmart.bottomAnchor, constant: C.padding[1]/2),
+            homeTeamLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[2])])
         awayTeamLabel.constrain([
             awayTeamLabel.topAnchor.constraint(equalTo: homeTeamLabel.bottomAnchor, constant: C.padding[1]/4),
-            awayTeamLabel.leadingAnchor.constraint(equalTo: headerLabel.leadingAnchor, constant: C.padding[1])])
+            awayTeamLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: C.padding[2])])
         oddsLabel.constrain([
              oddsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -C.padding[1]/2),
              oddsLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -C.padding[2])])
@@ -100,6 +110,16 @@ class EventListCell: UITableViewCell {
         awayTeamLabel.textAlignment = .left
         awayTeamLabel.lineBreakMode = .byTruncatingTail
         timestamp.setContentHuggingPriority(.required, for: .vertical)
+        
+        betsmart.setBackgroundImage(#imageLiteral(resourceName: "betsmartWidget"), for: .normal)
+        betsmart.frame = CGRect(x: 6.0, y: 6.0, width: 32.0, height: 32.0) // for iOS 10
+        betsmart.widthAnchor.constraint(equalToConstant: 32.0).isActive = true
+        betsmart.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
+        betsmart.tintColor = .transparentWhite
+       
+        betsmart.tap = { [weak self] in
+            self?.didTapBetsmart((self?.viewModel.eventID)!)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

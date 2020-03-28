@@ -57,11 +57,14 @@ class EventDetailDataSource: NSObject {
     fileprivate let viewController: EventDetailViewController
     private var tableView: UITableView!
     
+    var didTapBetsmart : (String) -> Void
+    
     // MARK: - Init
     
-    init(tableView: UITableView, viewModel: BetEventViewModel, controller: EventDetailViewController) {
+    init(tableView: UITableView, viewModel: BetEventViewModel, controller: EventDetailViewController, didTapBetsmart : @escaping(String) -> Void) {
         self.viewModel = viewModel
         self.viewController = controller
+        self.didTapBetsmart = didTapBetsmart
         fields = []
         
         super.init()
@@ -161,6 +164,7 @@ extension EventDetailDataSource: UITableViewDataSource {
             let teamsCell = cell as! EventTeamsLabelCell
             teamsCell.home = viewModel.txHomeTeam
             teamsCell.away = viewModel.txAwayTeam
+            teamsCell.didTapBetsmart = didTapBetsmart
         
         case .moneyline:
             let betCell = cell as! EventBetOptionCell

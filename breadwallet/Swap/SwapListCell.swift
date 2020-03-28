@@ -1,5 +1,5 @@
 //
-//  EventListCell.swift
+//  SwapListCell.swift
 //  breadwallet
 //
 //  Created by MIP on 08/02/2020.

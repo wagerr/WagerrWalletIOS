@@ -220,6 +220,7 @@ enum S {
         static let errorTimeout = NSLocalizedString("Betting.errorTimeout", value:"Event is closed for betting", comment: "Event closed")
         static let errorSyncinc = NSLocalizedString("Betting.errorSyncinc", value:"Cannot bet while still syncing", comment: "Syncing error")
         static let payoutImmature = NSLocalizedString("Betting.payoutImmature", value:"Immature", comment: "Immature")
+        static let betsmart = NSLocalizedString("Betting.betsmart", value:"Betsmart widget", comment: "Betsmart")
     }
     
     enum SecurityCenter {

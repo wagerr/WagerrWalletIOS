@@ -35,6 +35,10 @@ class EventTeamsLabelCell: EventDetailRowCell {
     fileprivate let homeLabel = UILabel(font: UIFont.customBody(size: 16.0))
     fileprivate let awayHeaderLabel = UILabel(font: UIFont.customBody(size: 12.0))
     fileprivate let awayLabel = UILabel(font: UIFont.customBody(size: 16.0))
+    private let betsmartHome = UIButton(type: .system)
+    private let betsmartAway = UIButton(type: .system)
+    
+    var didTapBetsmart : (String) -> Void = {_ in}
     
     // MARK: - Init
     
@@ -44,9 +48,12 @@ class EventTeamsLabelCell: EventDetailRowCell {
         container.addSubview(homeLabel)
         container.addSubview(awayHeaderLabel)
         container.addSubview(awayLabel)
+        container.addSubview(betsmartHome)
+        container.addSubview(betsmartAway)
     }
     
     override func addConstraints() {
+        rowHeight = CGFloat(70.0)
         super.addConstraints()
         
         homeHeaderLabel.constrain([
@@ -67,6 +74,15 @@ class EventTeamsLabelCell: EventDetailRowCell {
             awayLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
             awayLabel.topAnchor.constraint(equalTo: awayHeaderLabel.bottomAnchor, constant: C.padding[1]/2)
         ])
+        
+        betsmartHome.constrain([
+            betsmartHome.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[2]),
+            betsmartHome.topAnchor.constraint(equalTo: homeLabel.bottomAnchor, constant: C.padding[1]/2)
+            ])
+        betsmartAway.constrain([
+            betsmartAway.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
+            betsmartAway.topAnchor.constraint(equalTo: awayLabel.bottomAnchor, constant: C.padding[1]/2)
+        ])
     }
     
     override func setupStyle() {
@@ -82,5 +98,25 @@ class EventTeamsLabelCell: EventDetailRowCell {
         homeLabel.textAlignment = .left
         awayLabel.textColor = .colorAway
         awayLabel.textAlignment = .right
+        
+        betsmartHome.setBackgroundImage(#imageLiteral(resourceName: "betsmartWidget"), for: .normal)
+         betsmartHome.frame = CGRect(x: 6.0, y: 6.0, width: 32.0, height: 32.0) // for iOS 10
+         betsmartHome.widthAnchor.constraint(equalToConstant: 32.0).isActive = true
+         betsmartHome.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
+         betsmartHome.tintColor = .transparentWhite
+        
+         betsmartHome.tap = { [weak self] in
+             self?.didTapBetsmart((self?.home)!)
+         }
+        
+        betsmartAway.setBackgroundImage(#imageLiteral(resourceName: "betsmartWidget"), for: .normal)
+         betsmartAway.frame = CGRect(x: 6.0, y: 6.0, width: 32.0, height: 32.0) // for iOS 10
+         betsmartAway.widthAnchor.constraint(equalToConstant: 32.0).isActive = true
+         betsmartAway.heightAnchor.constraint(equalToConstant: 32.0).isActive = true
+         betsmartAway.tintColor = .transparentWhite
+        
+         betsmartAway.tap = { [weak self] in
+             self?.didTapBetsmart((self?.away)!)
+         }
     }
 }

@@ -55,6 +55,8 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     var presentVerifyPin: ((String, @escaping ((String) -> Void))->Void)?
     var onPublishSuccess: (()->Void)?
     
+    private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
+    
     private var compactContainerHeight: CGFloat {
         return C.expandedContainerHeight
     }
@@ -85,7 +87,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self)
+        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self, didTapBetsmart: didTapBetsmart)
 
         setup()
         
@@ -184,6 +186,23 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         
     }
        
+    func didTapBetsmart(teamName : String)   {
+        var style = "light"
+        if #available(iOS 13.0, *) {
+            if UIScreen.main.traitCollection.userInterfaceStyle == .dark    {
+                style="dark"
+            }
+        }
+        
+        let betsmartDetails = WebViewController(theURL: String.init(format: "https://betsmart.app/teaser-team/?name=%@&sport=%@&mode=%@&source=wagerr"
+            , teamName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+            , viewModel.txSport.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, style))
+        betsmartDetails.modalPresentationStyle = .overCurrentContext
+        //betsmartDetails.transitioningDelegate = transitionDelegate
+        betsmartDetails.modalPresentationCapturesStatusBarAppearance = true
+        present(betsmartDetails, animated: true, completion: nil)
+    }
+    
     func doSend()   {
         let pinVerifier: PinVerifier = { [weak self] pinValidationCallback in
             self?.presentVerifyPin?(S.VerifyPin.authorize) { pin in
@@ -303,7 +322,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private func reload() {
         viewModel = event
         let currChoice = (self.dataSource as! EventDetailDataSource).currChoice
-        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self)
+        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self, didTapBetsmart: didTapBetsmart )
         dataSource?.prepareBetLayout(choice: currChoice)
         tableView.dataSource = dataSource
         tableView.reloadData()

@@ -14,17 +14,19 @@ private let promptDelay: TimeInterval = 0.6
 class EventsTableViewController : UITableViewController, Subscriber, Trackable {
 
     //MARK: - Public
-    init(currency: CurrencyDef, walletManager: WalletManager, didSelectEvent: @escaping ([BetEventViewModel], Int) -> Void, didChangeEvents: @escaping ([BetEventViewModel]) -> Void) {
+    init(currency: CurrencyDef, walletManager: WalletManager, didSelectEvent: @escaping ([BetEventViewModel], Int) -> Void, didChangeEvents: @escaping ([BetEventViewModel]) -> Void, didTapBetsmart : @escaping(UInt64)->Void ) {
         self.currency = currency
         self.walletManager = walletManager
         self.didSelectEvent = didSelectEvent
         self.didChangeEvents = didChangeEvents
+        self.didTapBetsmart = didTapBetsmart
         self.isBtcSwapped = Store.state.isBtcSwapped
         super.init(nibName: nil, bundle: nil)
     }
 
     let didSelectEvent: ([BetEventViewModel], Int) -> Void
     let didChangeEvents: ([BetEventViewModel]) -> Void
+    let didTapBetsmart : (UInt64) -> Void
 
     func doFilter()    {
         events = filters2.reduce(allEvents, { $0.filter($1) })
@@ -63,6 +65,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
         didSet { reload() }
     }
     private let emptyMessage = UILabel.wrapping(font: .customBody(size: 16.0), color: .grayTextTint)
+    private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
     
     //TODO:BCH replace with recommend rescan / tx failed prompt
     private var currentPrompt: Prompt? {
@@ -89,7 +92,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
         tableView.register(EventListCell.self, forCellReuseIdentifier: headerCellIdentifier)
 
         tableView.separatorStyle = .none
-        tableView.estimatedRowHeight = 80.0
+        tableView.estimatedRowHeight = 100.0
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = .whiteBackground
         
@@ -183,7 +186,7 @@ class EventsTableViewController : UITableViewController, Subscriber, Trackable {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat( 70 )
+        return CGFloat( 90 )
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -242,6 +245,7 @@ extension EventsTableViewController {
         let viewModel = events[indexPath.row]
         cell.setEvent(viewModel,
                       isSyncing: currency.state?.syncState != .success)
+        cell.didTapBetsmart = self.didTapBetsmart
         return cell
     }
 }

@@ -217,6 +217,7 @@ class EventBetOptionCell: EventDetailRowCell {
         }
         set {
             drawLabel.text = newValue
+            drawLabel.isHidden = ( newValue == "N/A" )
         }
     }
     
@@ -330,6 +331,7 @@ class EventBetOptionCell: EventDetailRowCell {
         drawLabel.backgroundColor = .colorDraw
         drawLabel.textAlignment = .center
         drawLabel.sizeToFit()
+
     }
     
     required init?(coder aDecoder: NSCoder) {

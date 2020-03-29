@@ -310,8 +310,10 @@ class BetEventViewModel : BetEventDatabaseModel, Equatable {
         let separator = NSAttributedString(string: " / ")
         let draw = NSAttributedString(string: txDrawOdds, attributes: drawAttrs)
         let away = NSAttributedString(string: txAwayOdds, attributes: awayAttrs)
-        ret.append(separator)
-        ret.append(draw)
+        if txDrawOdds != "N/A"    {
+            ret.append(separator)
+            ret.append(draw)
+        }
         ret.append(separator)
         ret.append(away)
         

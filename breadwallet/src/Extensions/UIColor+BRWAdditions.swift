@@ -74,6 +74,15 @@ extension UIColor {
         return UIColor(red: 0.0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1.0)
     }
 
+    static var gradientStartTestnet: UIColor {
+        return UIColor(red: 0.0/255.0, green: 204.0/255.0, blue: 105.0/255.0, alpha: 1.0)
+    }
+
+    static var gradientEndTestnet: UIColor {
+        //return UIColor(red: 67.0/255.0, green: 66/255.0, blue: 66.0/255.0, alpha: 1.0)
+        return UIColor(red: 10.0/255.0, green: 112/255.0, blue: 62/255.0, alpha: 1.0)
+    }
+    
     static var offWhite: UIColor {
         return UIColor(white: 247.0/255.0, alpha: 1.0)
     }

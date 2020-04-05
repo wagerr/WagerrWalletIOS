@@ -479,6 +479,11 @@ class BRWallet {
         return BRWalletCreateBetTransaction(cPtr, forAmount, type, eventID, outcome)
     }
     
+    // returns an unsigned parlay bet transaction that burns the specified amount for a parlay bet opcode
+    func createParlayBetTransaction(forAmount: UInt64, type: Int32, nLegs: Int32, eventID1: Int32, outcome1: Int32, eventID2: Int32, outcome2: Int32, eventID3: Int32, outcome3: Int32, eventID4: Int32, outcome4: Int32, eventID5: Int32, outcome5: Int32  ) -> BRTxRef? {
+        return BRWalletCreateParlayBetTransaction(cPtr, forAmount, type, nLegs, eventID1, outcome1, eventID2, outcome2, eventID3, outcome3, eventID4, outcome4, eventID5, outcome5)
+    }
+    
     // returns an unsigned transaction that satisifes the given transaction outputs
     func createTxForOutputs(_ outputs: [BRTxOutput]) -> BRTxRef? {
         return BRWalletCreateTxForOutputs(cPtr, outputs, outputs.count)

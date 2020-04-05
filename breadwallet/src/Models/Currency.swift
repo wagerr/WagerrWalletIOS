@@ -250,7 +250,7 @@ public struct Currencies {
     static let btc = Wagerr(name: "Wagerr",
                              code: "WGR",
                              symbol: S.Symbols.btc,
-                             colors: (UIColor.gradientStart, UIColor.gradientEnd),
+                             colors: E.isTestnet ? (UIColor.gradientStartTestnet, UIColor.gradientEndTestnet) : (UIColor.gradientStart, UIColor.gradientEnd),
                              dbPath: "BreadWallet.sqlite",
                              forkId: 0,
                              urlSchemes: ["wagerr"])

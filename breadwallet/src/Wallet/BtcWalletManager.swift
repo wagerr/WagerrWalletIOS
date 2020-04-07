@@ -33,6 +33,8 @@ class BTCWalletManager : WalletManager {
     private var updateTimer: Timer?
     private var eventUpdateTimer: Timer?
     private var minuteTimer: Timer?
+    
+    public var parlayBet : ParlayBetEntity
 
     var kvStore: BRReplicatedKVStore? {
         didSet { requestTxUpdate() }

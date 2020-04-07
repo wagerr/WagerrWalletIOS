@@ -480,3 +480,144 @@ enum BetTransactionType : Int32 {
     case UNKNOWN = -1
 }
 
+class ParlayLegEntity   {
+
+    var event : BetEventViewModel {
+        didSet {
+            updateOdd()
+        }
+    }
+    public let outcome : BetOutcome
+    public let odd : UInt64
+    
+    init(event : BetEventViewModel, outcome: BetOutcome, odd: UInt64)   {
+        self.event = event
+        self.outcome = outcome
+        self.odd = odd
+    }
+
+    public func getOddColor() -> UIColor    {
+        switch (outcome)    {
+            case MONEY_LINE_HOME_WIN, SPREADS_HOME,TOTAL_OVER:
+                return .colorHome;
+
+            case MONEY_LINE_AWAY_WIN, SPREADS_AWAY,TOTAL_UNDER:
+                return .colorAway;
+
+            case MONEY_LINE_DRAW:
+                return .colorDraw;
+
+            default:
+                return .colorHome;
+        }
+    }
+
+    private func updateOdd() {
+        switch (outcome)    {
+            case MONEY_LINE_HOME_WIN:
+                odd = event.homeOdds;
+                break;
+
+            case SPREADS_HOME:
+                odd = event.spreadHomeOdds;
+                break;
+
+            case TOTAL_OVER:
+                odd = event.overOdds;
+                break;
+
+            case MONEY_LINE_AWAY_WIN:
+                odd = event.awayOdds;
+                break;
+
+            case SPREADS_AWAY:
+                odd = event.spreadAwayOdds;
+                break;
+
+            case TOTAL_UNDER:
+                odd = event.underOdds;
+                break;
+
+            case MONEY_LINE_DRAW:
+                odd = event.drawOdds;
+                break;
+
+            default:
+                odd = 0;
+        }
+    }
+
+    public func isValid( ) -> Bool {
+        return event.eventTimestamp - now.timeIntervalSinceReferenceDate >= W.Blockchain.cutoffSeconds
+    }
+}
+
+class ParlayBetEntity   {
+
+    var legs = [ParlayLegEntity]()
+    var amount : Amount
+
+    var eventID = [Int]()
+    var outcome = [BetOutcome]()
+
+    public func get( index : Int ) -> ParlayLegEntity
+    {
+        return legs.get( index );
+    }
+
+    public func add( leg : ParlayLegEntity ) -> Bool {
+        if legs.count == W.Blockchain.parlayMaxLegs    { // validate max legs
+            return false
+        }
+        // validate rule only one leg per event
+        if ( searchLegByEventID(leg.event.eventID) > -1 )   {
+            return false;
+        }
+        return legs.append(leg)
+    }
+
+    public func removeAt( index : Int ) -> Void    {
+        legs.remove(at: index)
+    }
+    
+    public func removeByEventID( eventID : Uint64 ) -> Void   {
+        let index : Int64 = searchLegByEventID(eventID);
+        if index > -1  {
+            removeAt(index);
+        }
+    }
+
+    var legCount : Int    {
+        return legs.count;
+    }
+
+    public func clearLegs() -> Void {
+        legs.removeAll();
+    }
+
+    enum BetInParlayResult {
+        case NOT_IN_LEG
+        case EVENT_IN_LEG
+        case OUTCOME_IN_LEG
+    }
+
+    public func checkBetInParlay( eventID : UInt64, outcome : BetOutcome) -> BetInParlayResult    {
+        let index : Int = searchLegByEventID(eventID);
+        if ( index > -1 ) {
+            if (legs.get(index).outcome == outcome)    {
+                return .OUTCOME_IN_LEG
+            }
+            else    {
+                return .EVENT_IN_LEG;
+            }
+        }
+        else {
+            return .NOT_IN_LEG;
+        }
+    }
+
+    public func searchLegByEventID( eventID : UInt64 ) -> Int   {
+        let retIndex = legs.firstIndex(where: { $0.event.eventID == eventID })
+        return (retIndex!=nill) ? retIndex : -1
+    }
+}

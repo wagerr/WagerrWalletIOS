@@ -203,6 +203,10 @@ enum S {
         static let spreadPoints = NSLocalizedString("EventDetails.spreadPoints", value:"Spread Points", comment: "Over Odd")
         static let totalPoints = NSLocalizedString("EventDetails.totalPoints", value:"Total Points", comment: "Under Odds")
         static let potentialReward = NSLocalizedString("EventDetails.potentialReward", value:"Potential Reward", comment: "Potential Reward")
+        static let totalOdds = NSLocalizedString("EventDetails.totalOdds", value:"Total odds", comment: "Total Odds")
+        static let addLeg = NSLocalizedString("EventDetails.addLeg", value:"Add leg", comment: "Add leg")
+        static let removeLeg = NSLocalizedString("EventDetails.removeLeg", value:"Remove leg", comment: "Remove leg")
+        
     }
 
     enum BetSettings {

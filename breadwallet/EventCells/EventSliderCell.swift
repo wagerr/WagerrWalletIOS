@@ -38,12 +38,15 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         }
     }
     // MARK: Views
-    private let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
-    private let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))
-    private let rewardLabel = UILabel(font: UIFont.customBody(size: 16.0))
-    private let betSlider = BetSlider(frame: CGRect(x: 50.0, y: 10.0, width: 850.0, height: 35.0))
-    private let doBetButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-    private let doCancelButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+    internal let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
+    internal let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))
+    internal let rewardLabel = UILabel(font: UIFont.customBody(size: 16.0))
+    internal let betSlider = BetSlider(frame: CGRect(x: 50.0, y: 10.0, width: 850.0, height: 35.0))
+    internal let doBetButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+    internal let doCancelButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+    internal let doAddLegButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+    internal let addLegTitleLabel = UILabel(font: UIFont.customBody(size: 24.0))
+
     
     // MARK: - Init
     
@@ -55,6 +58,10 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         container.addSubview(betSlider)
         container.addSubview(doBetButton)
         container.addSubview(doCancelButton)
+        if type(of: self) == EventSliderCell.self    {
+            container.addSubview(doAddLegButton)
+            container.addSubview(addLegTitleLabel)
+        }
     }
     
     override func addConstraints() {
@@ -93,6 +100,19 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
             doCancelButton.widthAnchor.constraint(equalToConstant: 40.0),
             doCancelButton.heightAnchor.constraint(equalToConstant: 40.0)
         ])
+        if type(of: self) == EventSliderCell.self    {
+            doAddLegButton.constrain([
+                doAddLegButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -C.padding[4]),
+                doAddLegButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
+                doAddLegButton.widthAnchor.constraint(equalToConstant: 44.0),
+                doAddLegButton.heightAnchor.constraint(equalToConstant: 44.0)
+            ])
+            
+            addLegTitleLabel.constrain([
+                addLegTitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: C.padding[4]),
+                addLegTitleLabel.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1])
+            ])
+        }
     }
     
     override func setupStyle() {
@@ -138,6 +158,21 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         let tapActionCancel = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedCancel(tapGestureRecognizer:)))
         doCancelButton.isUserInteractionEnabled = true
         doCancelButton.addGestureRecognizer(tapActionCancel)
+        
+        if type(of: self) == EventSliderCell.self    {
+            addLegTitleLabel.text = S.EventDetails.addLeg
+            doAddLegButton.image =  #imageLiteral(resourceName: "circleOk")  //.withRenderingMode(.alwaysTemplate)
+                    
+            let tapActionAddLeg = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAddRemove(tapGestureRecognizer:)))
+            doAddLegButton.isUserInteractionEnabled = true
+            doAddLegButton.addGestureRecognizer(tapActionAddLeg)
+        }
+    }
+
+    // MARK: - Tap actions
+    @objc func actionTappedAddRemove(tapGestureRecognizer: UITapGestureRecognizer) {
+        textFieldDidEndEditing(amountLabel)
+        //self.cellDelegate?.didTapOk(choice: betChoice!, amount: Int(betSlider.value))
     }
     
     // MARK: - Tap actions

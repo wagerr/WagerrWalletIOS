@@ -14,6 +14,7 @@ class HomeSwapCell : UITableViewCell {
 
     private let check = UIImageView(image: #imageLiteral(resourceName: "Flash").withRenderingMode(.alwaysTemplate))
     private let titleLabel = UILabel(font: .customBold(size: 18.0), color: .white)
+    private let titlePairLabel = UILabel(font: .customBody(size: 16.0), color: .white)
     private let container = Background()
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -25,6 +26,7 @@ class HomeSwapCell : UITableViewCell {
         accessibilityIdentifier = "Instaswap"
         container.currency = viewModel.currency
         titleLabel.attributedText = viewModel.title
+        titlePairLabel.text = "WGR/BTC"
         container.setNeedsDisplay()
         check.tintColor = .white
     }
@@ -42,6 +44,7 @@ class HomeSwapCell : UITableViewCell {
         contentView.addSubview(container)
         container.addSubview(check)
         container.addSubview(titleLabel)
+        container.addSubview(titlePairLabel)
     }
 
     private func addConstraints() {
@@ -58,6 +61,11 @@ class HomeSwapCell : UITableViewCell {
             titleLabel.leadingAnchor.constraint(equalTo: check.trailingAnchor, constant: C.padding[2]),
             titleLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: C.padding[2])
             ])
+        
+        titlePairLabel.constrain([
+            titlePairLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -C.padding[2]),
+            titlePairLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: C.padding[2])
+        ])
     }
 
     private func setupStyle() {

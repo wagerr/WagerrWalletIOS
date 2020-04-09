@@ -55,6 +55,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     private var balance: UInt256 = 0
     private var amount: Amount?
     private var isTOSAccepted = false
+    private var currentMin : Double = 0.0
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -132,6 +133,10 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     // MARK: - Actions
     
     private func addButtonActions() {
+        let gr = UITapGestureRecognizer(target: self, action: #selector(addressTapped))
+        addressCell.addGestureRecognizer(gr)
+        addressCell.isUserInteractionEnabled = true
+        
         refundWalletCell.paste.addTarget(self, action: #selector(SwapViewController.pasteTapped), for: .touchUpInside)
         //refundWalletCell.scan.addTarget(self, action: #selector(SwapViewController.scanTapped), for: .touchUpInside)
         sendButton.addTarget(self, action: #selector(sendTapped), for: .touchUpInside)
@@ -152,9 +157,22 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
                         guard let `self` = self,
                         case .success(let tickersData) = result else { return }
                         DispatchQueue.main.async {
-                            self.receiveCell.text = S.Instaswap.receiveAmount + ": " + tickersData.response!.getAmount + " " + self.currency.code
+                            self.currentMin = tickersData.response!.min
+                            self.receiveCell.text = S.Instaswap.youReceive + ": " + tickersData.response!.getAmount + " " + self.currency.code
+                            
+                            if Double(truncating: amount!.tokenValue as NSNumber) < self.currentMin {
+                                self.receiveCell.textColor = .red
+                                self.receiveCell.text! += String.init(format: " (min %.6f BTC)", self.currentMin)
+                            }
+                            else {
+                                self.receiveCell.textColor = .grayTextTint
+                            }
                         }
                     })
+            }
+            else {
+                self?.receiveCell.textColor = .grayTextTint
+                self?.receiveCell.text = S.Instaswap.receiveAmount
             }
             self?.enableSendButton(isEnabled: self!.canEnableSend )
         }
@@ -165,6 +183,11 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
                 self?.view.endEditing(true)
             }
         }
+    }
+    
+    @objc private func addressTapped() {
+        UIPasteboard.general.string = receiveAddress
+        Store.trigger(name: .lightWeightAlert(S.Receive.copied))
     }
     
     @objc private func pasteTapped() {
@@ -216,7 +239,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     }
     
     var canEnableSend : Bool    {
-        return isTOSAccepted && (amount?.tokenValue ?? 0.0) > 0.0
+        return isTOSAccepted && (amount?.tokenValue ?? 0.0) > 0.0 && Double(truncating: (amount?.tokenValue ?? 0.0) as NSNumber) >= currentMin
     }
     
     private func enableSendButton(isEnabled : Bool)  {

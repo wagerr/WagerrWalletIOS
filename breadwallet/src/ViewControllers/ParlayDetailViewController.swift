@@ -1,9 +1,9 @@
 //
-//  EventDetailViewController.swift
+//  ParlayDetailViewController.swift
 //  breadwallet
 //
-//  Created by MIP on 24/11/2019.
-//  Copyright © 2019 Wagerr Ltd. All rights reserved.
+//  Created by MIP on 09/04/2020.
+//  Copyright © 2020 Wagerr Ltd. All rights reserved.
 //
 
 import UIKit
@@ -16,19 +16,8 @@ private extension C {
     static let detailsButtonHeight: CGFloat = 65.0
 }
 
-protocol EventBetOptionDelegate  {
-    func didTapBetOption(choice: EventBetChoice, isSelected: Bool)
-}
-
-protocol EventBetSliderDelegate  {
-    func didTapOk(choice: EventBetChoice, amount: Int)
-    func didTapCancel()
-    func didTapAddLeg(choice: EventBetChoice)
-    func didTapRemoveLeg(choice: EventBetChoice)
-}
-
-class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDelegate, EventBetSliderDelegate, Trackable {
-    
+class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDelegate, Trackable {
+       
     // MARK: - Private Vars
     
     private let container = UIView()
@@ -41,14 +30,14 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private var sliderPosToRemove : Int = 0
     private var containerHeightConstraint: NSLayoutConstraint!
     
-    private var event: BetEventViewModel {
+    private var parlay: ParlayBetEntity {
         didSet {
             reload()
         }
     }
-    private var viewModel: BetEventViewModel
+    private var viewModel: ParlayBetEntity
     private var walletManager: BTCWalletManager
-    private var dataSource: EventDetailDataSource?
+    private var dataSource: ParlayDetailDataSource?
     private var isExpanded: Bool = true
     
     private var sender: BitcoinSender
@@ -72,9 +61,9 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     // MARK: - Init
     
-    init(event: BetEventViewModel, wm: BTCWalletManager, sender: BitcoinSender) {
-        self.event = event
-        self.viewModel = event
+    init(parlay: ParlayBetEntity, wm: BTCWalletManager, sender: BitcoinSender) {
+        self.parlay = parlay
+        self.viewModel = parlay
         self.walletManager = wm
         self.sender = sender
         //self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
@@ -89,7 +78,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self, didTapBetsmart: didTapBetsmart)
+        self.dataSource = ParlayDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self)
 
         setup()
         
@@ -102,126 +91,86 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             guard let oldEvents = $0[self.viewModel.currency]?.events else { return false }
             guard let newEvents = $1[self.viewModel.currency]?.events else { return false }
             return oldEvents != newEvents }, callback: { [unowned self] in
-            guard let event = $0[self.viewModel.currency]?.events.first(where: { $0.eventID == self.viewModel.eventID }) else {
-                // close slip
-                self.close()
-                return }
-            self.event = event
-        })
+                for leg in self.viewModel.legs  {
+                    guard let event = $0[self.viewModel.currency]?.events.first(where: { $0.eventID == leg.event.eventID }) else {
+                        self.viewModel.removeByEventID(eventID: leg.event.eventID)
+                        self.reload()
+                        return
+                    }
+                    if leg.event != event   {   // refresh odds
+                        leg.event = event
+                        self.reload()
+                    }
+                }
+            })
     }
     
-    // bet option cell delegate
-    func didTapBetOption(choice: EventBetChoice, isSelected: Bool) {
-        let sliderPos = (dataSource?.prepareBetLayout(choice: choice))!
-        let sliderIndexPath = IndexPath(row: sliderPos, section: 0)
-        tableView.beginUpdates()
-        if sliderPosToRemove == 0  {
-            tableView.insertRows(at: [sliderIndexPath], with: .automatic)
-            sliderPosToRemove = sliderPos
-        }
-        else    {
-            if sliderPosToRemove != sliderPos   {
-                if isSelected   {
-                    tableView.moveRow(at: IndexPath(row: sliderPosToRemove, section: 0), to: IndexPath(row: sliderPos, section: 0))
-                    sliderPosToRemove = sliderPos
-                }
-                else {
-                    tableView.deleteRows(at: [sliderIndexPath], with: .none)
-                    sliderPosToRemove = 0
-                }
-            }
-            else    {
-                if !isSelected  { didTapCancel() }
-            }
-        }
-        tableView.endUpdates()
-        if isSelected {
-            tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
-        }
-        
-        dataSource?.registerBetChoice(choice: choice)
-    }
-    
-    // MARK: bet slider cell delegates
+    // bet slider cell delegates
     func didTapOk(choice: EventBetChoice, amount: Int) {
         // check event timestamp
         let now = Date()
-        if viewModel.eventTimestamp - now.timeIntervalSinceReferenceDate < W.Blockchain.cutoffSeconds    {
-            let alert = UIAlertController(title: S.Alert.error, message: S.Betting.errorTimeout, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: S.Button.ok, style: .default, handler: nil))
-            self.present(alert, animated: true)
-        }
-        else    {
-            let cryptoAmount = UInt256(UInt64(amount)*C.satoshis)
-            let transaction = walletManager.wallet?.createBetTransaction(forAmount: (UInt64(amount)*C.satoshis), type: BetType.PEERLESS.rawValue, eventID: Int32(viewModel.eventID), outcome: choice.getOutcome().rawValue)
-
-            self.sender.setBetTransaction(tx: transaction)
-            
-            let fee = sender.fee(forAmount: cryptoAmount) ?? UInt256(0)
-            let feeCurrency = Currencies.btc
-            let currency = Currencies.btc
-            
-            let displyAmount = Amount(amount: cryptoAmount,
-                                      currency: currency,
-                                      rate: currency.state?.currentRate,
-                                      maximumFractionDigits: Amount.highPrecisionDigits)
-            let feeAmount = Amount(amount: fee,
-                                   currency: feeCurrency,
-                                   rate: (currency.state?.currentRate != nil) ? feeCurrency.state?.currentRate : nil,
-                                   maximumFractionDigits: Amount.highPrecisionDigits)
-
-            let confirm = ConfirmationViewController(amount: Amount(amount: cryptoAmount, currency: currency),
-                                                     fee: feeAmount,
-                                                     feeType: .regular,
-                                                     address: "Betting",
-                                                     isUsingBiometrics: sender.canUseBiometrics,
-                                                     currency: currency)
-            confirm.successCallback = doSend
-            confirm.cancelCallback = sender.reset
-            
-            confirmTransitioningDelegate.shouldShowMaskView = false
-            confirm.transitioningDelegate = confirmTransitioningDelegate
-            confirm.modalPresentationStyle = .overFullScreen
-            confirm.modalPresentationCapturesStatusBarAppearance = true
-            present(confirm, animated: true, completion: nil)
-        }
-        
-    }
-       
-    func didTapCancel() {
-        dataSource?.prepareBetLayout(choice: nil)
-        tableView.beginUpdates()
-        tableView.deleteRows(at: [IndexPath(row: sliderPosToRemove, section: 0)], with: .none)
-        tableView.endUpdates()
-        sliderPosToRemove = 0
-        let choice = EventBetChoice.init(option: .none, type: .none, odd: 1.0 )
-        dataSource?.cleanBetOptions( choice: choice )
-    }
-
-    func didTapAddLeg(choice: EventBetChoice)   {
-        
-    }
-    
-    func didTapRemoveLeg(choice: EventBetChoice)    {
-        
-    }
-    
-    // MARK: other tap events
-    func didTapBetsmart(teamName : String)   {
-        var style = "light"
-        if #available(iOS 13.0, *) {
-            if UIScreen.main.traitCollection.userInterfaceStyle == .dark    {
-                style="dark"
+        for leg in self.viewModel.legs  {
+            if leg.event.eventTimestamp - now.timeIntervalSinceReferenceDate < W.Blockchain.cutoffSeconds    {
+                let alert = UIAlertController(title: S.Alert.error, message: S.Betting.errorTimeout, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: S.Button.ok, style: .default, handler: nil))
+                self.present(alert, animated: true)
+                self.reload()
+                return;
             }
         }
         
-        let betsmartDetails = WebViewController(theURL: String.init(format: "https://betsmart.app/teaser-team/?name=%@&sport=%@&mode=%@&source=wagerr"
-            , teamName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-            , viewModel.txSport.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, style))
-        betsmartDetails.modalPresentationStyle = .overCurrentContext
-        //betsmartDetails.transitioningDelegate = transitionDelegate
-        betsmartDetails.modalPresentationCapturesStatusBarAppearance = true
-        present(betsmartDetails, animated: true, completion: nil)
+        let cryptoAmount = UInt256(UInt64(amount)*C.satoshis)
+        let nLegCount = self.viewModel.legs.count
+        let transaction = walletManager.wallet?.createParlayBetTransaction(forAmount: (UInt64(amount)*C.satoshis), type: BetType.PEERLESS.rawValue, nLegs: Int32(nLegCount),
+            eventID1: (nLegCount>0) ? Int32(viewModel.legs[0].event.eventID) : 0,
+            outcome1: (nLegCount>0) ? viewModel.legs[0].outcome.rawValue : 0,
+            eventID2: (nLegCount>1) ? Int32(viewModel.legs[1].event.eventID) : 0,
+            outcome2: (nLegCount>1) ? viewModel.legs[1].outcome.rawValue : 0,
+            eventID3: (nLegCount>2) ? Int32(viewModel.legs[2].event.eventID) : 0,
+            outcome3: (nLegCount>2) ? viewModel.legs[2].outcome.rawValue : 0,
+            eventID4: (nLegCount>3) ? Int32(viewModel.legs[3].event.eventID) : 0,
+            outcome4: (nLegCount>3) ? viewModel.legs[3].outcome.rawValue : 0,
+            eventID5: (nLegCount>4) ? Int32(viewModel.legs[4].event.eventID) : 0,
+            outcome5: (nLegCount>4) ? viewModel.legs[4].outcome.rawValue : 0
+        )
+
+        self.sender.setBetTransaction(tx: transaction)
+        
+        let fee = sender.fee(forAmount: cryptoAmount) ?? UInt256(0)
+        let feeCurrency = Currencies.btc
+        let currency = Currencies.btc
+        
+        let displyAmount = Amount(amount: cryptoAmount,
+                                  currency: currency,
+                                  rate: currency.state?.currentRate,
+                                  maximumFractionDigits: Amount.highPrecisionDigits)
+        let feeAmount = Amount(amount: fee,
+                               currency: feeCurrency,
+                               rate: (currency.state?.currentRate != nil) ? feeCurrency.state?.currentRate : nil,
+                               maximumFractionDigits: Amount.highPrecisionDigits)
+
+        let confirm = ConfirmationViewController(amount: Amount(amount: cryptoAmount, currency: currency),
+                                                 fee: feeAmount,
+                                                 feeType: .regular,
+                                                 address: "Betting",
+                                                 isUsingBiometrics: sender.canUseBiometrics,
+                                                 currency: currency)
+        confirm.successCallback = doSend
+        confirm.cancelCallback = sender.reset
+        
+        confirmTransitioningDelegate.shouldShowMaskView = false
+        confirm.transitioningDelegate = confirmTransitioningDelegate
+        confirm.modalPresentationStyle = .overFullScreen
+        confirm.modalPresentationCapturesStatusBarAppearance = true
+        present(confirm, animated: true, completion: nil)
+    }
+    
+    func didTapAddLeg(choice: EventBetChoice)   {
+        // stubs, not implemented
+    }
+    
+    func didTapRemoveLeg(choice: EventBetChoice)    {
+        // stubs, not implemented
     }
     
     func doSend()   {
@@ -255,6 +204,10 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         }
     }
     
+    func didTapCancel() {
+        close()
+    }
+
     private func setup() {
         addSubViews()
         addConstraints()
@@ -331,10 +284,8 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     }
     
     private func reload() {
-        viewModel = event
-        let currChoice = (self.dataSource as! EventDetailDataSource).currChoice
-        self.dataSource = EventDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self, didTapBetsmart: didTapBetsmart )
-        dataSource?.prepareBetLayout(choice: currChoice)
+        //viewModel = walletManager.parlayBet
+        //self.dataSource = ParlayDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self )
         tableView.dataSource = dataSource
         tableView.reloadData()
     }
@@ -359,7 +310,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
 }
 
 //MARK: - Keyboard Handler
-extension EventDetailViewController {
+extension ParlayDetailViewController {
     fileprivate func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -429,39 +380,7 @@ extension EventDetailViewController {
     }
 }
 
-//MARK: - Wagerr Explorer Navigation functions
-enum EventExplorerType {
-    case address
-    case event
-    case transaction
-}
-
-extension EventDetailViewController {
-
-    static func navigate(to: String, type: EventExplorerType) {
-        let baseURL = "https://explorer.wagerr.com/#"
-        var typeURL = ""
-        switch type {
-            case .address:
-                typeURL = "address"
-            case .event:
-                typeURL = "bet/event"
-            case .transaction:
-                typeURL = "tx"
-        }
-        guard let url = URL(string: String.init(format: "%@/%@/%@", baseURL, typeURL, to)) else {
-            return //be safe
-        }
-
-        if #available(iOS 10.0, *) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        } else {
-            UIApplication.shared.openURL(url)
-        }
-    }
-}
-
-extension EventDetailViewController : ModalDisplayable {
+extension ParlayDetailViewController : ModalDisplayable {
     var faqArticleId: String? {
         return ArticleIds.betSlip
     }

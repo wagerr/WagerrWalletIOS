@@ -9,12 +9,25 @@
 import UIKit
 import BRCore
 
-class ParlaySliderCell: EventSliderCell {
+class ParlaySliderCell: EventSliderCellBase {
+    
+    var viewModel : ParlayBetEntity!
     
     // MARK: Views
     private let totalOddLabel = UILabel(font: UIFont.customBody(size: 24.0))
     private let totalOddTitleLabel = UILabel(font: UIFont.customBody(size: 24.0))
 
+    // MARK: Computed vars
+    var totalOdd : UInt32   {
+        var ret : Float = 1.0
+        for leg in viewModel.legs   {
+            ret *= Float(leg.odd) / Float(EventMultipliers.ODDS_MULTIPLIER)
+        }
+        self.betChoice = EventBetChoice.init(option: .none, type: .parlay, odd: ret)
+
+        return UInt32( ret * Float(EventMultipliers.ODDS_MULTIPLIER) )
+    }
+    
     // MARK: - Init
     
     override func addSubviews() {
@@ -43,6 +56,7 @@ class ParlaySliderCell: EventSliderCell {
         super.setupStyle()
         
         totalOddTitleLabel.text = S.EventDetails.totalOdds
+        totalOddLabel.text = BetEventDatabaseModel.getOddTx(odd: totalOdd)
     }
     
 }

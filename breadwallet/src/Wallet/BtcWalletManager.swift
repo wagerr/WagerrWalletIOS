@@ -114,6 +114,7 @@ class BTCWalletManager : WalletManager {
         } else {
             self.db = CoreDatabase()
         }
+        self.parlayBet = ParlayBetEntity()
         self.minuteTimer = Timer.scheduledTimer(timeInterval: minuteInterval, target: self, selector: #selector(updateTransactions), userInfo: nil, repeats: true)
     }
 

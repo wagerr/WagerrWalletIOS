@@ -106,7 +106,7 @@ enum RootModal {
     case none
     case send(currency: CurrencyDef)
     case receive(currency: CurrencyDef)
-    case sendbet(event: BetEventViewModel)
+    case sendbet(event: BetEventViewModel, didChangeLegs: (() -> Void)?)
     case loginAddress
     case loginScan
     case requestAmount(currency: CurrencyDef, address: String)
@@ -241,7 +241,7 @@ func ==(lhs: RootModal, rhs: RootModal) -> Bool {
         return lhsCurrency.code == rhsCurrency.code
     case (.receive(let lhsCurrency), .receive(let rhsCurrency)):
         return lhsCurrency.code == rhsCurrency.code
-    case (.sendbet(let lhsEvent), .sendbet(let rhsEvent)):
+    case (.sendbet(let lhsEvent, let lhsFn), .sendbet(let rhsEvent, let rhsFn)):
         return lhsEvent.eventID == rhsEvent.eventID
     case (.loginAddress, .loginAddress):
         return true

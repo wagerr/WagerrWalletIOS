@@ -9,6 +9,12 @@
 import UIKit
 import BRCore
 
+enum LegButtonMode {
+    case add
+    case remove
+    case hidden
+}
+
 class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     var betChoice : EventBetChoice?
     var cellDelegate: EventBetSliderDelegate?
@@ -275,7 +281,7 @@ class EventSliderCell: EventSliderCellBase {
         super.setupStyle()
         
         addLegTitleLabel.text = S.EventDetails.addLeg
-        doAddLegButton.image =  #imageLiteral(resourceName: "circleOk")  //.withRenderingMode(.alwaysTemplate)
+        doAddLegButton.image =   #imageLiteral(resourceName: "plusAdd")  //.withRenderingMode(.alwaysTemplate)
                 
         let tapActionAddLeg = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAddRemove(tapGestureRecognizer:)))
         doAddLegButton.isUserInteractionEnabled = true
@@ -285,7 +291,33 @@ class EventSliderCell: EventSliderCellBase {
     // MARK: - Tap actions
     @objc func actionTappedAddRemove(tapGestureRecognizer: UITapGestureRecognizer) {
         textFieldDidEndEditing(amountLabel)
-        //self.cellDelegate?.didTapOk(choice: betChoice!, amount: Int(betSlider.value))
+        if addLegTitleLabel.text == S.EventDetails.addLeg  {
+            self.cellDelegate?.didTapAddLeg(choice: betChoice!)
+            updateLegButton(mode: .remove)
+        }
+        else    {
+            self.cellDelegate?.didTapRemoveLeg(choice: betChoice!)
+            updateLegButton(mode: .add)
+        }
     }
     
+    func updateLegButton( mode : LegButtonMode )  {
+        switch mode {
+            case .add:
+                doAddLegButton.isHidden = false
+                addLegTitleLabel.isHidden = false
+                doAddLegButton.image = #imageLiteral(resourceName: "plusAdd")
+                addLegTitleLabel.text = S.EventDetails.addLeg
+            
+            case .remove:
+                doAddLegButton.isHidden = false
+                addLegTitleLabel.isHidden = false
+                doAddLegButton.image = #imageLiteral(resourceName: "minusDel")
+                addLegTitleLabel.text = S.EventDetails.removeLeg
+            
+            case .hidden:
+                doAddLegButton.isHidden = true
+                addLegTitleLabel.isHidden = true
+        }
+    }
 }

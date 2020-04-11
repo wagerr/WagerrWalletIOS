@@ -26,14 +26,17 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         self.walletManager = walletManager
         self.currency = currency
         self.headerView = EventsHeaderView(currency: currency)
-        super.init(nibName: nil, bundle: nil)
-        self.eventsTableView = EventsTableViewController(currency: currency, walletManager: walletManager, didSelectEvent: didSelectEvent, didChangeEvents: didChangeEvents, didTapBetsmart: didTapBetsmart )
-
-        if let btcWalletManager = walletManager as? BTCWalletManager {
-            headerView.isWatchOnly = btcWalletManager.isWatchOnly
+        
+        let btcWalletManager = walletManager as? BTCWalletManager
+        if btcWalletManager != nil {
+            headerView.isWatchOnly = btcWalletManager!.isWatchOnly
+            self.parlayBet = btcWalletManager!.parlayBet
         } else {
             headerView.isWatchOnly = false
+            self.parlayBet = nil
         }
+        super.init(nibName: nil, bundle: nil)
+        self.eventsTableView = EventsTableViewController(currency: currency, walletManager: walletManager, didSelectEvent: didSelectEvent, didChangeEvents: didChangeEvents, didTapBetsmart: didTapBetsmart )
     }
 
     //MARK: - Private
@@ -41,6 +44,8 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
     private let headerView: EventsHeaderView
     private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
     private var eventsTableView: EventsTableViewController!
+    private let parlayBet: ParlayBetEntity?
+    private let parlayOpenButton = UIButton(type: .custom)
     private var isLoginRequired = false
     private let searchHeaderview: EventSearchHeaderView = {
         let view = EventSearchHeaderView()
@@ -127,12 +132,18 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         view.addSubview(headerContainer)
         headerContainer.addSubview(headerView)
         headerContainer.addSubview(searchHeaderview)
+        view.addSubview(parlayOpenButton)
     }
 
     private func addConstraints() {
         headerContainer.constrainTopCorners(height: eventsHeaderHeight)
         headerView.constrain(toSuperviewEdges: nil)
         searchHeaderview.constrain(toSuperviewEdges: nil)
+        
+        parlayOpenButton.trailingAnchor.constraint(equalTo: view.trailingAnchor , constant: -25).isActive = true
+        parlayOpenButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25).isActive = true
+        parlayOpenButton.heightAnchor.constraint(equalToConstant: 48.0).isActive = true
+        parlayOpenButton.widthAnchor.constraint(equalToConstant: 48.0).isActive = true
     }
 
     private func addSubscriptions() {
@@ -171,6 +182,12 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         headerView.didChangeFilters = { [weak self] filters in
             self?.eventsTableView.filters2 = filters
         }
+        
+        parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        parlayOpenButton.backgroundColor = .systemOrange
+        parlayOpenButton.clipsToBounds = true
+        parlayOpenButton.layer.cornerRadius = 24
+        parlayOpenButton.layer.borderWidth = 0.0
     }
 
     private func addTransactionsView() {
@@ -193,6 +210,10 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         let (c1, _) = v
         for (v1, _) in a { if v1 == c1 { return true } }
         return false
+    }
+    
+    private func didChangeLegs()    {
+        parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
     }
     
     private func didChangeEvents(events: [BetEventViewModel]) -> Void {
@@ -221,7 +242,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
     }
 
     private func didSelectEvent(events: [BetEventViewModel], selectedIndex: Int) -> Void {
-        Store.perform(action: RootModalActions.Present(modal: .sendbet(event: events[selectedIndex])))
+        Store.perform(action: RootModalActions.Present(modal: .sendbet(event: events[selectedIndex], didChangeLegs: didChangeLegs ) ))
         /*
         let eventDetails = EventDetailViewController(event: events[selectedIndex])
         eventDetails.modalPresentationStyle = .overCurrentContext

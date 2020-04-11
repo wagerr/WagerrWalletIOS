@@ -271,8 +271,8 @@ class ModalPresenter : Subscriber, Trackable {
             return makeSendView(currency: currency)
         case .receive(let currency):
             return makeReceiveView(currency: currency, isRequestAmountVisible: (currency.urlSchemes?[0] != nil))
-        case .sendbet(let event):
-            return makeSendBetView(event: event)
+        case .sendbet(let event, let didChangeLegs):
+            return makeSendBetView(event: event, didChangeLegs: didChangeLegs!)
         case .loginScan:
             return nil //The scan view needs a custom presentation
         case .loginAddress:
@@ -353,7 +353,7 @@ class ModalPresenter : Subscriber, Trackable {
         return root
     }
 
-    private func makeSendBetView(event: BetEventViewModel) -> UIViewController? {
+    private func makeSendBetView(event: BetEventViewModel, didChangeLegs: @escaping (()-> Void)) -> UIViewController? {
         let currency = Currencies.btc
         guard !(currency.state?.isRescanning ?? false) else {
             let alert = UIAlertController(title: S.Alert.error, message: S.Send.isRescanning, preferredStyle: .alert)
@@ -366,7 +366,8 @@ class ModalPresenter : Subscriber, Trackable {
         guard let sender = currency.createSender(walletManager: walletManager, kvStore: kvStore) else { return nil }
         let sendVC = EventDetailViewController(event: event,
                                                wm: walletManager as! BTCWalletManager,
-                                               sender: sender as! BitcoinSender)
+                                               sender: sender as! BitcoinSender,
+                                               didChangeLegs: didChangeLegs)
         currentRequest = nil
 
         let root = ModalViewController(childViewController: sendVC)

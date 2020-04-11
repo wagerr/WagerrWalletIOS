@@ -56,6 +56,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private let confirmTransitioningDelegate = PinTransitioningDelegate()
     var presentVerifyPin: ((String, @escaping ((String) -> Void))->Void)?
     var onPublishSuccess: (()->Void)?
+    var didChangeLegs: (()->Void)
     
     private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
     
@@ -72,11 +73,12 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     // MARK: - Init
     
-    init(event: BetEventViewModel, wm: BTCWalletManager, sender: BitcoinSender) {
+    init(event: BetEventViewModel, wm: BTCWalletManager, sender: BitcoinSender, didChangeLegs: @escaping (()-> Void)) {
         self.event = event
         self.viewModel = event
         self.walletManager = wm
         self.sender = sender
+        self.didChangeLegs = didChangeLegs
         //self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
         
         super.init(nibName: nil, bundle: nil)
@@ -199,11 +201,19 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     }
 
     func didTapAddLeg(choice: EventBetChoice)   {
-        
+        let leg = ParlayLegEntity.init(event: viewModel, outcome: choice.getOutcome(), odd: UInt32(0))
+        leg.updateOdd()
+        if walletManager.parlayBet.add(leg: leg)    {
+            didChangeLegs()
+        }
+        else {
+            self.showAlert(title: S.Alert.error, message: S.EventDetails.addLegError, buttonLabel: S.Button.ok)
+        }
     }
     
     func didTapRemoveLeg(choice: EventBetChoice)    {
-        
+        walletManager.parlayBet.removeByEventID(eventID: viewModel.eventID)
+        didChangeLegs()
     }
     
     // MARK: other tap events

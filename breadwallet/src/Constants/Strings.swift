@@ -206,7 +206,7 @@ enum S {
         static let totalOdds = NSLocalizedString("EventDetails.totalOdds", value:"Total odds", comment: "Total Odds")
         static let addLeg = NSLocalizedString("EventDetails.addLeg", value:"Add leg", comment: "Add leg")
         static let removeLeg = NSLocalizedString("EventDetails.removeLeg", value:"Remove leg", comment: "Remove leg")
-        
+        static let addLegError = NSLocalizedString("EventDetails.addLegError", value:"Only one leg per event allowed", comment: "Add leg error")
     }
 
     enum BetSettings {

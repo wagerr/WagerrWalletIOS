@@ -512,7 +512,7 @@ class ParlayLegEntity   {
         }
     }
 
-    private func updateOdd() {
+    public func updateOdd() {
         switch (outcome)    {
             case .MONEY_LINE_HOME_WIN:
                 odd = event.homeOdds;

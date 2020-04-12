@@ -208,6 +208,12 @@ enum S {
         static let removeLeg = NSLocalizedString("EventDetails.removeLeg", value:"Remove leg", comment: "Remove leg")
         static let addLegError = NSLocalizedString("EventDetails.addLegError", value:"Only one leg per event allowed", comment: "Add leg error")
     }
+    
+    enum ParlayDetails  {
+        static let title = NSLocalizedString("ParlayDetails.title", value:"Parlay Bet", comment: "Parlay bet")
+        static let warning = NSLocalizedString("ParlayDetails.warning", value:"Parlay bet needs 2 or more legs", comment: "Parlay bet")
+        static let maxLegs = NSLocalizedString("ParlayDetails.maxLegs", value:"Max. number of legs is %@", comment: "Parlay bet")
+    }
 
     enum BetSettings {
         static let headerMessage = NSLocalizedString("BetSettings.headerMessage", value:"Wagerr Pro Display Settings", comment: "header message.")

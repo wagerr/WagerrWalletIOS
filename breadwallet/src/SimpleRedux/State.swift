@@ -107,12 +107,14 @@ enum RootModal {
     case send(currency: CurrencyDef)
     case receive(currency: CurrencyDef)
     case sendbet(event: BetEventViewModel, didChangeLegs: (() -> Void)?)
+    case sendparlay(parlay: ParlayBetEntity, didChangeLegs: (() -> Void)?)
     case loginAddress
     case loginScan
     case requestAmount(currency: CurrencyDef, address: String)
     case buy(currency: CurrencyDef)
     case sell(currency: CurrencyDef)
     case swap(currency: CurrencyDef, didFinishSwap: (() -> Void)? )
+    
 }
 
 enum SyncState {
@@ -243,6 +245,8 @@ func ==(lhs: RootModal, rhs: RootModal) -> Bool {
         return lhsCurrency.code == rhsCurrency.code
     case (.sendbet(let lhsEvent, let lhsFn), .sendbet(let rhsEvent, let rhsFn)):
         return lhsEvent.eventID == rhsEvent.eventID
+    case (.sendparlay(let lhsParlay, let lhsFn), .sendparlay(let rhsParlay, let rhsFs)):
+        return lhsParlay == rhsParlay
     case (.loginAddress, .loginAddress):
         return true
     case (.loginScan, .loginScan):

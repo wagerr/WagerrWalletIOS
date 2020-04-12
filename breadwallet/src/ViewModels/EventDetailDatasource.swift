@@ -221,4 +221,10 @@ extension EventDetailDataSource: UITableViewDataSource {
         self.sliderCell?.recalculateReward(amount: -1)
     }
     
+    func updateLegButton( mode : LegButtonMode )    {
+        guard self.sliderCell != nil else {
+                return
+            }
+        self.sliderCell?.updateLegButton(mode: mode)
+    }
 }

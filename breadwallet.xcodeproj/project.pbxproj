@@ -24,7 +24,6 @@
 		0635AF9C240F98AB009C12F5 /* TOSCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AF9B240F98AB009C12F5 /* TOSCell.swift */; };
 		0635AFA0242DE71A009C12F5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AF9F242DE71A009C12F5 /* WebViewController.swift */; };
 		0635AFA2243A3EBD009C12F5 /* ParlaySliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA1243A3EBD009C12F5 /* ParlaySliderCell.swift */; };
-		0635AFA4243F1826009C12F5 /* ParlayDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA3243F1826009C12F5 /* ParlayDetailViewController.swift */; };
 		0635AFA6243F1EB0009C12F5 /* ParlayDetailDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA5243F1EB0009C12F5 /* ParlayDetailDatasource.swift */; };
 		0635AFA8243F1FB6009C12F5 /* ParlayLegCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA7243F1FB6009C12F5 /* ParlayLegCell.swift */; };
 		0642675023EECFF90022A143 /* SwapListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642674F23EECFF90022A143 /* SwapListCell.swift */; };
@@ -38,6 +37,8 @@
 		0670668823AF596200D4238D /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668723AF596200D4238D /* Checkbox.swift */; };
 		0670668A23B0C61500D4238D /* EventHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668923B0C61500D4238D /* EventHeaderCell.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
+		069B4E8024430E4A009DD5DE /* ParlayDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA3243F1826009C12F5 /* ParlayDetailViewController.swift */; };
+		069B4E8224432158009DD5DE /* WarningRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069B4E8124432158009DD5DE /* WarningRowCell.swift */; };
 		06A3D905239DB5CC00518AD8 /* EventsPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */; };
 		06C0C6C220B360C10047C540 /* x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C020B360C00047C540 /* x11.c */; };
 		06C0C6E120B377250047C540 /* keccak.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C820B377250047C540 /* keccak.c */; };
@@ -731,6 +732,7 @@
 		0670668523AF585100D4238D /* BetSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BetSettingsViewController.swift; path = src/ViewControllers/BetSettingsViewController.swift; sourceTree = "<group>"; };
 		0670668723AF596200D4238D /* Checkbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
 		0670668923B0C61500D4238D /* EventHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventHeaderCell.swift; sourceTree = "<group>"; };
+		069B4E8124432158009DD5DE /* WarningRowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningRowCell.swift; sourceTree = "<group>"; };
 		06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPickerView.swift; sourceTree = "<group>"; };
 		06C0C6BE20B360BF0047C540 /* x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x11.h; sourceTree = "<group>"; };
 		06C0C6C020B360C00047C540 /* x11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x11.c; sourceTree = "<group>"; };
@@ -2004,6 +2006,7 @@
 				062D29AF23A65DDD009ADC9E /* EventSliderCell.swift */,
 				0635AFA1243A3EBD009C12F5 /* ParlaySliderCell.swift */,
 				062D29A723A5147A009ADC9E /* EventDetailRowCell.swift */,
+				069B4E8124432158009DD5DE /* WarningRowCell.swift */,
 				06086225238AAB8C002F4E9B /* EventListCell.swift */,
 				0635AFA7243F1FB6009C12F5 /* ParlayLegCell.swift */,
 			);
@@ -4506,6 +4509,7 @@
 				CEE0EF521EBD14B60018DB36 /* PinTransitioningDelegate.swift in Sources */,
 				CE45C1FD1E7650F5002C3847 /* KVStoreCoordinator.swift in Sources */,
 				754AE0BC1DFE8A46007FD001 /* BRCore.swift in Sources */,
+				069B4E8024430E4A009DD5DE /* ParlayDetailViewController.swift in Sources */,
 				22A9A94A1DF61945000F0016 /* BRCameraPlugin.swift in Sources */,
 				CEC6AA3B1DEE4EB000EE5AFD /* CGRect+Additions.swift in Sources */,
 				7C5AC8A6203B93D3001B221E /* TxListCell.swift in Sources */,
@@ -4719,6 +4723,7 @@
 				CEEC70861E94397D00EF788E /* UserDefaults+Additions.swift in Sources */,
 				0642675423F1BA250022A143 /* SwapViewController.swift in Sources */,
 				22A9A9501DF61945000F0016 /* BRHTTPServer.swift in Sources */,
+				069B4E8224432158009DD5DE /* WarningRowCell.swift in Sources */,
 				CE1E7A9A20938DFD00C86BB7 /* MenuButton.swift in Sources */,
 				22A9A9531DF61945000F0016 /* BRLinkPlugin.swift in Sources */,
 				7CA3BC302006864C00517BF7 /* Currency.swift in Sources */,
@@ -4736,7 +4741,6 @@
 				7C6ACCB41FEB34470028ABFA /* TxLabelCell.swift in Sources */,
 				0670668423AE787100D4238D /* LinkCell.swift in Sources */,
 				22A9A9541DF61945000F0016 /* BRReplicatedKVStore.swift in Sources */,
-				0635AFA4243F1826009C12F5 /* ParlayDetailViewController.swift in Sources */,
 				7C35E71B200AF8170064808F /* BtcTransaction.swift in Sources */,
 				CE6B6B4A1E54C0CB00B31405 /* SecurityCenterCell.swift in Sources */,
 				CED811AA1EB2B2D1003A8D1E /* SharedConstants.swift in Sources */,

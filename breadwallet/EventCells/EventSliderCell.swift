@@ -254,7 +254,7 @@ extension UIImage {
 class EventSliderCell: EventSliderCellBase {
 
     internal let doAddLegButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-    internal let addLegTitleLabel = UILabel(font: UIFont.customBody(size: 24.0))
+    internal let addLegTitleLabel = UILabel(font: UIFont.customBody(size: 16.0))
 
     override func addSubviews() {
         super.addSubviews()
@@ -265,15 +265,15 @@ class EventSliderCell: EventSliderCellBase {
     override func addConstraints() {
         super.addConstraints()
         doAddLegButton.constrain([
-            doAddLegButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -C.padding[4]),
+            doAddLegButton.leadingAnchor.constraint(equalTo: doCancelButton.trailingAnchor, constant: C.padding[3]),
             doAddLegButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
             doAddLegButton.widthAnchor.constraint(equalToConstant: 44.0),
             doAddLegButton.heightAnchor.constraint(equalToConstant: 44.0)
         ])
         
         addLegTitleLabel.constrain([
-            addLegTitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor, constant: C.padding[4]),
-            addLegTitleLabel.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1])
+            addLegTitleLabel.leadingAnchor.constraint(equalTo: doAddLegButton.trailingAnchor, constant: C.padding[1]),
+            addLegTitleLabel.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[2])
         ])
     }
 
@@ -286,6 +286,9 @@ class EventSliderCell: EventSliderCellBase {
         let tapActionAddLeg = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAddRemove(tapGestureRecognizer:)))
         doAddLegButton.isUserInteractionEnabled = true
         doAddLegButton.addGestureRecognizer(tapActionAddLeg)
+        let tapActionAddLeg2 = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAddRemove(tapGestureRecognizer:)))
+        addLegTitleLabel.isUserInteractionEnabled = true
+        addLegTitleLabel.addGestureRecognizer(tapActionAddLeg2)
     }
 
     // MARK: - Tap actions

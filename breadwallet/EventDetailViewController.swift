@@ -142,6 +142,16 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         }
         
         dataSource?.registerBetChoice(choice: choice)
+        switch (walletManager.parlayBet.checkBetInParlay(eventID: viewModel.eventID, outcome: choice.getOutcome()))  {
+            case .OUTCOME_IN_LEG:
+                dataSource?.updateLegButton(mode: .remove)
+            
+            case .EVENT_IN_LEG:
+                dataSource?.updateLegButton(mode: .hidden)
+            
+            case .NOT_IN_LEG:
+                dataSource?.updateLegButton(mode: .add)
+        }
     }
     
     // MARK: bet slider cell delegates
@@ -207,7 +217,12 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             didChangeLegs()
         }
         else {
-            self.showAlert(title: S.Alert.error, message: S.EventDetails.addLegError, buttonLabel: S.Button.ok)
+            if walletManager.parlayBet.legCount == W.Blockchain.parlayMaxLegs   {
+                self.showAlert(title: S.Alert.error, message: S.ParlayDetails.maxLegs, buttonLabel: S.Button.ok)
+            }
+            else    {
+                self.showAlert(title: S.Alert.error, message: S.EventDetails.addLegError, buttonLabel: S.Button.ok)
+            }
         }
     }
     

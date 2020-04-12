@@ -16,13 +16,17 @@ private extension C {
     static let detailsButtonHeight: CGFloat = 65.0
 }
 
-class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDelegate, Trackable {
+protocol ParlayBetLegDelegate  {
+    func didTapRemoveLeg( nIndex : Int )
+}
+
+class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDelegate, ParlayBetLegDelegate, Trackable {
        
     // MARK: - Private Vars
     
     private let container = UIView()
     private let tapView = UIView()
-    //private let header: ModalHeaderView
+    private let header: ModalHeaderView
     private let footer = UIView()
     private let separator = UIView()
     private let tableView = UITableView()
@@ -45,6 +49,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
     private let confirmTransitioningDelegate = PinTransitioningDelegate()
     var presentVerifyPin: ((String, @escaping ((String) -> Void))->Void)?
     var onPublishSuccess: (()->Void)?
+    var didChangeLegs : (()->Void)
     
     private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
     
@@ -54,19 +59,21 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
     
     private var expandedContainerHeight: CGFloat {
         let maxHeight = view.frame.height - C.padding[4]
+        tableView.layoutIfNeeded()
         var contentHeight =  tableView.contentSize.height + footer.frame.height + separator.frame.height
         tableView.isScrollEnabled = contentHeight > maxHeight
-        return min(maxHeight, contentHeight)
+        return max(maxHeight, contentHeight)
     }
     
     // MARK: - Init
     
-    init(parlay: ParlayBetEntity, wm: BTCWalletManager, sender: BitcoinSender) {
+    init(parlay: ParlayBetEntity, wm: BTCWalletManager, sender: BitcoinSender, didChangeLegs: @escaping (()-> Void)) {
         self.parlay = parlay
         self.viewModel = parlay
         self.walletManager = wm
         self.sender = sender
-        //self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
+        self.didChangeLegs = didChangeLegs
+        self.header = ModalHeaderView(title: S.ParlayDetails.title, style: .transaction, faqInfo: ArticleIds.betSlip, currency: Currencies.btc)
         
         super.init(nibName: nil, bundle: nil)
         /*
@@ -152,7 +159,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
         let confirm = ConfirmationViewController(amount: Amount(amount: cryptoAmount, currency: currency),
                                                  fee: feeAmount,
                                                  feeType: .regular,
-                                                 address: "Betting",
+                                                 address: "Parlay Bet",
                                                  isUsingBiometrics: sender.canUseBiometrics,
                                                  currency: currency)
         confirm.successCallback = doSend
@@ -171,6 +178,18 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
     
     func didTapRemoveLeg(choice: EventBetChoice)    {
         // stubs, not implemented
+    }
+    
+    // MARK: leg delegate
+    func didTapRemoveLeg(nIndex: Int) {
+        viewModel.removeAt(index: nIndex)
+        didChangeLegs()
+        if walletManager.parlayBet.legCount == 0    {
+            dismiss(animated: true, completion: nil)
+        }
+        else    {
+            reload()
+        }
     }
     
     func doSend()   {
@@ -216,16 +235,24 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
     }
     
     private func addSubViews() {
-        //view.addSubview(tapView)
-        //view.addSubview(container)
-        //view.addSubview(header)
-        view.addSubview(tableView)
-        view.addSubview(footer)
-        view.addSubview(separator)
+        view.addSubview(tapView)
+        view.addSubview(container)
+        container.addSubview(header)
+        container.addSubview(tableView)
+        container.addSubview(footer)
+        container.addSubview(separator)
+    }
+    
+    private var tableHeight : CGFloat   {
+        return CGFloat(parlay.legCount * 75 + 200)
+    }
+    
+    private var containerHeight : CGFloat   {
+        return tableHeight + C.Sizes.headerHeight
     }
     
     private func addConstraints() {
-        /*
+        
         tapView.constrain(toSuperviewEdges: nil)
         container.constrain([
             container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: C.padding[2]),
@@ -233,16 +260,17 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
             container.centerYAnchor.constraint(equalTo: view.centerYAnchor)
             ])
         
-        containerHeightConstraint = container.heightAnchor.constraint(equalToConstant: compactContainerHeight)
+        containerHeightConstraint = container.heightAnchor.constraint(equalToConstant: containerHeight)
         containerHeightConstraint.isActive = true
-        */
-        //header.constrainTopCorners(height: C.Sizes.headerHeight)
+        
+        header.constrainTopCorners(height: C.Sizes.headerHeight)
         
         tableView.constrain([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: footer.topAnchor)
+            tableView.bottomAnchor.constraint(equalTo: footer.topAnchor),
+            tableView.heightAnchor.constraint(equalToConstant: tableHeight)
             ])
         
         footer.constrainBottomCorners(height: C.detailsButtonHeight)
@@ -269,7 +297,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
         
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.estimatedRowHeight = 65.0
+        tableView.estimatedRowHeight = 120.0
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.allowsSelection = false
         tableView.isScrollEnabled = false
@@ -285,7 +313,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
     
     private func reload() {
         //viewModel = walletManager.parlayBet
-        //self.dataSource = ParlayDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self )
+        self.dataSource = ParlayDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self )
         tableView.dataSource = dataSource
         tableView.reloadData()
     }

@@ -140,8 +140,9 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         headerView.constrain(toSuperviewEdges: nil)
         searchHeaderview.constrain(toSuperviewEdges: nil)
         
-        parlayOpenButton.trailingAnchor.constraint(equalTo: view.trailingAnchor , constant: -25).isActive = true
-        parlayOpenButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -25).isActive = true
+        parlayOpenButton.translatesAutoresizingMaskIntoConstraints = false
+        parlayOpenButton.trailingAnchor.constraint(equalTo: view.trailingAnchor , constant: -30).isActive = true
+        parlayOpenButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
         parlayOpenButton.heightAnchor.constraint(equalToConstant: 48.0).isActive = true
         parlayOpenButton.widthAnchor.constraint(equalToConstant: 48.0).isActive = true
     }
@@ -184,10 +185,20 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         }
         
         parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        parlayOpenButton.titleLabel!.font = UIFont.customBold(size: 20.0)
+        parlayOpenButton.frame.size = CGSize(width: 48, height: 48)
         parlayOpenButton.backgroundColor = .systemOrange
         parlayOpenButton.clipsToBounds = true
         parlayOpenButton.layer.cornerRadius = 24
         parlayOpenButton.layer.borderWidth = 0.0
+        
+        let tapActionOpenParlay = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedOpenParlay(tapGestureRecognizer:)))
+        parlayOpenButton.isUserInteractionEnabled = true
+        parlayOpenButton.addGestureRecognizer(tapActionOpenParlay)
+    }
+    
+    @objc func actionTappedOpenParlay(tapGestureRecognizer: UITapGestureRecognizer) {
+        Store.perform(action: RootModalActions.Present(modal: .sendparlay(parlay: (walletManager as! BTCWalletManager).parlayBet, didChangeLegs: didChangeLegs) ))
     }
 
     private func addTransactionsView() {
@@ -213,7 +224,13 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
     }
     
     private func didChangeLegs()    {
-        parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        if parlayBet?.legCount == 0 {
+            parlayOpenButton.isHidden = true
+        }
+        else    {
+            parlayOpenButton.isHidden = false
+            parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        }
     }
     
     private func didChangeEvents(events: [BetEventViewModel]) -> Void {
@@ -243,13 +260,6 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
 
     private func didSelectEvent(events: [BetEventViewModel], selectedIndex: Int) -> Void {
         Store.perform(action: RootModalActions.Present(modal: .sendbet(event: events[selectedIndex], didChangeLegs: didChangeLegs ) ))
-        /*
-        let eventDetails = EventDetailViewController(event: events[selectedIndex])
-        eventDetails.modalPresentationStyle = .overCurrentContext
-        eventDetails.transitioningDelegate = transitionDelegate
-        eventDetails.modalPresentationCapturesStatusBarAppearance = true
-        present(eventDetails, animated: true, completion: nil)
- */
     }
     
     func didTapBetsmart(eventID : UInt64)   {

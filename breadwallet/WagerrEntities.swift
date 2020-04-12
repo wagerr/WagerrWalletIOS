@@ -511,6 +511,8 @@ class ParlayLegEntity   {
                 return .colorHome;
         }
     }
+    
+    
 
     public func updateOdd() {
         switch (outcome)    {

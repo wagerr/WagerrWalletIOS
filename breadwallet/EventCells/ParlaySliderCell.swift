@@ -46,7 +46,7 @@ class ParlaySliderCell: EventSliderCellBase {
         ])
         
         totalOddTitleLabel.constrain([
-            totalOddTitleLabel.trailingAnchor.constraint(equalTo: totalOddLabel.leadingAnchor,constant: C.padding[1]),
+            totalOddTitleLabel.trailingAnchor.constraint(equalTo: totalOddLabel.leadingAnchor,constant: -C.padding[1]),
             totalOddTitleLabel.topAnchor.constraint(equalTo: totalOddLabel.topAnchor)
         ])
 
@@ -54,8 +54,10 @@ class ParlaySliderCell: EventSliderCellBase {
     
     override func setupStyle() {
         super.setupStyle()
-        
         totalOddTitleLabel.text = S.EventDetails.totalOdds
+    }
+    
+    func updateTotalOdds()  {
         totalOddLabel.text = BetEventDatabaseModel.getOddTx(odd: totalOdd)
     }
     

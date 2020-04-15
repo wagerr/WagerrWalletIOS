@@ -414,6 +414,7 @@ class BetResult : BetCore {
 enum BetType : Int32 {
     case PEERLESS = 0x03
     case CHAINLOTTO = 0x07
+    case PARLAY = 0x0C
     case UNKNOWN = -1
 }
 
@@ -454,6 +455,7 @@ class BetEntity : BetCore {
     var eventID : UInt64
     var outcome : BetOutcome
     var amount : UInt64
+    var parlayBet : ParlayBetEntity?
 
     init(blockheight: UInt64, timestamp: TimeInterval, txHash: String, version: UInt32, type: BetType, eventID: UInt64, outcome: BetOutcome, amount: UInt64) {
         self.type = type
@@ -554,7 +556,7 @@ class ParlayBetEntity   {
     var legs = [ParlayLegEntity]()
     var amount : Amount = Amount( amount: 0 , currency: Currencies.btc)
 
-    var eventID = [Int]()
+    var eventID = [UInt32]()
     var outcome = [BetOutcome]()
     
     public func get( index : Int ) -> ParlayLegEntity
@@ -563,7 +565,7 @@ class ParlayBetEntity   {
     }
 
     public func add( leg : ParlayLegEntity ) -> Bool {
-        if legs.count == W.Blockchain.parlayMaxLegs    { // validate max legs
+        if legs.count == W.Parlay.maxLegs    { // validate max legs
             return false
         }
         // validate rule only one leg per event

@@ -43,6 +43,15 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
             return amountLabel.frame
         }
     }
+    
+    internal var minBet : Float {
+        return W.BetAmount.min
+    }
+    
+    internal var maxBet : Float {
+        return W.BetAmount.max
+    }
+    
     // MARK: Views
     internal let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
     internal let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))
@@ -87,6 +96,10 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
             rewardLabel.leadingAnchor.constraint(equalTo: amountLabel.leadingAnchor),
             rewardLabel.topAnchor.constraint(equalTo: betSlider.bottomAnchor, constant: C.padding[1]/2)
         ])
+        addButtonConstraints()
+    }
+    
+    func addButtonConstraints() {
         doBetButton.constrain([
             doBetButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -C.padding[4]),
             doBetButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
@@ -105,8 +118,8 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
         super.setupStyle()
         
         amountLabel.textColor = .primaryText
-        let minBet = Int(W.BetAmount.min)
-        self.amount = String.init( String(minBet))
+        let nMinBet = Int(minBet)
+        self.amount = String.init( String(nMinBet))
         amountLabel.delegate = self
         amountLabel.returnKeyType = UIReturnKeyType.done
         amountLabel.keyboardType = UIKeyboardType.decimalPad
@@ -119,9 +132,9 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
         self.reward = S.EventDetails.potentialReward
         
         //setup slider
-        self.betSlider.minimumValue = W.BetAmount.min;
+        self.betSlider.minimumValue = minBet;
         let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
-        self.betSlider.maximumValue = min(W.BetAmount.max, Float(balanceAmount) )
+        self.betSlider.maximumValue = min(maxBet, Float(balanceAmount) )
         self.betSlider.value = self.betSlider.minimumValue;
         self.betSlider.isContinuous = true
         betSlider.addTarget(self, action: #selector(self.onSliderChange(sender:)), for: .valueChanged)
@@ -177,12 +190,12 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     
     func adjustSlider() {
         let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
-        let minBet = Int(W.BetAmount.min)
-        let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
-        let nAmount = Int(amount) ?? minBet
+        let nMinBet = Int(minBet)
+        let nMaxBet = min(maxBet, Float(balanceAmount) )
+        let nAmount = Int(amount) ?? nMinBet
 
-        if (nAmount <= minBet)  { amount = String(minBet) }
-        if (Float(nAmount) > maxBet)  { amount = String(Int(maxBet)) }
+        if (nAmount <= nMinBet)  { amount = String(nMinBet) }
+        if (Float(nAmount) > nMaxBet)  { amount = String(Int(nMaxBet)) }
         betSlider.setValue(Float(nAmount), animated: true)
     }
     
@@ -193,14 +206,14 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     
     func addDoneButtonOnKeyboard()
     {
-        var doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
         doneToolbar.barStyle = UIBarStyle.blackTranslucent
 
-        var flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        var done: UIBarButtonItem = UIBarButtonItem(title: S.RecoverWallet.done, style: UIBarButtonItemStyle.done, target: self, action: #selector(self.doneButtonAction))
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: S.RecoverWallet.done, style: UIBarButtonItemStyle.done, target: self, action: #selector(self.doneButtonAction))
         done.tintColor = .white
 
-        var items = NSMutableArray()
+        let items = NSMutableArray()
         items.add(flexSpace)
         items.add(done)
 
@@ -264,17 +277,33 @@ class EventSliderCell: EventSliderCellBase {
 
     override func addConstraints() {
         super.addConstraints()
-        doAddLegButton.constrain([
-            doAddLegButton.leadingAnchor.constraint(equalTo: doCancelButton.trailingAnchor, constant: C.padding[3]),
-            doAddLegButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
-            doAddLegButton.widthAnchor.constraint(equalToConstant: 44.0),
-            doAddLegButton.heightAnchor.constraint(equalToConstant: 44.0)
-        ])
         
         addLegTitleLabel.constrain([
             addLegTitleLabel.leadingAnchor.constraint(equalTo: doAddLegButton.trailingAnchor, constant: C.padding[1]),
             addLegTitleLabel.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[2])
         ])
+    }
+    
+    override func addButtonConstraints() {
+        doBetButton.constrain([
+            doBetButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -C.padding[8]),
+            doBetButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
+            doBetButton.widthAnchor.constraint(equalToConstant: 44.0),
+            doBetButton.heightAnchor.constraint(equalToConstant: 44.0)
+        ])
+        doCancelButton.constrain([
+            doCancelButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            doCancelButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
+            doCancelButton.widthAnchor.constraint(equalToConstant: 40.0),
+            doCancelButton.heightAnchor.constraint(equalToConstant: 40.0)
+        ])
+        doAddLegButton.constrain([
+            doAddLegButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: C.padding[8]),
+            doAddLegButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
+            doAddLegButton.widthAnchor.constraint(equalToConstant: 44.0),
+            doAddLegButton.heightAnchor.constraint(equalToConstant: 44.0)
+        ])
+        
     }
 
     override func setupStyle() {

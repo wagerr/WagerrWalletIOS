@@ -145,6 +145,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
         parlayOpenButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
         parlayOpenButton.heightAnchor.constraint(equalToConstant: 48.0).isActive = true
         parlayOpenButton.widthAnchor.constraint(equalToConstant: 48.0).isActive = true
+        parlayOpenButton.isHidden = (parlayBet?.legCount == 0) ? true : false
     }
 
     private func addSubscriptions() {

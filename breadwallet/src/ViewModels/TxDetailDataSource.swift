@@ -78,6 +78,9 @@ class TxDetailDataSource: NSObject {
             fields.append(.event)
             fields.append(.eventDetail)
         }
+        if txInfo.betEntity != nil && txInfo.betEntity?.eventID == 0   {
+            fields.append(.eventDetail)
+        }
         
         fields.append(.address)
         

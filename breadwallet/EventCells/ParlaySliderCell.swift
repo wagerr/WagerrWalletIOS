@@ -13,6 +13,13 @@ class ParlaySliderCell: EventSliderCellBase {
     
     var viewModel : ParlayBetEntity!
     
+    internal override var minBet : Float {
+        return W.Parlay.min
+    }
+    
+    internal override var maxBet : Float {
+        return W.Parlay.max
+    }
     // MARK: Views
     private let totalOddLabel = UILabel(font: UIFont.customBody(size: 24.0))
     private let totalOddTitleLabel = UILabel(font: UIFont.customBody(size: 24.0))

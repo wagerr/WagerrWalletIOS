@@ -150,7 +150,12 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
                 dataSource?.updateLegButton(mode: .hidden)
             
             case .NOT_IN_LEG:
-                dataSource?.updateLegButton(mode: .add)
+                if walletManager.parlayBet.legCount == W.Parlay.maxLegs   {
+                    dataSource?.updateLegButton(mode: .hidden)
+                }
+                else    {
+                    dataSource?.updateLegButton(mode: .add)
+                }
         }
     }
     
@@ -217,8 +222,8 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             didChangeLegs()
         }
         else {
-            if walletManager.parlayBet.legCount == W.Blockchain.parlayMaxLegs   {
-                self.showAlert(title: S.Alert.error, message: S.ParlayDetails.maxLegs, buttonLabel: S.Button.ok)
+            if walletManager.parlayBet.legCount == W.Parlay.maxLegs   {
+                self.showAlert(title: S.Alert.error, message: String.init(format: S.ParlayDetails.maxLegs, W.Parlay.maxLegs), buttonLabel: S.Button.ok)
             }
             else    {
                 self.showAlert(title: S.Alert.error, message: S.EventDetails.addLegError, buttonLabel: S.Button.ok)
@@ -464,7 +469,7 @@ enum EventExplorerType {
 extension EventDetailViewController {
 
     static func navigate(to: String, type: EventExplorerType) {
-        let baseURL = "https://explorer.wagerr.com/#"
+        let baseURL = (E.isTestnet) ? "https://explorer2.wagerr.com/#" : "https://explorer.wagerr.com/#"
         var typeURL = ""
         switch type {
             case .address:

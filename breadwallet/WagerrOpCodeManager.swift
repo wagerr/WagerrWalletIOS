@@ -22,6 +22,8 @@ private struct OpcodesPosition {
     static let BTX = 4
     static let NAMESPACE = 5
     static let EVENTID = 5
+    static let PARLAY_NLEGS = 5
+    static let PARLAY_EVENT_ARRAY = 6
 }
 
 private struct OpcodesLength {
@@ -69,6 +71,11 @@ class WagerrOpCodeManager   {
                         };
                         break;
   */
+                    case .BET_PARLAY:
+                        getParlayBet(tx, script, betAmount) { betEntity in
+                            ret = betEntity;
+                        };
+                        break;
                     default:
                         break;
                 }
@@ -239,6 +246,34 @@ class WagerrOpCodeManager   {
         
         betEntity = BetEntity(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetType.PEERLESS, eventID: UInt64(eventID), outcome: outcome, amount: amount );
         completion(betEntity);
+    }
+    
+    func getParlayBet(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>,_ amount: UInt64, completion: @escaping (BetEntity?)->Void )
+    {
+        let betEntity : BetEntity;
+        
+        let txHash : String = tx.txHash.description;
+        let opLength = script[OpcodesPosition.LENGTH] & 0xFF
+        let version = script[OpcodesPosition.VERSION] & 0xFF   // ignore value so far
+        
+        betEntity = BetEntity(blockheight: UInt64(tx.blockHeight), timestamp: tx.timestamp, txHash: txHash, version: UInt32(version), type: BetType.PARLAY, eventID: UInt64(0), outcome: BetOutcome.UNKNOWN, amount: amount )
+        
+        let pos = PositionPointer( Int(OpcodesPosition.PARLAY_EVENT_ARRAY) )
+        let nLegs = script[OpcodesPosition.PARLAY_NLEGS] & 0xFF
+        
+        var eventID : UInt32
+        var outcome : BetOutcome
+        
+        betEntity.parlayBet = ParlayBetEntity()
+        for i in 0...(nLegs-1)   {
+            eventID = getBuffer( script, pos )
+            outcome = BetOutcome(rawValue: Int32(script[pos.pos]))!
+            pos.Up(1)
+            betEntity.parlayBet!.eventID.append(eventID)
+            betEntity.parlayBet!.outcome.append(outcome)
+        }
+        
+        completion(betEntity)
     }
     
     func getUpdateOdds(_ tx : BRTxRef,_ script : UnsafeMutableBufferPointer<UInt8>, callback: @escaping (BetEventDatabaseModel?)->Void )

@@ -92,4 +92,9 @@ struct W    {
         static let txUnconfirmed = 2147483647
         static let parlayMaxLegs = 5
     }
+    struct Parlay   {
+        static let min: Float = 25.0
+        static let max: Float = 3000.0
+        static let maxLegs = 5
+    }
 }

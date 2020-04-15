@@ -133,6 +133,7 @@ extension ParlayDetailDataSource: UITableViewDataSource {
                 betSliderCell.cellDelegate = viewController
                 betSliderCell.viewModel = viewModel
                 betSliderCell.updateTotalOdds()
+                betSliderCell.recalculateReward(amount: -1)
         }
         
         return cell

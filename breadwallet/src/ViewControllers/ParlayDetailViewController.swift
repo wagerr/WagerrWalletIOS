@@ -128,7 +128,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
         
         let cryptoAmount = UInt256(UInt64(amount)*C.satoshis)
         let nLegCount = self.viewModel.legs.count
-        let transaction = walletManager.wallet?.createParlayBetTransaction(forAmount: (UInt64(amount)*C.satoshis), type: BetType.PEERLESS.rawValue, nLegs: Int32(nLegCount),
+        let transaction = walletManager.wallet?.createParlayBetTransaction(forAmount: (UInt64(amount)*C.satoshis), type: BetType.PARLAY.rawValue, nLegs: Int32(nLegCount),
             eventID1: (nLegCount>0) ? Int32(viewModel.legs[0].event.eventID) : 0,
             outcome1: (nLegCount>0) ? viewModel.legs[0].outcome.rawValue : 0,
             eventID2: (nLegCount>1) ? Int32(viewModel.legs[1].event.eventID) : 0,
@@ -244,7 +244,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
     }
     
     private var tableHeight : CGFloat   {
-        return CGFloat(parlay.legCount * 75 + 200)
+        return CGFloat(parlay.legCount * 75 + 240)
     }
     
     private var containerHeight : CGFloat   {
@@ -369,25 +369,12 @@ extension ParlayDetailViewController {
         self.tableView.scrollIndicatorInsets = contentInsets
 
         DispatchQueue.main.async {
-            let sliderIndexPath = IndexPath(row: self.sliderPosToRemove, section: 0)
+            let sliderIndexPath = IndexPath(row: self.parlay.legCount, section: 0)
             if let _ = self.tableView.cellForRow(at: sliderIndexPath) {
                 self.tableView.scrollToRow(at: sliderIndexPath, at: .bottom, animated: true)
             }
         }
-        
-/*
-        var aRect : CGRect = self.view.frame
-        aRect.size.height -= keyboardSize!.height + offset
-        if let activeFrame = self.dataSource?.sliderCell?.amountTextFrame
-        {
-            if (!aRect.contains(activeFrame.origin))
-            {
-                DispatchQueue.main.async {
-                    self.tableView.scrollRectToVisible(activeFrame, animated: true)
-                }
-            }
-        }
- */
+
     }
     
     @objc fileprivate func keyboardWillHide(notification: NSNotification) {
@@ -418,7 +405,7 @@ extension ParlayDetailViewController : ModalDisplayable {
     }
 
     var modalTitle: String {
-        return ""
+        return S.ParlayDetails.title
     }
 }
 

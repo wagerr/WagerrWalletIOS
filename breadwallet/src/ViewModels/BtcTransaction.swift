@@ -54,10 +54,15 @@ struct WgrTransactionInfo {
             }
         }
         else    {
-            wm.db?.loadEvents( ent!.eventID, 0, callback: { events in
-                event = events[0] ?? nil
+            if ent!.eventID == 0    {
                 callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
-            })
+            }
+            else    {
+                wm.db?.loadEvents( ent!.eventID, 0, callback: { events in
+                    event = events[0] ?? nil
+                    callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+                })
+            }
         }
     }
     
@@ -75,7 +80,17 @@ struct WgrTransactionInfo {
     }
     
     var eventDetailString : String {
-        return String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
+        if self.betEvent != nil {
+            return String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
+        }
+        else    {
+            var ret : String = ""
+            guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return "" }
+            for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
+                ret += String.init(format: "#%d - %@ \n", eventID, outcome.description)
+            }
+            return ret
+        }
     }
     
     func getDescriptionStrings() -> ( date: String, description: String) {
@@ -108,13 +123,20 @@ struct WgrTransactionInfo {
             }
         }
         else    {   // regular bet
-            if self.betEvent != nil {
-                txDesc = self.betEvent!.getDescriptionForBet(bet: self.betEntity!)
-                txDate = self.betEvent!.getEventDateForBet(bet: self.betEntity!)
+            let eventID = self.betEntity!.eventID
+            if eventID == 0 {
+                txDesc = String.init(format: "PARLAY (%d)", self.betEntity!.parlayBet!.eventID.count )
+                txDate = "BET"
             }
-            else {
-                txDesc = String.init(format: "Event #%d info not available", self.betEntity!.eventID)
-                txDate = String.init(format: "BET %@ ", self.betEntity!.outcome.description)
+            else    {
+                if self.betEvent != nil {
+                    txDesc = self.betEvent!.getDescriptionForBet(bet: self.betEntity!)
+                    txDate = self.betEvent!.getEventDateForBet(bet: self.betEntity!)
+                }
+                else {
+                    txDesc = String.init(format: "Event #%d info not available", self.betEntity!.eventID)
+                    txDate = String.init(format: "BET %@ ", self.betEntity!.outcome.description)
+                }
             }
         }
         return ( date: txDate, description: txDesc )
@@ -149,7 +171,7 @@ struct BtcTransaction: Transaction {
     }
     
     var isCoinbase : Bool   {
-        return tx.pointee.inCount==1 && tx.pointee.outCount>1 && tx.pointee.outputs[0].swiftAddress.isEmpty
+        return tx.pointee.inCount==1 && tx.pointee.outCount>1 && tx.pointee.outputs[0].swiftAddress.isEmpty &&  tx.pointee.inputs[0].swiftAddress.isEmpty
     }
     
     let amount: UInt256

@@ -47,5 +47,6 @@ class TxLabelCell: TxDetailRowCell {
         super.setupStyle()
         valueLabel.textColor = .darkText
         valueLabel.textAlignment = .right
+        valueLabel.numberOfLines = 0
     }
 }

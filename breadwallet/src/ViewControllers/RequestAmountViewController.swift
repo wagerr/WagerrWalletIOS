@@ -123,7 +123,7 @@ class RequestAmountViewController : UIViewController {
         address.addGestureRecognizer(gr)
         address.isUserInteractionEnabled = true
         share.addTarget(self, action: #selector(RequestAmountViewController.shareTapped), for: .touchUpInside)
-        amountView.didUpdateAmount = { [weak self] amount in
+        amountView.didUpdateAmount = { [weak self] amount, selectedCurrency in
             self?.amount = amount
         }
     }

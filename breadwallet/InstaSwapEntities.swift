@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 struct ReportAllowedPairsData : Codable {
+    var error : String?
     var apiInfo : String
     var response : [ReportAllowedPairsResponse]
 }
@@ -27,6 +28,90 @@ struct TickersData : Codable {
     var response : TickersResponse?
 }
 
+enum TickersResponse : Codable {
+    case string(String)
+    case innerItem(TickersResponseObject)
+
+    var objectValue: TickersResponseObject? {
+        switch self {
+        case .innerItem(let ii):
+            return ii
+        default:
+            return nil
+        }
+    }
+
+    var stringValue: String? {
+        switch self {
+        case .string(let s):
+            return s
+        default:
+            return nil
+        }
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(String.self) {
+            self = .string(x)
+            return
+        }
+        if let x = try? container.decode(TickersResponseObject.self) {
+            self = .innerItem(x)
+            return
+        }
+        throw DecodingError.typeMismatch(TickersResponse.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for TickersResponse"))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .string(let x):
+            try container.encode(x)
+        case .innerItem(let x):
+            try container.encode(x)
+        }
+    }
+}
+
+struct TickersResponseObject : Codable {
+    var min : Double
+    var isAllowed : Bool?
+    var getAmount : String
+    var maxDigitsAfterDecimal : String?
+    var TransactionSumFee : String
+    
+    init(min: Double, isAllowed: Bool? = nil, getAmount: String, maxDigitsAfterDecimal : String? = nil, TransactionSumFee : String) {
+        self.min = min
+        self.isAllowed = isAllowed
+        self.getAmount = getAmount
+        self.maxDigitsAfterDecimal = maxDigitsAfterDecimal
+        self.TransactionSumFee = TransactionSumFee
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let value = try? container.decode(String.self, forKey: .min) {
+            min = Double(value)!
+        } else {
+            min = try container.decode(Double.self, forKey: .min)
+        }
+        isAllowed = try? container.decode(Bool.self, forKey: .isAllowed)
+        getAmount = try container.decode(String.self, forKey: .getAmount)
+        maxDigitsAfterDecimal = try? container.decode(String.self, forKey: .maxDigitsAfterDecimal)
+        if let value = try? container.decode(Double.self, forKey: .TransactionSumFee) {
+            TransactionSumFee = String(value)
+        } else {
+            TransactionSumFee = try container.decode(String.self, forKey: .TransactionSumFee)
+        }
+    }
+}
+
+enum AllowedPairsResult {
+    case success([String])
+    case error(String)
+}
+
 enum TickersResult {
     case success(TickersData)
     case error(String)
@@ -42,20 +127,59 @@ enum SwapHistoryResult {
     case error(String)
 }
 
-struct TickersResponse : Codable {
-    var min : Double
-    var getAmount : String
-    var maxDigitsAfterDecimal : String
-    var TransactionSumFee : String
-}
-
 struct SwapData : Codable {
     var error : String?
     var apiInfo : String?
     var response : SwapResponse?
 }
 
-struct SwapResponse : Codable {
+enum SwapResponse : Codable {
+    case string(String)
+    case innerItem(SwapResponseObject)
+
+    var objectValue: SwapResponseObject? {
+        switch self {
+        case .innerItem(let ii):
+            return ii
+        default:
+            return nil
+        }
+    }
+
+    var stringValue: String? {
+        switch self {
+        case .string(let s):
+            return s
+        default:
+            return nil
+        }
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let x = try? container.decode(String.self) {
+            self = .string(x)
+            return
+        }
+        if let x = try? container.decode(SwapResponseObject.self) {
+            self = .innerItem(x)
+            return
+        }
+        throw DecodingError.typeMismatch(SwapResponse.self, DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Wrong type for SwapResponse"))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .string(let x):
+            try container.encode(x)
+        case .innerItem(let x):
+            try container.encode(x)
+        }
+    }
+}
+
+struct SwapResponseObject : Codable {
     var TransactionId : String
     var depositWallet : String
     var receivingAmount : String

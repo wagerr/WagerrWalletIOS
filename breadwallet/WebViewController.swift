@@ -34,6 +34,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     }()
     
     private let theURL : String
+    private let didClose : () -> Void?
     
     private var isExpanded: Bool = false
     
@@ -49,10 +50,10 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     
     // MARK: - Init
     
-    init(theURL: String) {
+    init(theURL: String, didClose : @escaping ()->Void? = {} ) {
         self.theURL = theURL
         self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails)
-        
+        self.didClose = didClose
         super.init(nibName: nil, bundle: nil)
         
         header.closeCallback = { [weak self] in
@@ -151,5 +152,6 @@ class WebViewController: UIViewController, WKNavigationDelegate {
             delegate.reset()
         }
         dismiss(animated: true, completion: nil)
+        didClose()
     }
 }

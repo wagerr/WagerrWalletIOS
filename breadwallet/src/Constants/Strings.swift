@@ -490,7 +490,7 @@ enum S {
         static let receiveWallet = NSLocalizedString("Instaswap.receiveWallet", value: "Receive at", comment: "Receive wallet cell")
         static let enterRefundWallet = NSLocalizedString("Instaswap.enterRefundWallet", value: "Enter BTC Refund address", comment: "Refund wallet cell")
         static let refundWallet = NSLocalizedString("Instaswap.refundWallet", value: "Refund address", comment: "Refund wallet cell")
-        static let amountLabel = NSLocalizedString("Instaswap.amountLabel", value: "Enter BTC amount to swap", comment: "BTC amount  cell")
+        static let amountLabel = NSLocalizedString("Instaswap.amountLabel", value: "Enter %@ amount to swap", comment: "BTC amount  cell")
         static let emptyMessage = NSLocalizedString("Instaswap.emptyMessage", value:"Swap operations will show here once submitted", comment: "Empty swap list message.")
         static let receiveAmount = NSLocalizedString("Instaswap.receiveAmount", value:"Amount to receive", comment: "Empty swap list message.")
         static let youReceive = NSLocalizedString("Instaswap.youReceive", value:"You receive", comment: "You receive.")

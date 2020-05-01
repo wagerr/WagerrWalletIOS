@@ -14,7 +14,7 @@ private let feeHeight: CGFloat = 130.0
 
 class AmountViewController : UIViewController, Trackable {
     
-    private let currency: CurrencyDef
+    internal let currency: CurrencyDef
 
     init(currency: CurrencyDef, isPinPadExpandedAtLaunch: Bool, isRequesting: Bool = false) {
         self.currency = currency
@@ -33,7 +33,7 @@ class AmountViewController : UIViewController, Trackable {
     }
 
     var balanceTextForAmount: ((Amount?, Rate?) -> (NSAttributedString?, NSAttributedString?)?)?
-    var didUpdateAmount: ((Amount?) -> Void)?
+    var didUpdateAmount: ((Amount?, String) -> Void)?
     var didChangeFirstResponder: ((Bool) -> Void)?
 
     var currentOutput: String {
@@ -84,11 +84,11 @@ class AmountViewController : UIViewController, Trackable {
     private let editFee = UIButton(type: .system)
     private let feeSelector: FeeSelector
 
-    private var amount: Amount? {
+    internal var amount: Amount? {
         didSet {
             updateAmountLabel()
             updateBalanceLabel()
-            didUpdateAmount?(amount)
+            didUpdateAmount?(amount, selectedRate!.code)
         }
     }
 
@@ -354,7 +354,7 @@ class AmountViewController : UIViewController, Trackable {
         pinPad.currentOutput = String(String.UnicodeScalarView(currentOutput.unicodeScalars.filter { set.contains($0) }))
     }
 
-    private func updateCurrencyToggleTitle() {
+    internal func updateCurrencyToggleTitle() {
         guard let currencyState = currency.state else { return }
         if let rate = selectedRate {
             self.currencyToggle.title = "\(rate.code) (\(rate.currencySymbol))"

@@ -141,6 +141,38 @@ extension BRAPIClient {
         return
     }
 
+    func InstaswapAllowedPairs( handler: @escaping (AllowedPairsResult) -> Void) {
+        let urlString = instaswapURL + "InstaswapReportAllowedPairs"
+        var ret : [String] = []
+
+        guard let requestUrl = URL(string:urlString) else {
+            return handler(.error("Error connecting to Instaswap"))
+        }
+        let request = URLRequest(url:requestUrl)
+        let task = URLSession.shared.dataTask(with: request) {
+           (data, response, error) in
+           if error == nil,let usableData = data {
+               do {
+                    let decoder = JSONDecoder()
+                    let objData = try decoder.decode(ReportAllowedPairsData.self, from: usableData)
+                    guard objData.error == nil else  { return handler(.error(objData.error!)) }
+                    for r in objData.response   {
+                        if r.receiveCoin == Currencies.btc.code {
+                            ret.append(r.depositCoin)
+                        }
+                    }
+                    handler(.success(ret))
+               }
+               catch let ex{
+                   handler(.error(ex.localizedDescription))
+               }
+           }
+        }
+
+        task.resume()
+        return
+    }
+
     func InstaswapTickers(getCoin: String, giveCoin: String, sendAmount: String, handler: @escaping (TickersResult) -> Void) {
         let urlString = instaswapURL + "InstaswapTickers&getCoin=\(getCoin)&giveCoin=\(giveCoin)&sendAmount=\(sendAmount)"
         var ret : TickersData?

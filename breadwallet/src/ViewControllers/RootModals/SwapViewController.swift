@@ -29,6 +29,13 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         super.init(nibName: nil, bundle: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
+        
+        self.walletManager.apiClient!.InstaswapAllowedPairs(handler: { [weak self] result in
+                guard let `self` = self,
+                case .success(let allowedPairsArray) = result else { return }
+                self.amountView.availableCurrencies = allowedPairsArray
+        })
+
     }
 
     //MARK - Private
@@ -150,22 +157,33 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         amountView.balanceTextForAmount = { [weak self] amount, rate in
             return self?.balanceTextForAmount(nil, rate: nil)
         }
-        amountView.didUpdateAmount = { [weak self] amount in
+        amountView.didUpdateAmount = { [weak self] amount, selectedCurrency in
+            guard amount != nil else    { return }
             self?.amount = amount
-            if amount!.tokenValue > 0.0   {
-                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: "BTC", sendAmount: amount!.tokenInstaswapFormattedValue, handler: { [weak self] result in
+            let value = (selectedCurrency == "BTC") ? amount!.tokenValue : amount!.fiatValue
+            
+            if value > 0.0   {
+                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: selectedCurrency, sendAmount: amount!.InstaswapFormattedValue , handler: { [weak self] result in
                         guard let `self` = self,
                         case .success(let tickersData) = result else { return }
                         DispatchQueue.main.async {
-                            self.currentMin = tickersData.response!.min
-                            self.receiveCell.text = S.Instaswap.youReceive + ": " + tickersData.response!.getAmount + " " + self.currency.code
-                            
-                            if Double(truncating: amount!.tokenValue as NSNumber) < self.currentMin {
-                                self.receiveCell.textColor = .red
-                                self.receiveCell.text! += String.init(format: " (min %.6f BTC)", self.currentMin)
+                            if tickersData.response?.objectValue != nil {
+                                self.currentMin = tickersData.response!.objectValue!.min
+                                self.receiveCell.text = S.Instaswap.youReceive + ": " + tickersData.response!.objectValue!.getAmount + " " + self.currency.code
+                                
+                                if Double(truncating: value as NSNumber) < self.currentMin {
+                                    self.receiveCell.textColor = .red
+                                    self.receiveCell.text! += String.init(format: " (min %.6f %@)", self.currentMin, selectedCurrency)
+                                }
+                                else {
+                                    self.receiveCell.textColor = .grayTextTint
+                                }
+                                self.receiveCell.font = self.receiveCell.font.withSize(18)
                             }
-                            else {
-                                self.receiveCell.textColor = .grayTextTint
+                            else    {   // fiat min warning case
+                                self.receiveCell.textColor = .red
+                                self.receiveCell.text! = tickersData.response!.stringValue!
+                                self.receiveCell.font = self.receiveCell.font.withSize(12)
                             }
                         }
                     })
@@ -239,7 +257,9 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     }
     
     var canEnableSend : Bool    {
-        return isTOSAccepted && (amount?.tokenValue ?? 0.0) > 0.0 && Double(truncating: (amount?.tokenValue ?? 0.0) as NSNumber) >= currentMin
+        guard amount != nil else { return false }
+        let value = (amountView.selectedRate?.code == "BTC") ? amount!.tokenValue : amount!.fiatValue
+        return isTOSAccepted && value > 0.0 && Double(truncating:value as NSNumber) >= currentMin
     }
     
     private func enableSendButton(isEnabled : Bool)  {
@@ -257,7 +277,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         
         enableSendButton(isEnabled: false)
         
-        walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: "BTC", sendAmount: amount.tokenInstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
+        walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: amountView.selectedRate!.code, sendAmount: amount.InstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
             guard let `self` = self,
                 case .success(let swapData) = result, swapData.apiInfo! == "OK" else { return }
                     
@@ -270,13 +290,26 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
                 return
             }
             
-            UIPasteboard.general.string = swapData.response?.depositWallet
-            
-            DispatchQueue.main.async {
-                self.dismiss(animated: true, completion: {
-                    Store.trigger(name: .showStatusBar)
-                    self.onPublishSuccess?()
-                })
+            if swapData.response?.objectValue != nil    {   // crypto swap
+                UIPasteboard.general.string = swapData.response?.objectValue?.depositWallet
+                DispatchQueue.main.async {
+                    self.dismiss(animated: true, completion: {
+                        Store.trigger(name: .showStatusBar)
+                        self.onPublishSuccess?()
+                    })
+                }
+            }
+            else    { // fiat swap request, open KYC webview...
+                DispatchQueue.main.async {
+                    let kycDetails = WebViewController(theURL: (swapData.response?.stringValue)!
+                        , didClose: {
+                            self.dismiss(animated: true, completion: nil) }
+                    )
+                    kycDetails.modalPresentationStyle = .overCurrentContext
+                    //betsmartDetails.transitioningDelegate = transitionDelegate
+                    kycDetails.modalPresentationCapturesStatusBarAppearance = true
+                    self.present(kycDetails, animated: true, completion: nil)
+                }
             }
         })
         

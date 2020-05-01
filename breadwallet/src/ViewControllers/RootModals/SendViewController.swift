@@ -139,7 +139,7 @@ class SendViewController : UIViewController, Subscriber, ModalPresentable, Track
         amountView.balanceTextForAmount = { [weak self] amount, rate in
             return self?.balanceTextForAmount(amount, rate: rate)
         }
-        amountView.didUpdateAmount = { [weak self] amount in
+        amountView.didUpdateAmount = { [weak self] amount, selectedCurrency in
             self?.amount = amount
         }
         amountView.didUpdateFee = strongify(self) { myself, fee in

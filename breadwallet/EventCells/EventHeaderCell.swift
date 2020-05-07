@@ -65,6 +65,8 @@ class EventHeaderCell: EventDetailRowCell {
     override func setupStyle() {
         super.setupStyle()
         headerLabel.textColor = .primaryText
+        headerLabel.lineBreakMode = .byWordWrapping
+        headerLabel.numberOfLines = 2
         errorLabel.textColor = .systemRed
     }
 

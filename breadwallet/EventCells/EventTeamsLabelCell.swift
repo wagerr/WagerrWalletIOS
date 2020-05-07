@@ -68,10 +68,12 @@ class EventTeamsLabelCell: EventDetailRowCell {
         ])
         homeLabel.constrain([
             homeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: C.padding[2]),
+            homeLabel.widthAnchor.constraint(lessThanOrEqualTo: container.widthAnchor, multiplier: 0.5, constant: -C.padding[1]/2),
             homeLabel.topAnchor.constraint(equalTo: homeHeaderLabel.bottomAnchor, constant: C.padding[1]/2)
             ])
         awayLabel.constrain([
             awayLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -C.padding[2]),
+            awayLabel.widthAnchor.constraint(lessThanOrEqualTo: container.widthAnchor, multiplier: 0.5, constant: -C.padding[1]/2),
             awayLabel.topAnchor.constraint(equalTo: awayHeaderLabel.bottomAnchor, constant: C.padding[1]/2)
         ])
         
@@ -96,8 +98,12 @@ class EventTeamsLabelCell: EventDetailRowCell {
         
         homeLabel.textColor = .colorHome
         homeLabel.textAlignment = .left
+        homeLabel.lineBreakMode = .byWordWrapping
+        homeLabel.numberOfLines = 2
         awayLabel.textColor = .colorAway
         awayLabel.textAlignment = .right
+        awayLabel.lineBreakMode = .byWordWrapping
+        awayLabel.numberOfLines = 2
         
         betsmartHome.setBackgroundImage(#imageLiteral(resourceName: "betsmartWidget"), for: .normal)
          betsmartHome.frame = CGRect(x: 6.0, y: 6.0, width: 32.0, height: 32.0) // for iOS 10

@@ -24,6 +24,7 @@ class SwapAmountViewController : AmountViewController {
     }
     
     override internal func toggleCurrency() {
+        guard let selrate = selectedRate else { return }
         var index = (availableCurrencies.index(of: selectedRate!.code) ?? 0) + 1
         if index == availableCurrencies.count {
             index = 0

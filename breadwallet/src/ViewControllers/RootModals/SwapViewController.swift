@@ -33,7 +33,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         self.walletManager.apiClient!.InstaswapAllowedPairs(handler: { [weak self] result in
                 guard let `self` = self,
                 case .success(let allowedPairsArray) = result else { return }
-                self.amountView.availableCurrencies = allowedPairsArray
+            // temporarily disable fiat pairs
+                self.amountView.availableCurrencies = [ "BTC" ] // allowedPairsArray
         })
 
     }

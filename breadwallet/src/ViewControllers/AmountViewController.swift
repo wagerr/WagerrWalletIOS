@@ -88,7 +88,7 @@ class AmountViewController : UIViewController, Trackable {
         didSet {
             updateAmountLabel()
             updateBalanceLabel()
-            didUpdateAmount?(amount, selectedRate!.code)
+            didUpdateAmount?(amount, (selectedRate != nil) ? selectedRate!.code : "WGR" )
         }
     }
 

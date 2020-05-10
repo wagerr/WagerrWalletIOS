@@ -630,6 +630,7 @@ class CoreDatabase {
     // Wagerr specific
     func saveBetMapping(_ ent: BetMapping) {
         queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
             var sql0: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "select ZTXHASH from WGR_MAPPING where ZTXHASH = '\(ent.txHash)'", -1, &sql0, nil)
             defer { sqlite3_finalize(sql0) }
@@ -659,6 +660,7 @@ class CoreDatabase {
             
             guard sqlite3_step(sql2) == SQLITE_DONE else {
                 print("SQLITE error saveBetMapping: " + String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 
@@ -667,6 +669,7 @@ class CoreDatabase {
 
             guard sqlite3_errcode(self.db) == SQLITE_OK else {
                 print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 
@@ -677,6 +680,7 @@ class CoreDatabase {
     
     func deleteBetMapping(_ txHash: String ) {
         queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
             var sql: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "delete from WGR_MAPPING where ZTXHASH = ?", -1, &sql, nil)
             defer { sqlite3_finalize(sql) }
@@ -684,11 +688,60 @@ class CoreDatabase {
 
             guard sqlite3_step(sql) == SQLITE_DONE else {
                 print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
         }
     }
     
+    func fixPKCorruptions() {
+       // for some reason mappings PK can be corrupted, fix them all for WGR tables
+        fixPKTable(tableName: "WGR_EVENT", entID: self.eventEnt)
+        fixPKTable(tableName: "WGR_MAPPING", entID: self.mappingEnt)
+        fixPKTable(tableName: "WGR_RESULT", entID: self.resultEnt)
+    }
+    
+    func fixPKTable( tableName: String, entID: Int32 ) {
+        queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
+            var sql0: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select MAX(Z_PK) as mpk from \(tableName)", -1, &sql0, nil)
+            defer { sqlite3_finalize(sql0) }
+
+            guard sqlite3_step(sql0) == SQLITE_ROW else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+            let max_pk = sqlite3_column_int(sql0, 0)
+            
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(entID)", -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            guard sqlite3_step(sql) == SQLITE_ROW else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+            let pk = sqlite3_column_int(sql, 0)
+            if max_pk > pk  {
+                sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(max_pk) " +
+                    "where Z_ENT = \(entID) and Z_MAX = \(pk)", nil, nil, nil)
+
+                guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                    print(String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                    return
+                }
+            }
+            
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+            self.setDBFileAttributes()
+        }
+    }
+
     func cleanChainBugs() {
        // fake team mappings for ID 187.
         deleteBetMapping("cc89779e8e57d49e5e6d3e16ad57e648b19d86fb8f4714bc7df5abd3f92daa1d")
@@ -699,6 +752,7 @@ class CoreDatabase {
 
     func saveBetEvent(_ ent: BetEventDatabaseModel) {
         queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
             var sql0: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "select ZEVENT_ID from WGR_EVENT where ZEVENT_ID = \(ent.eventID)", -1, &sql0, nil)
             defer { sqlite3_finalize(sql0) }
@@ -711,6 +765,7 @@ class CoreDatabase {
                 
                 guard sqlite3_step(sql2) == SQLITE_DONE else {
                     print("SQLITE error saveBetEvent (update): " + String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
                     return
                 }
             }
@@ -734,6 +789,7 @@ class CoreDatabase {
                 
                 guard sqlite3_step(sql2) == SQLITE_DONE else {
                     print("SQLITE error saveBetEvent (insert): " + String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
                     return
                 }
 
@@ -742,6 +798,7 @@ class CoreDatabase {
 
                 guard sqlite3_errcode(self.db) == SQLITE_OK else {
                     print(String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
                     return
                 }
             }
@@ -753,10 +810,12 @@ class CoreDatabase {
 
     func updateOdds(_ ent: BetEventDatabaseModel) {
         queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
             sqlite3_exec(self.db, "update or rollback WGR_EVENT set ZHOME_ODDS = \(ent.homeOdds), ZAWAY_ODDS = \(ent.awayOdds), ZDRAW_ODDS = \(ent.drawOdds) where ZEVENT_ID = \(ent.eventID)", nil, nil, nil)
 
             guard sqlite3_errcode(self.db) == SQLITE_OK else {
                 print("SQLITE error updateOdds: " + String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 
@@ -767,10 +826,12 @@ class CoreDatabase {
 
     func updateSpreads(_ ent: BetEventDatabaseModel) {
         queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
             sqlite3_exec(self.db, "update or rollback WGR_EVENT set ZSPREAD_POINTS = \(ent.spreadPoints), ZSPREAD_HOME_ODDS = \(ent.spreadHomeOdds), ZSPREAD_AWAY_ODDS = \(ent.spreadAwayOdds) where ZEVENT_ID = \(ent.eventID)", nil, nil, nil)
 
             guard sqlite3_errcode(self.db) == SQLITE_OK else {
                 print("SQLITE error updateSpreads: " + String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 
@@ -781,10 +842,12 @@ class CoreDatabase {
     
     func updateTotals(_ ent: BetEventDatabaseModel) {
         queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
             sqlite3_exec(self.db, "update or rollback WGR_EVENT set ZTOTAL_POINTS = \(ent.totalPoints), ZTOTAL_OVER_ODDS = \(ent.overOdds), ZTOTAL_UNDER_ODDS = \(ent.underOdds) where ZEVENT_ID = \(ent.eventID)", nil, nil, nil)
             
             guard sqlite3_errcode(self.db) == SQLITE_OK else {
                 print("SQLITE error updateTotals: " + String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 
@@ -795,6 +858,7 @@ class CoreDatabase {
     
     func saveBetResult(_ ent: BetResult) {
         queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
             var sql0: OpaquePointer? = nil
             sqlite3_prepare_v2(self.db, "select ZTXHASH from WGR_RESULT where ZTXHASH = '\(ent.txHash)'", -1, &sql0, nil)
             defer { sqlite3_finalize(sql0) }
@@ -822,6 +886,7 @@ class CoreDatabase {
             
             guard sqlite3_step(sql2) == SQLITE_DONE else {
                 print("SQLITE error saveResult: " + String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 
@@ -830,6 +895,7 @@ class CoreDatabase {
 
             guard sqlite3_errcode(self.db) == SQLITE_OK else {
                 print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 
@@ -847,7 +913,6 @@ class CoreDatabase {
             
             guard sqlite3_step(sql) == SQLITE_ROW else {
                 print(String(cString: sqlite3_errmsg(self.db)))
-                sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
 

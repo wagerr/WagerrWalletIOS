@@ -322,6 +322,7 @@ extension BTCWalletManager : BRWalletListener {
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let myself = self else { return }
             myself.db?.cleanChainBugs()
+            myself.db?.fixPKCorruptions()
             myself.db?.loadEvents(0, Date(timeIntervalSinceNow: 12 * 60.0).timeIntervalSinceReferenceDate, callback: { events in
                     Store.perform(action: WalletChange(myself.currency).setEvents(events as! [BetEventViewModel]))
             })

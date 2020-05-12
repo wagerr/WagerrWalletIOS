@@ -34,7 +34,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
                 guard let `self` = self,
                 case .success(let allowedPairsArray) = result else { return }
             // temporarily disable fiat pairs
-                self.amountView.availableCurrencies = [ "BTC" ] // allowedPairsArray
+                self.amountView.availableCurrencies = allowedPairsArray // [ "BTC" ]
         })
 
     }

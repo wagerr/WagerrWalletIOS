@@ -199,9 +199,8 @@ enum SwapTransactionState : String, Codable{
 }
 
 struct SwapStateResponse : Codable {
-    var moonpayProfit : String?
-    var ourTransactionKeyId : String
-    var externalTransactionId : String?
+    var destinationTagPhrase : String?
+    var transactionNotice : String?
     var btcGetVal : String?
     var isFiatTransaction : String?
     var fiatResponse : String?
@@ -212,8 +211,7 @@ struct SwapStateResponse : Codable {
     var receivingAmount : String
     var refundWallet : String
     var receiveWallet : String
-    var depositWallet : String
-    var memo_tag : String
+    var depositWallet : String?
     var transactionState : SwapTransactionState
     var timestamp : String
     

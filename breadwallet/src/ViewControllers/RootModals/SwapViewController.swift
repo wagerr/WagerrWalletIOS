@@ -25,7 +25,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         self.walletManager = wm
         amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false)
         refundWalletCell = AddressCell(currency: currency, noScan: true)
-
+        refundWalletCellConstrainVisible = []
+        refundWalletCellConstrainHidden = []
         super.init(nibName: nil, bundle: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: .UIKeyboardWillHide, object: nil)
@@ -64,7 +65,10 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     private var amount: Amount?
     private var isTOSAccepted = false
     private var currentMin : Double = 0.0
-
+    
+    private var refundWalletCellConstrainVisible : [NSLayoutConstraint]
+    private var refundWalletCellConstrainHidden : [NSLayoutConstraint]
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         view.backgroundColor = .whiteBackground
@@ -108,11 +112,19 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         //receiveCell.accessoryView.constrain([
         //        receiveCell.accessoryView.constraint(.width, constant: 0.0) ])
 
-        refundWalletCell.constrain([
+        refundWalletCellConstrainVisible = [
             refundWalletCell.widthAnchor.constraint(equalTo: amountView.view.widthAnchor),
             refundWalletCell.topAnchor.constraint(equalTo: receiveCell.bottomAnchor),
             refundWalletCell.leadingAnchor.constraint(equalTo: receiveCell.leadingAnchor, constant: -C.padding[2]),
-            refundWalletCell.heightAnchor.constraint(equalTo: addressCell.heightAnchor, constant: C.padding[2]) ])
+            refundWalletCell.heightAnchor.constraint(equalTo: addressCell.heightAnchor, constant: C.padding[2]) ]
+        
+        refundWalletCellConstrainHidden = [
+            refundWalletCell.widthAnchor.constraint(equalTo: amountView.view.widthAnchor),
+            refundWalletCell.topAnchor.constraint(equalTo: receiveCell.bottomAnchor),
+            refundWalletCell.leadingAnchor.constraint(equalTo: receiveCell.leadingAnchor, constant: -C.padding[2]),
+            refundWalletCell.heightAnchor.constraint(lessThanOrEqualToConstant: 0.0) ]
+        
+        refundWalletCell.constrain(refundWalletCellConstrainVisible)
 
         tosCell.constrain([
             tosCell.widthAnchor.constraint(equalTo: amountView.view.widthAnchor),
@@ -159,9 +171,13 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
             return self?.balanceTextForAmount(nil, rate: nil)
         }
         amountView.didUpdateAmount = { [weak self] amount, selectedCurrency in
+            let isCrypto = (selectedCurrency == "BTC")
+            self?.refundWalletCell.isHidden = !isCrypto
+            self?.refundWalletCell.constrain(((isCrypto) ? self?.refundWalletCellConstrainVisible : self?.refundWalletCellConstrainHidden)!)
+
             guard amount != nil else    { return }
             self?.amount = amount
-            let value = (selectedCurrency == "BTC") ? amount!.tokenValue : amount!.fiatValue
+            let value = (isCrypto) ? amount!.tokenValue : amount!.fiatValue
             
             if value > 0.0   {
                 self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: selectedCurrency, sendAmount: amount!.InstaswapFormattedValue , handler: { [weak self] result in
@@ -243,6 +259,11 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     private func validateSendForm() -> Bool {
         refundWalletCell.textField.resignFirstResponder()
         let validateAddress = "bitcoin:" + (refundWalletCell.address ?? "")
+        let isCrypto = (amountView.selectedRate?.code == "BTC")
+        
+        if !isCrypto    {   // no need to validate address
+            return true
+        }
         
         guard let address = refundWalletCell.address, address.count > 0, validateAddress.isValidBitcoinAddress() else {
             showAlert(title: S.Alert.error, message: S.Instaswap.noAddress, buttonLabel: S.Button.ok)
@@ -259,7 +280,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     
     var canEnableSend : Bool    {
         guard amount != nil else { return false }
-        let value = (amountView.selectedRate?.code == "BTC") ? amount!.tokenValue : amount!.fiatValue
+        let isCrypto = (amountView.selectedRate?.code == "BTC")
+        let value = (isCrypto) ? amount!.tokenValue : amount!.fiatValue
         return isTOSAccepted && value > 0.0 && Double(truncating:value as NSNumber) >= currentMin
     }
     
@@ -273,8 +295,9 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         var message = ""
         
         guard validateSendForm(),
-            let amount = amount,
-            let refundAddress = refundWalletCell.address else { return }
+            let amount = amount     else { return }
+        
+        let refundAddress = refundWalletCell.address ?? ""
         
         enableSendButton(isEnabled: false)
         

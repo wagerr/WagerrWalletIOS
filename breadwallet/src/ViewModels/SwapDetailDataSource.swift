@@ -108,7 +108,7 @@ extension SwapDetailDataSource: UITableViewDataSource {
             receiveWalletCell.set(address: viewModel.response.receiveWallet)
         case .depositWallet:
             let depositWalletCell = cell as! TxAddressCell
-            depositWalletCell.set(address: viewModel.response.depositWallet)
+            depositWalletCell.set(address: viewModel.response.depositWallet ?? "")
         case .transactionId:
             let transactionCell = cell as! TxAddressCell
             transactionCell.set(address: viewModel.response.transactionId)

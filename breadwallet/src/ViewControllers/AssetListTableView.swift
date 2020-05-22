@@ -121,7 +121,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .events:
             return 1
         case .buy:
-            return 1
+            return (E.isTestnet) ? 0 : 1
         case .menu:
             return Menu.allItems.count
         }

@@ -37,6 +37,8 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private let footer = UIView()
     private let separator = UIView()
     private let tableView = UITableView()
+    private let parlayOpenButton = UIButton(type: .custom)
+    private let parlayBet: ParlayBetEntity?
     
     private var sliderPosToRemove : Int = 0
     private var containerHeightConstraint: NSLayoutConstraint!
@@ -79,6 +81,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         self.walletManager = wm
         self.sender = sender
         self.didChangeLegs = didChangeLegs
+        self.parlayBet = wm.parlayBet
         //self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
         
         super.init(nibName: nil, bundle: nil)
@@ -219,7 +222,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         let leg = ParlayLegEntity.init(event: viewModel, outcome: choice.getOutcome(), odd: UInt32(0))
         leg.updateOdd()
         if walletManager.parlayBet.add(leg: leg)    {
-            didChangeLegs()
+            didChangeLegsBetSlip()
         }
         else {
             if walletManager.parlayBet.legCount == W.Parlay.maxLegs   {
@@ -233,7 +236,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     func didTapRemoveLeg(choice: EventBetChoice)    {
         walletManager.parlayBet.removeByEventID(eventID: viewModel.eventID)
-        didChangeLegs()
+        didChangeLegsBetSlip()
     }
     
     // MARK: other tap events
@@ -299,6 +302,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         view.addSubview(tableView)
         view.addSubview(footer)
         view.addSubview(separator)
+        view.addSubview(parlayOpenButton)
     }
     
     private func addConstraints() {
@@ -328,6 +332,13 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             separator.topAnchor.constraint(equalTo: footer.topAnchor, constant: 1.0),
             separator.trailingAnchor.constraint(equalTo: footer.trailingAnchor),
             separator.heightAnchor.constraint(equalToConstant: 0.5) ])
+        
+        parlayOpenButton.translatesAutoresizingMaskIntoConstraints = false
+        parlayOpenButton.trailingAnchor.constraint(equalTo: view.trailingAnchor , constant: -10).isActive = true
+        parlayOpenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        parlayOpenButton.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
+        parlayOpenButton.widthAnchor.constraint(equalToConstant: 44.0).isActive = true
+        parlayOpenButton.isHidden = (parlayBet?.legCount == 0) ? true : false
     }
     
     private func setupActions() {
@@ -357,7 +368,33 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         tableView.dataSource = dataSource
         tableView.reloadData()
         
-        //header.setTitle(viewModel.title)
+        parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        parlayOpenButton.titleLabel!.font = UIFont.customBold(size: 22.0)
+        parlayOpenButton.frame.size = CGSize(width: 44, height: 44)
+        parlayOpenButton.backgroundColor = .systemOrange
+        parlayOpenButton.clipsToBounds = true
+        parlayOpenButton.layer.cornerRadius = 24
+        parlayOpenButton.layer.borderWidth = 0.0
+        
+        let tapActionOpenParlay = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedOpenParlay(tapGestureRecognizer:)))
+        parlayOpenButton.isUserInteractionEnabled = true
+        parlayOpenButton.addGestureRecognizer(tapActionOpenParlay)
+    }
+        
+    @objc func actionTappedOpenParlay(tapGestureRecognizer: UITapGestureRecognizer) {
+        Store.perform(action: RootModalActions.Present(modal: .sendparlay(parlay: (walletManager as! BTCWalletManager).parlayBet, didChangeLegs: didChangeLegsBetSlip) ))
+    }
+    
+    private func didChangeLegsBetSlip()    {
+        if parlayBet?.legCount == 0 {
+            parlayOpenButton.isHidden = true
+        }
+        else    {
+            parlayOpenButton.isHidden = false
+            parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        }
+        // bubble up
+        didChangeLegs()
     }
     
     private func reload() {

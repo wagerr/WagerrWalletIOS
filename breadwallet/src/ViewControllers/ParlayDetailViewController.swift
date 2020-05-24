@@ -74,7 +74,6 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
         self.sender = sender
         self.didChangeLegs = didChangeLegs
         self.header = ModalHeaderView(title: S.ParlayDetails.title, style: .transaction, faqInfo: ArticleIds.betSlip, currency: Currencies.btc)
-        
         super.init(nibName: nil, bundle: nil)
         /*
         header.closeCallback = { [weak self] in
@@ -279,6 +278,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
             separator.topAnchor.constraint(equalTo: footer.topAnchor, constant: 1.0),
             separator.trailingAnchor.constraint(equalTo: footer.trailingAnchor),
             separator.heightAnchor.constraint(equalToConstant: 0.5) ])
+    
     }
     
     private func setupActions() {
@@ -310,7 +310,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
         
         //header.setTitle(viewModel.title)
     }
-    
+
     private func reload() {
         //viewModel = walletManager.parlayBet
         self.dataSource = ParlayDetailDataSource(tableView: tableView, viewModel: viewModel, controller: self )

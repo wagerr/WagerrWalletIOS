@@ -50,8 +50,8 @@ class EventHeaderCell: EventDetailRowCell {
         super.addConstraints()
         
         headerLabel.constrain([
-            headerLabel.constraint(.centerX, toView: container),
-            headerLabel.constraint(.trailing, toView: container),
+            headerLabel.constraint(.leading, toView: container),
+            headerLabel.constraint(.trailing, toView: container, constant: -40.0),
             headerLabel.constraint(.top, toView: container),
             headerLabel.constraint(.bottom, toView: container)
             ])
@@ -65,6 +65,8 @@ class EventHeaderCell: EventDetailRowCell {
     override func setupStyle() {
         super.setupStyle()
         headerLabel.textColor = .primaryText
+        headerLabel.numberOfLines = 2
+        headerLabel.lineBreakMode = .byTruncatingTail
         errorLabel.textColor = .systemRed
     }
 

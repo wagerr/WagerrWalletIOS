@@ -100,6 +100,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
                 for leg in self.viewModel.legs  {
                     guard let event = $0[self.viewModel.currency]?.events.first(where: { $0.eventID == leg.event.eventID }) else {
                         self.viewModel.removeByEventID(eventID: leg.event.eventID)
+                        self.didChangeLegs()
                         self.reload()
                         return
                     }
@@ -207,6 +208,8 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
                     Store.trigger(name: .showStatusBar)
                     self.onPublishSuccess?()
                 })
+                self.viewModel.clearLegs()
+                self.didChangeLegs()
                 self.saveEvent("send.success")
             case .creationError(let message):
                 self.showAlert(title: S.Send.createTransactionError, message: message, buttonLabel: S.Button.ok)

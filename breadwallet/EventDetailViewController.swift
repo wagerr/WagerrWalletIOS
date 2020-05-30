@@ -145,6 +145,10 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         }
         
         dataSource?.registerBetChoice(choice: choice)
+        updateLegButton( choice: choice )
+    }
+    
+    func updateLegButton( choice: EventBetChoice )  {
         switch (walletManager.parlayBet.checkBetInParlay(eventID: viewModel.eventID, outcome: choice.getOutcome()))  {
             case .OUTCOME_IN_LEG:
                 dataSource?.updateLegButton(mode: .remove)
@@ -393,6 +397,11 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             parlayOpenButton.isHidden = false
             parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
         }
+        // refresh parlay button
+        if ( dataSource?.currChoice != nil)     {
+            updateLegButton(choice: dataSource!.currChoice! )
+        }
+        
         // bubble up
         didChangeLegs()
     }

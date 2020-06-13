@@ -87,6 +87,21 @@ class TxDetailViewController: UIViewController, Subscriber {
                     self.transaction = tx
                 })
         })
+        
+        walletManager?.apiClient!.ExplorerTxInfo(txHash: transaction.hash, handler: { [weak self] result in
+            guard let `self` = self,
+                case .success(let explorerData) = result else { return }
+            DispatchQueue.main.async {
+                for vout in explorerData.vout!   {
+                    if vout.address!.starts(with: "OP_RETURN") {
+                            self.transactionInfo.explorerInfo = vout
+                            break
+                    }
+                }
+                self.reload()
+            }
+        })
+        
     }
     
     private func setup() {

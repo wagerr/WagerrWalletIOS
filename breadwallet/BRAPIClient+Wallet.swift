@@ -140,7 +140,39 @@ extension BRAPIClient {
         handler(.success(ret))
         return
     }
+    
+    // Explorer API
+    func ExplorerTxInfo(txHash: String, handler: @escaping (ExplorerTxResult) -> Void) {
+        let explorerURL = (E.isTestnet) ? "https://explorer2.wagerr.com" : "https://explorer.wagerr.com"
+        let urlString = explorerURL + "/api/tx/" + txHash
+        var ret : ExplorerTxData?
 
+        guard let requestUrl = URL(string:urlString) else {
+            return handler(.error("Error connecting to explorer"))
+        }
+        let request = URLRequest(url:requestUrl)
+        let task = URLSession.shared.dataTask(with: request) {
+           (data, response, error) in
+           if error == nil,let usableData = data {
+               do {
+                    let decoder = JSONDecoder()
+                    let ret = try decoder.decode(ExplorerTxData.self, from: usableData)
+                    handler(.success(ret))
+               }
+               catch let ex{
+                let de = ex as? DecodingError
+                   handler(.error(ex.localizedDescription))
+               }
+           }
+        }
+
+        task.resume()
+        return
+    }
+    
+    // End Explorer API
+
+    // Instaswap API
     func InstaswapTickers(getCoin: String, giveCoin: String, sendAmount: String, handler: @escaping (TickersResult) -> Void) {
         let urlString = instaswapURL + "InstaswapTickers&getCoin=\(getCoin)&giveCoin=\(giveCoin)&sendAmount=\(sendAmount)"
         var ret : TickersData?
@@ -222,6 +254,7 @@ extension BRAPIClient {
         task.resume()
         return
     }
+    // End Instaswap API
     
     /// Fetches all token exchange rates in BTC from CoinMarketCap
     func tokenExchangeRates(_ handler: @escaping (RatesResult) -> Void) {

@@ -16,6 +16,7 @@ struct WgrTransactionInfo {
     var betResult : BetResult?
     var betEvent : BetEventViewModel?
     var currentHeight : UInt32
+    var explorerInfo : ExplorerTxVout?
     
     init(tx: BtcTransaction, ent: BetEntity?, res: BetResult?, event: BetEventViewModel?, currHeight: UInt32)  {
         self.transaction = tx
@@ -80,8 +81,18 @@ struct WgrTransactionInfo {
     }
     
     var eventDetailString : String {
+        var ret = ""
         if self.betEvent != nil {
-            return String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
+            ret = String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
+            if explorerInfo != nil {
+                ret += String.init(format: "\nPrice: %.2f", (explorerInfo?.price!)!)
+                if explorerInfo?.total != nil && Double((explorerInfo?.total)!)! > 0.0  {
+                    ret += String.init(format: "  Total: %@", (explorerInfo?.total!)!)
+                }
+                if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! > 0.0  {
+                    ret += String.init(format: "  Spread: %@", (explorerInfo?.spread!)!)
+                }
+            }
         }
         else    {
             var ret : String = ""
@@ -89,8 +100,8 @@ struct WgrTransactionInfo {
             for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
                 ret += String.init(format: "#%d - %@ \n", eventID, outcome.description)
             }
-            return ret
         }
+        return ret
     }
     
     func getDescriptionStrings() -> ( date: String, description: String) {

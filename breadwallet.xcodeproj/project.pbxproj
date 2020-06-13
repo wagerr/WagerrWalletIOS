@@ -37,6 +37,7 @@
 		0670668823AF596200D4238D /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668723AF596200D4238D /* Checkbox.swift */; };
 		0670668A23B0C61500D4238D /* EventHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668923B0C61500D4238D /* EventHeaderCell.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
+		0682C7922494CB5E00E433FA /* WagerrExplorerEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0682C7912494CB5D00E433FA /* WagerrExplorerEntities.swift */; };
 		069B4E8024430E4A009DD5DE /* ParlayDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA3243F1826009C12F5 /* ParlayDetailViewController.swift */; };
 		069B4E8224432158009DD5DE /* WarningRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069B4E8124432158009DD5DE /* WarningRowCell.swift */; };
 		06A3D905239DB5CC00518AD8 /* EventsPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */; };
@@ -732,6 +733,7 @@
 		0670668523AF585100D4238D /* BetSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BetSettingsViewController.swift; path = src/ViewControllers/BetSettingsViewController.swift; sourceTree = "<group>"; };
 		0670668723AF596200D4238D /* Checkbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
 		0670668923B0C61500D4238D /* EventHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventHeaderCell.swift; sourceTree = "<group>"; };
+		0682C7912494CB5D00E433FA /* WagerrExplorerEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WagerrExplorerEntities.swift; sourceTree = "<group>"; };
 		069B4E8124432158009DD5DE /* WarningRowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningRowCell.swift; sourceTree = "<group>"; };
 		06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPickerView.swift; sourceTree = "<group>"; };
 		06C0C6BE20B360BF0047C540 /* x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x11.h; sourceTree = "<group>"; };
@@ -3085,6 +3087,7 @@
 				CEDA9EDB1FDE0C56005E8D1B /* countries.plist */,
 				06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */,
 				06673E8F2377F25200549005 /* WagerrEntities.swift */,
+				0682C7912494CB5D00E433FA /* WagerrExplorerEntities.swift */,
 				06C729C823EAED3F00E55360 /* InstaSwapEntities.swift */,
 			);
 			path = breadwallet;
@@ -4624,6 +4627,7 @@
 				22A9A9581DF61945000F0016 /* BRWebViewController.swift in Sources */,
 				CEC4CF091F0C84AB00E5C82E /* UIViewController+Alerts.swift in Sources */,
 				0635AFA8243F1FB6009C12F5 /* ParlayLegCell.swift in Sources */,
+				0682C7922494CB5E00E433FA /* WagerrExplorerEntities.swift in Sources */,
 				CE27F9591E2C8EA300F7F7F2 /* Amount.swift in Sources */,
 				CE1280F61EEA855C00D27649 /* Date+Additions.swift in Sources */,
 				CED82D4E1E575A5500507A9B /* main.swift in Sources */,

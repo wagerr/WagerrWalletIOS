@@ -77,6 +77,8 @@ struct ExplorerTxVout : Codable {
     let homeTeam : String?
     let awayTeam : String?
     let league : String?
+    let isParlay : Int?
+    let legs : [ExplorerTxLegs]?
 
     enum CodingKeys: String, CodingKey {
 
@@ -94,6 +96,8 @@ struct ExplorerTxVout : Codable {
         case homeTeam = "homeTeam"
         case awayTeam = "awayTeam"
         case league = "league"
+        case isParlay = "isParlay"
+        case legs = "legs"
     }
 
     init(from decoder: Decoder) throws {
@@ -112,6 +116,53 @@ struct ExplorerTxVout : Codable {
         homeTeam = try values.decodeIfPresent(String.self, forKey: .homeTeam)
         awayTeam = try values.decodeIfPresent(String.self, forKey: .awayTeam)
         league = try values.decodeIfPresent(String.self, forKey: .league)
+        isParlay = try values.decodeIfPresent(Int.self, forKey: .isParlay)
+        legs = try values.decodeIfPresent([ExplorerTxLegs].self, forKey: .legs)
+    }
+
+}
+
+struct ExplorerTxLegs : Codable {
+    let price : Double?
+    let eventId : String?
+    let homeTeam : String?
+    let awayTeam : String?
+    let league : String?
+    let market : String?
+    let outcome : Int?
+    let betResult : String?
+    let eventResult : String?
+    let spread : String?
+    let total : String?
+
+    enum CodingKeys: String, CodingKey {
+
+        case price = "price"
+        case eventId = "eventId"
+        case homeTeam = "homeTeam"
+        case awayTeam = "awayTeam"
+        case league = "league"
+        case market = "market"
+        case outcome = "outcome"
+        case betResult = "betResult"
+        case eventResult = "eventResult"
+        case spread = "Spread"
+        case total = "Total"
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        price = try values.decodeIfPresent(Double.self, forKey: .price)
+        eventId = try values.decodeIfPresent(String.self, forKey: .eventId)
+        homeTeam = try values.decodeIfPresent(String.self, forKey: .homeTeam)
+        awayTeam = try values.decodeIfPresent(String.self, forKey: .awayTeam)
+        league = try values.decodeIfPresent(String.self, forKey: .league)
+        market = try values.decodeIfPresent(String.self, forKey: .market)
+        outcome = try values.decodeIfPresent(Int.self, forKey: .outcome)
+        betResult = try values.decodeIfPresent(String.self, forKey: .betResult)
+        eventResult = try values.decodeIfPresent(String.self, forKey: .eventResult)
+        total = try values.decodeIfPresent(String.self, forKey: .total)
+        spread = try values.decodeIfPresent(String.self, forKey: .spread)
     }
 
 }

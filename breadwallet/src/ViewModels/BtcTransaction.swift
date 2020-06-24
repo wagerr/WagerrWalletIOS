@@ -84,6 +84,7 @@ struct WgrTransactionInfo {
         var ret = ""
         if self.betEvent != nil {
             ret = String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
+            
             if explorerInfo != nil {
                 ret += String.init(format: "\nPrice: %.2f", (explorerInfo?.price!)!)
                 if explorerInfo?.total != nil && Double((explorerInfo?.total)!)! > 0.0  {
@@ -95,10 +96,26 @@ struct WgrTransactionInfo {
             }
         }
         else    {
-            var ret : String = ""
-            guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return "" }
-            for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
-                ret += String.init(format: "#%d - %@ \n", eventID, outcome.description)
+            if explorerInfo != nil && explorerInfo?.isParlay == 1  {
+                ret = ""
+                for leg in (explorerInfo?.legs)! {
+                    ret += String.init(format: "%@ - %@", leg.homeTeam!, leg.awayTeam!)
+                    ret += String.init(format: " ( Price: %.2f ", leg.price!)
+                    if leg.total != nil  {
+                        ret += String.init(format: ", Total: %@", leg.total!)
+                    }
+                    if leg.spread != nil  {
+                        ret += String.init(format: ", Spread: %@", (explorerInfo?.spread!)!)
+                    }
+                    ret += " ) \n";
+                }
+            }
+            else    {
+                var ret : String = ""
+                guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return "" }
+                for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
+                    ret += String.init(format: "#%d - %@ \n", eventID, outcome.description)
+                }
             }
         }
         return ret

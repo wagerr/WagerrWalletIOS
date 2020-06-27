@@ -159,7 +159,7 @@ class BetEventDatabaseModel : BetCore {
     
     var txSpreadPoints : String {
         let signed   = Int16(bitPattern: UInt16(spreadPoints))
-        return (spreadPoints==0) ? "N/A" : String(format: "%.1f", Float(signed) / Float(EventMultipliers.SPREAD_MULTIPLIER) )
+        return (spreadPoints==0) ? "N/A" : String(format: "%.1f", abs(Float(signed) / Float(EventMultipliers.SPREAD_MULTIPLIER)) )
     }
     
     var getOddFormatString : String   {

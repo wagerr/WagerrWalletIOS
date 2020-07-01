@@ -84,6 +84,18 @@ class WagerrOpCodeManager   {
         return ret
     }
     
+    func getPayoutOutputsFromCoreTx(_ tx : BRTxRef, wallet : BTCWalletManager ) -> [Int]?      {
+        var ret : [Int]? = []
+        var vOut : Int = 0
+        for output in tx.outputs    {
+            if wallet.isOwnAddress ( output.swiftAddress )   {
+                ret?.append( vOut )
+            }
+            vOut += 1
+        }
+        return ret
+    }
+    
     func decodeBetTransaction(_ tx : BRTxRef, db : CoreDatabase ) -> Bool {
         let isBetTx = false;
         

@@ -75,10 +75,12 @@ class TxDetailDataSource: NSObject {
         fields.append(.timestamp)
         
         if txInfo.betEvent != nil   {
-            fields.append(.event)
+            if txInfo.betEntity?.eventID != 0    {
+                fields.append(.event)
+            }
             fields.append(.eventDetail)
         }
-        if txInfo.betEntity != nil && txInfo.betEntity?.eventID == 0   {
+        else if txInfo.explorerPayoutInfo != nil    {
             fields.append(.eventDetail)
         }
         
@@ -98,6 +100,10 @@ class TxDetailDataSource: NSObject {
     
     func registerCells(forTableView tableView: UITableView) {
         fields.forEach { $0.registerCell(forTableView: tableView) }
+        // register eventDetail cell manually
+        var fields2 : [Field] = []
+        fields2.append(.eventDetail)
+        fields2.forEach { $0.registerCell(forTableView: tableView) }
     }
     
     fileprivate func title(forField field: Field) -> String {

@@ -17,7 +17,7 @@ struct WgrTransactionInfo {
     var betEvent : BetEventViewModel?
     var currentHeight : UInt32
     var explorerInfo : ExplorerTxVout?
-    var explorerPayoutInfo : ExplorerTxPayoutData?
+    var explorerPayoutInfo : [ExplorerTxPayoutData]?
     
     init(tx: BtcTransaction, ent: BetEntity?, res: BetResult?, event: BetEventViewModel?, currHeight: UInt32)  {
         self.transaction = tx
@@ -37,6 +37,9 @@ struct WgrTransactionInfo {
         
         ent = opCodeManager.getEventIdFromCoreTx( (tx.getRawTransactionRef())  )
         if ent == nil {
+            // results in block - 1 rule is no longer enforced (testnet July 2020), show generic "payout" then use API for tx detail
+            callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+             /*
             if tx.isCoinbase    {
                 wm.db?.loadResultAtHeigh(blockHeight: Int(tx.blockHeight-1), callback: { result in
                     res = result
@@ -50,10 +53,13 @@ struct WgrTransactionInfo {
                         callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
                     }
                 })
+                
+                callback( WgrTransactionInfo(tx: tx, ent: ent, res: nil, event: nil, currHeight: currHeight) )
             }
             else    {
                 callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
             }
+             */
         }
         else    {
             if ent!.eventID == 0    {
@@ -113,8 +119,12 @@ struct WgrTransactionInfo {
             }
             else    {
                 if explorerPayoutInfo != nil  {
-                    for leg in (explorerPayoutInfo?.legs)!   {
-                        ret += leg.description + "\n"
+                    for payout in explorerPayoutInfo!    {
+                        ret += String.init(format: "Payout: %.4f \n", payout.payout! )
+                        for leg in (payout.legs)!   {
+                            ret += leg.description + "\n"
+                        }
+                        ret += "\n"
                     }
                 }
                 else {
@@ -144,7 +154,7 @@ struct WgrTransactionInfo {
                     txDate = String.init(format: "PAYOUT Event #%d", self.betEvent!.eventID)
                 }
                 else    {
-                    txDesc = String.init(format: "Result not available at height %@", transaction.blockHeight)
+                    //txDesc = String.init(format: "Result not available at height %@", transaction.blockHeight)
                     txDate = "PAYOUT"
                 }
                 if isInmature {

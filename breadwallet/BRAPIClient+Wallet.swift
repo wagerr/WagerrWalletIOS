@@ -170,6 +170,34 @@ extension BRAPIClient {
         return
     }
     
+    func ExplorerTxPayoutInfo(txHash: String, vout: Int, handler: @escaping (ExplorerTxPayoutResult) -> Void) {
+        let explorerURL = (E.isTestnet) ? "https://explorer2.wagerr.com" : "https://explorer.wagerr.com"
+        let urlString = String.init(format: "%@/api/bet/infobypayout?payoutTx=%@&nOut=%d", explorerURL , txHash, vout )
+        var ret : ExplorerTxPayoutData?
+
+        guard let requestUrl = URL(string:urlString) else {
+            return handler(.error("Error connecting to explorer"))
+        }
+        let request = URLRequest(url:requestUrl)
+        let task = URLSession.shared.dataTask(with: request) {
+           (data, response, error) in
+           if error == nil,let usableData = data {
+               do {
+                    let decoder = JSONDecoder()
+                    let ret = try decoder.decode(ExplorerTxPayoutData.self, from: usableData)
+                    handler(.success(ret))
+               }
+               catch let ex{
+                let de = ex as? DecodingError
+                   handler(.error(ex.localizedDescription))
+               }
+           }
+        }
+
+        task.resume()
+        return
+    }
+    
     // End Explorer API
 
     // Instaswap API

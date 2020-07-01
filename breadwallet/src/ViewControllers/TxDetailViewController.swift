@@ -102,6 +102,17 @@ class TxDetailViewController: UIViewController, Subscriber {
             }
         })
         
+        if transactionInfo.isCoinbase   { // payout
+            walletManager?.apiClient!.ExplorerTxPayoutInfo(txHash: transaction.hash, vout: 0, handler: { [weak self] result in
+                guard let `self` = self,
+                    case .success(let explorerData) = result else { return }
+                DispatchQueue.main.async {
+                    self.transactionInfo.explorerPayoutInfo = explorerData
+                    self.reload()
+                }
+            })
+        }
+        
     }
     
     private func setup() {

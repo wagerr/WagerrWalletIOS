@@ -158,8 +158,12 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txSpreadPoints : String {
-        let signed   = Int16(bitPattern: UInt16(spreadPoints))
-        return (spreadPoints==0) ? "N/A" : String(format: "%.1f", abs(Float(signed) / Float(EventMultipliers.SPREAD_MULTIPLIER)) )
+        return BetEventDatabaseModel.getSpreadTx(spread: spreadPoints)
+    }
+    
+    static func getSpreadTx(spread: UInt32) -> String {
+        let signed   = Int16(bitPattern: UInt16(spread))
+        return (spread==0) ? "N/A" : String(format: "%.1f", abs(Float(signed) / Float(EventMultipliers.SPREAD_MULTIPLIER)) )
     }
     
     var getOddFormatString : String   {
@@ -218,8 +222,13 @@ class BetEventDatabaseModel : BetCore {
         return BetEventDatabaseModel.getOddTx(odd: spreadAwayOdds)
     }
     var txTotalPoints : String {
-        return (totalPoints==0) ? "N/A" : String(format: "%.1f", Float(totalPoints) / Float(EventMultipliers.TOTAL_MULTIPLIER) )
+        return BetEventDatabaseModel.getTotalTx(total: totalPoints)
     }
+    
+    static func getTotalTx(total: UInt32) -> String {
+        return (total==0) ? "N/A" : String(format: "%.1f", Float(total) / Float(EventMultipliers.TOTAL_MULTIPLIER))
+    }
+    
     var txOverOdds : String {
         return BetEventDatabaseModel.getOddTx(odd: overOdds)
     }

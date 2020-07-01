@@ -17,6 +17,7 @@ struct WgrTransactionInfo {
     var betEvent : BetEventViewModel?
     var currentHeight : UInt32
     var explorerInfo : ExplorerTxVout?
+    var explorerPayoutInfo : ExplorerTxPayoutData?
     
     init(tx: BtcTransaction, ent: BetEntity?, res: BetResult?, event: BetEventViewModel?, currHeight: UInt32)  {
         self.transaction = tx
@@ -111,10 +112,16 @@ struct WgrTransactionInfo {
                 }
             }
             else    {
-                var ret : String = ""
-                guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return "" }
-                for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
-                    ret += String.init(format: "#%d - %@ \n", eventID, outcome.description)
+                if explorerPayoutInfo != nil  {
+                    for leg in (explorerPayoutInfo?.legs)!   {
+                        ret += leg.description + "\n"
+                    }
+                }
+                else {
+                    guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return "" }
+                    for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
+                        ret += String.init(format: "#%d - %@ \n", eventID, outcome.description)
+                    }
                 }
             }
         }

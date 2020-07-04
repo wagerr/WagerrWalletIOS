@@ -73,17 +73,7 @@ class TxDetailDataSource: NSObject {
         }
         
         fields.append(.timestamp)
-        
-        if txInfo.betEvent != nil   {
-            if txInfo.betEntity?.eventID != 0    {
-                fields.append(.event)
-            }
-            fields.append(.eventDetail)
-        }
-        else if txInfo.explorerPayoutInfo != nil    {
-            fields.append(.eventDetail)
-        }
-        
+        fields.append(.eventDetail)
         fields.append(.address)
         
         if viewModel.comment != nil      { fields.append(.memo) }

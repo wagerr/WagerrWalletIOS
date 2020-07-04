@@ -68,6 +68,11 @@ struct ExplorerTxVout : Codable {
     let n : Int?
     let value : Double?
     let price : Double?
+    let payout : Double?
+    let payoutTxId : String?
+    let payoutNout : Int?
+    let completed : Bool?
+    let betResultType : String?
     let spread : String?
     let total : String?
     let market : String?
@@ -78,6 +83,8 @@ struct ExplorerTxVout : Codable {
     let awayTeam : String?
     let league : String?
     let isParlay : Int?
+    let homeScore : Int?
+    let awayScore : Int?
     let legs : [ExplorerTxLegs]?
 
     enum CodingKeys: String, CodingKey {
@@ -86,6 +93,11 @@ struct ExplorerTxVout : Codable {
         case address = "address"
         case n = "n"
         case value = "value"
+        case payout = "payout"
+        case payoutTxId = "payoutTxId"
+        case payoutNout = "payoutNout"
+        case completed = "completed"
+        case betResultType = "betResultType"
         case price = "price"
         case total = "Total"
         case spread = "Spread"
@@ -95,6 +107,8 @@ struct ExplorerTxVout : Codable {
         case betValueUSD = "betValueUSD"
         case homeTeam = "homeTeam"
         case awayTeam = "awayTeam"
+        case homeScore = "homeScore"
+        case awayScore = "awayScore"
         case league = "league"
         case isParlay = "isParlay"
         case legs = "legs"
@@ -107,6 +121,11 @@ struct ExplorerTxVout : Codable {
         n = try values.decodeIfPresent(Int.self, forKey: .n)
         value = try values.decodeIfPresent(Double.self, forKey: .value)
         price = try values.decodeIfPresent(Double.self, forKey: .price)
+        payout = try values.decodeIfPresent(Double.self, forKey: .payout)
+        payoutTxId = try values.decodeIfPresent(String.self, forKey: .payoutTxId)
+        payoutNout = try values.decodeIfPresent(Int.self, forKey: .payoutNout)
+        completed = try values.decodeIfPresent(Bool.self, forKey: .completed)
+        betResultType = try values.decodeIfPresent(String.self, forKey: .betResultType)
         total = try values.decodeIfPresent(String.self, forKey: .total)
         spread = try values.decodeIfPresent(String.self, forKey: .spread)
         market = try values.decodeIfPresent(String.self, forKey: .market)
@@ -115,11 +134,31 @@ struct ExplorerTxVout : Codable {
         betValueUSD = try values.decodeIfPresent(Double.self, forKey: .betValueUSD)
         homeTeam = try values.decodeIfPresent(String.self, forKey: .homeTeam)
         awayTeam = try values.decodeIfPresent(String.self, forKey: .awayTeam)
+        homeScore = try values.decodeIfPresent(Int.self, forKey: .homeScore)
+        awayScore = try values.decodeIfPresent(Int.self, forKey: .awayScore)
         league = try values.decodeIfPresent(String.self, forKey: .league)
         isParlay = try values.decodeIfPresent(Int.self, forKey: .isParlay)
         legs = try values.decodeIfPresent([ExplorerTxLegs].self, forKey: .legs)
     }
 
+    var homeScoreTx : String    {
+        return String(format: "%d", UInt32(homeScore!) / EventMultipliers.RESULT_MULTIPLIER )
+    }
+    var awayScoreTx : String    {
+        return String(format: "%d", UInt32(awayScore!) / EventMultipliers.RESULT_MULTIPLIER )
+    }
+    var parlayPrice : UInt32    {
+        guard legs != nil else { return 0 }
+        var ret : Float = 1.0
+        for leg in legs! {
+            ret *= Float(leg.price!)
+        }
+        return UInt32( ret * Float(EventMultipliers.ODDS_MULTIPLIER) )
+    }
+    
+    var parlayPriceTx : String  {
+        return BetEventDatabaseModel.getOddTx(odd: parlayPrice)
+    }
 }
 
 struct ExplorerTxLegs : Codable {
@@ -127,6 +166,8 @@ struct ExplorerTxLegs : Codable {
     let eventId : String?
     let homeTeam : String?
     let awayTeam : String?
+    let homeScore : Int?
+    let awayScore : Int?
     let league : String?
     let market : String?
     let outcome : Int?
@@ -141,6 +182,8 @@ struct ExplorerTxLegs : Codable {
         case eventId = "eventId"
         case homeTeam = "homeTeam"
         case awayTeam = "awayTeam"
+        case homeScore = "homeScore"
+        case awayScore = "awayScore"
         case league = "league"
         case market = "market"
         case outcome = "outcome"
@@ -156,6 +199,8 @@ struct ExplorerTxLegs : Codable {
         eventId = try values.decodeIfPresent(String.self, forKey: .eventId)
         homeTeam = try values.decodeIfPresent(String.self, forKey: .homeTeam)
         awayTeam = try values.decodeIfPresent(String.self, forKey: .awayTeam)
+        homeScore = try values.decodeIfPresent(Int.self, forKey: .homeScore)
+        awayScore = try values.decodeIfPresent(Int.self, forKey: .awayScore)
         league = try values.decodeIfPresent(String.self, forKey: .league)
         market = try values.decodeIfPresent(String.self, forKey: .market)
         outcome = try values.decodeIfPresent(Int.self, forKey: .outcome)
@@ -165,6 +210,16 @@ struct ExplorerTxLegs : Codable {
         spread = try values.decodeIfPresent(String.self, forKey: .spread)
     }
 
+    var betOutcome : BetOutcome? {
+        return BetOutcome(rawValue: Int32(outcome!));
+    }
+    
+    var homeScoreTx : String    {
+        return String(format: "%d", UInt32(homeScore!) / EventMultipliers.RESULT_MULTIPLIER )
+    }
+    var awayScoreTx : String    {
+        return String(format: "%d", UInt32(awayScore!) / EventMultipliers.RESULT_MULTIPLIER )
+    }
 }
 
 enum ExplorerTxPayoutResult {
@@ -218,6 +273,18 @@ struct ExplorerTxPayoutData : Codable {
         payoutTxOut = try values.decodeIfPresent(Int.self, forKey: .payoutTxOut)
     }
 
+    var parlayPrice : UInt32    {
+        guard legs != nil else { return 0 }
+        var ret : Float = 1.0
+        for leg in legs! {
+            ret *= Float(leg.legPrice) / Float(EventMultipliers.ODDS_MULTIPLIER)
+        }
+        return UInt32( ret * Float(EventMultipliers.ODDS_MULTIPLIER) )
+    }
+    
+    var parlayPriceTx : String  {
+        return BetEventDatabaseModel.getOddTx(odd: parlayPrice)
+    }
 }
 
 struct ExplorerTxPayoutLegs : Codable {
@@ -267,6 +334,31 @@ struct ExplorerTxPayoutLegs : Codable {
             ret += " None"
         }
         return ret;
+    }
+    
+    var legPrice : UInt32    {
+        let betOutcome = BetOutcome(rawValue: Int32(outcome!));
+        
+        switch betOutcome {
+        case .MONEY_LINE_HOME_WIN:
+            return (lockedEvent?.homeOdds)!
+        case .MONEY_LINE_AWAY_WIN:
+            return (lockedEvent?.awayOdds)!
+        case .MONEY_LINE_DRAW:
+            return (lockedEvent?.drawOdds)!
+        case .SPREADS_HOME:
+            return (lockedEvent?.spreadHomeOdds)!
+        case .SPREADS_AWAY:
+            return (lockedEvent?.spreadAwayOdds)!
+        case .TOTAL_OVER:
+            return (lockedEvent?.totalOverOdds)!
+        case .TOTAL_UNDER:
+            return (lockedEvent?.totalUnderOdds)!
+        case .UNKNOWN:
+            return 0
+        case .none:
+            return 0
+        }
     }
     
 }

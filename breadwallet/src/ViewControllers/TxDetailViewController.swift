@@ -86,10 +86,13 @@ class TxDetailViewController: UIViewController, Subscriber {
                     self.transactionInfo = txInfo!
                     self.transaction = tx
                     
-                    self.LoadPayoutAPIData()
+                    self.LoadAPIData()
                 })
         })
-        
+        LoadAPIData()
+    }
+    
+    private func LoadAPIData()    {
         walletManager?.apiClient!.ExplorerTxInfo(txHash: transaction.hash, handler: { [weak self] result in
             guard let `self` = self,
                 case .success(let explorerData) = result else { return }
@@ -104,10 +107,6 @@ class TxDetailViewController: UIViewController, Subscriber {
             }
         })
         
-        LoadPayoutAPIData()
-    }
-    
-    private func LoadPayoutAPIData()    {
         if transactionInfo.isCoinbase   { // payout
             // load all payout outputs and call API for each one.
             var payoutInfo : [ExplorerTxPayoutData] = []

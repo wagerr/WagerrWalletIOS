@@ -192,7 +192,7 @@ class BetEventDatabaseModel : BetCore {
         return nf
     }
     
-    private static func getOdd( odd : Float ) -> Float   {
+    public static func getOdd( odd : Float ) -> Float   {
         var ret = (UserDefaults.showNetworkFeesInOdds) ? odd : ((odd-1)*0.94)+1
         ret = (UserDefaults.showAmericanNotationInOdds) ? DecimalToAmerican(odd: ret) : ret
         return ret

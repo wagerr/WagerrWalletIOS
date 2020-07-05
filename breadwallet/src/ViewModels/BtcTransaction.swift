@@ -94,7 +94,7 @@ struct WgrTransactionInfo {
                 ret = ""
                 for leg in (explorerInfo?.legs)! {
                     ret += String.init(format: "%@ - %@", leg.homeTeam!, leg.awayTeam!)
-                    ret += String.init(format: " ( Bet: %@, Price: %.2f ", leg.market!, leg.price!)
+                    ret += String.init(format: " ( Bet: %@, Price: %@ ", leg.market!, BetEventDatabaseModel.getOddTx( odd: UInt32(leg.price! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))
                     if leg.homeScore != nil && leg.awayScore != nil {
                         ret += String.init(format: ", Score: %@ - %@ ", leg.homeScoreTx, leg.awayScoreTx)
                     }
@@ -117,7 +117,7 @@ struct WgrTransactionInfo {
             else    {
                 ret = String.init(format: "%@ - %@", (explorerInfo?.homeTeam)!, (explorerInfo?.awayTeam)!)
 
-                ret += String.init(format: "\nPrice: %.2f", (explorerInfo?.price!)!)
+                ret += String.init(format: "\nPrice: %@", BetEventDatabaseModel.getOddTx( odd: UInt32((explorerInfo?.price!)! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))
                 if explorerInfo?.homeScore != nil && explorerInfo?.awayScore != nil {
                     ret += String.init(format: ", Score: %@ - %@ ", explorerInfo!.homeScoreTx, explorerInfo!.awayScoreTx)
                 }

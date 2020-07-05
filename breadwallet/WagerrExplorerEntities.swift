@@ -321,13 +321,13 @@ struct ExplorerTxPayoutLegs : Codable {
         case .MONEY_LINE_DRAW:
             ret += String.init(format: " (Price: %@)", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.drawOdds!)!))
         case .SPREADS_HOME:
-            ret += String.init(format: " (Price: %@, Spread: %.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadHomeOdds!)!), BetEventDatabaseModel.getSpreadTx(spread: (lockedEvent?.spreadPoints!)!))
+            ret += String.init(format: " (Price: %@, Spread: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadHomeOdds!)!), BetEventDatabaseModel.getSpreadTx(spread: (lockedEvent?.spreadPoints!)!))
         case .SPREADS_AWAY:
-            ret += String.init(format: " (Price: %@, Spread: %.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadAwayOdds!)!), BetEventDatabaseModel.getSpreadTx(spread: (lockedEvent?.spreadPoints!)!))
+            ret += String.init(format: " (Price: %@, Spread: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadAwayOdds!)!), BetEventDatabaseModel.getSpreadTx(spread: (lockedEvent?.spreadPoints!)!))
         case .TOTAL_OVER:
-            ret += String.init(format: " (Price: %@, Total: %.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.totalOverOdds!)!), BetEventDatabaseModel.getTotalTx(total: (lockedEvent?.totalPoints!)!))
+            ret += String.init(format: " (Price: %@, Total: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.totalOverOdds!)!), BetEventDatabaseModel.getTotalTx(total: (lockedEvent?.totalPoints!)!))
         case .TOTAL_UNDER:
-            ret += String.init(format: " (Price: %@, Total: %.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.totalUnderOdds!)!), BetEventDatabaseModel.getTotalTx(total: (lockedEvent?.totalPoints!)!))
+            ret += String.init(format: " (Price: %@, Total: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.totalUnderOdds!)!), BetEventDatabaseModel.getTotalTx(total: (lockedEvent?.totalPoints!)!))
         case .UNKNOWN:
             ret += " Unknown"
         case .none:

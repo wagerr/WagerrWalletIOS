@@ -154,18 +154,23 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
             self?.amount = amount
             if amount!.tokenValue > 0.0   {
                 self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: "BTC", sendAmount: amount!.tokenInstaswapFormattedValue, handler: { [weak self] result in
-                        guard let `self` = self,
-                        case .success(let tickersData) = result else { return }
+                        guard let `self2` = self,
+                        case .success(let tickersData) = result else {
+                            let alert = UIAlertController(title: S.Alert.error, message: S.Instaswap.APIError, preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: S.Button.ok, style: .default, handler: nil))
+                            self!.present(alert, animated: true)
+                            return
+                        }
                         DispatchQueue.main.async {
-                            self.currentMin = tickersData.response!.min
-                            self.receiveCell.text = S.Instaswap.youReceive + ": " + tickersData.response!.getAmount + " " + self.currency.code
+                            self2.currentMin = tickersData.response!.min
+                            self2.receiveCell.text = S.Instaswap.youReceive + ": " + tickersData.response!.getAmount + " " + self2.currency.code
                             
-                            if Double(truncating: amount!.tokenValue as NSNumber) < self.currentMin {
-                                self.receiveCell.textColor = .red
-                                self.receiveCell.text! += String.init(format: " (min %.6f BTC)", self.currentMin)
+                            if Double(truncating: amount!.tokenValue as NSNumber) < self2.currentMin {
+                                self2.receiveCell.textColor = .red
+                                self2.receiveCell.text! += String.init(format: " (min %.6f BTC)", self2.currentMin)
                             }
                             else {
-                                self.receiveCell.textColor = .grayTextTint
+                                self2.receiveCell.textColor = .grayTextTint
                             }
                         }
                     })
@@ -258,24 +263,29 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         enableSendButton(isEnabled: false)
         
         walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: "BTC", sendAmount: amount.tokenInstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
-            guard let `self` = self,
-                case .success(let swapData) = result, swapData.apiInfo! == "OK" else { return }
+            guard let `self2` = self,
+                case .success(let swapData) = result, swapData.apiInfo! == "OK" else {
+                    let alert = UIAlertController(title: S.Alert.error, message: S.Instaswap.APIError, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: S.Button.ok, style: .default, handler: nil))
+                    self!.present(alert, animated: true)
+                    return
+            }
                     
             guard swapData.apiInfo! == "OK" else {
                 message = String(format: S.Instaswap.errorSwap, swapData.apiInfo!)
                 let alert = UIAlertController(title: S.Alert.error, message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: S.Button.cancel, style: .default, handler: nil))
-                self.present(alert, animated: true, completion: nil)
-                self.enableSendButton(isEnabled: true)
+                self2.present(alert, animated: true, completion: nil)
+                self2.enableSendButton(isEnabled: true)
                 return
             }
             
             UIPasteboard.general.string = swapData.response?.depositWallet
             
             DispatchQueue.main.async {
-                self.dismiss(animated: true, completion: {
+                self2.dismiss(animated: true, completion: {
                     Store.trigger(name: .showStatusBar)
-                    self.onPublishSuccess?()
+                    self2.onPublishSuccess?()
                 })
             }
         })

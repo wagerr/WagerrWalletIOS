@@ -159,7 +159,7 @@ class ParlayDetailViewController: UIViewController, Subscriber, EventBetSliderDe
         let confirm = ConfirmationViewController(amount: Amount(amount: cryptoAmount, currency: currency),
                                                  fee: feeAmount,
                                                  feeType: .regular,
-                                                 address: "Parlay Bet",
+                                                 address: "Multi Event contract",
                                                  isUsingBiometrics: sender.canUseBiometrics,
                                                  currency: currency)
         confirm.successCallback = doSend

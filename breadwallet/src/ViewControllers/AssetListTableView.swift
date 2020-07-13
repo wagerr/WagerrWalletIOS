@@ -166,7 +166,7 @@ class AssetListTableView: UITableViewController, Subscriber {
             
         case .events:
             var viewModel : HomeEventViewModel!
-            viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
+            viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports")
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
             cell.set(viewModel: viewModel)
             return cell

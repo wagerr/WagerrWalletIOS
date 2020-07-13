@@ -197,7 +197,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             let confirm = ConfirmationViewController(amount: Amount(amount: cryptoAmount, currency: currency),
                                                      fee: feeAmount,
                                                      feeType: .regular,
-                                                     address: "Betting",
+                                                     address: "Event contract",
                                                      isUsingBiometrics: sender.canUseBiometrics,
                                                      currency: currency)
             confirm.successCallback = doSend

@@ -94,7 +94,7 @@ struct WgrTransactionInfo {
                 ret = ""
                 for leg in (explorerInfo?.legs)! {
                     ret += String.init(format: "%@ - %@", leg.homeTeam!, leg.awayTeam!)
-                    ret += String.init(format: " ( Bet: %@, Price: %@ ", leg.market!, BetEventDatabaseModel.getOddTx( odd: UInt32(leg.price! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))
+                    ret += String.init(format: " ( Stake: %@, Price: %@ ", leg.market!, BetEventDatabaseModel.getOddTx( odd: UInt32(leg.price! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))
                     if leg.homeScore != nil && leg.awayScore != nil {
                         ret += String.init(format: ", Score: %@ - %@ ", leg.homeScoreTx, leg.awayScoreTx)
                     }
@@ -108,11 +108,11 @@ struct WgrTransactionInfo {
                         ret += String.init(format: ", Spread: %@", (explorerInfo?.spread!)!)
                     }
                     if leg.betOutcome != nil    {
-                        ret += String.init(format: ", Outcome: %@", (leg.betOutcome?.description)! )
+                        ret += String.init(format: ", Outcome: %@", (leg.betResult)! )
                     }
                     ret += " ) \n\n";
                 }
-                ret += String.init(format: "Parlay Price: %@\n\n", explorerInfo!.parlayPriceTx)
+                ret += String.init(format: "Multi Event Price: %@, Outcome: %@\n\n", explorerInfo!.parlayPriceTx, (explorerInfo?.betResultType)!)
             }
             else    {
                 ret = String.init(format: "%@ - %@", (explorerInfo?.homeTeam)!, (explorerInfo?.awayTeam)!)
@@ -138,12 +138,12 @@ struct WgrTransactionInfo {
         else    {
             if explorerPayoutInfo != nil  {
                 for payout in explorerPayoutInfo!    {
-                    ret += String.init(format: "Payout: %.4f \n", payout.payout! )
+                    ret += String.init(format: "Reward: %.4f \n", payout.payout! )
                     for leg in (payout.legs)!   {
                         ret += leg.description + "\n"
                     }
                     if payout.legs!.count > 1   {
-                        ret += String.init(format: "Parlay Price: %@\n", payout.parlayPriceTx)
+                        ret += String.init(format: "Multi Event Price: %@\n", payout.parlayPriceTx)
                     }
                     ret += "\n"
                 }
@@ -171,11 +171,11 @@ struct WgrTransactionInfo {
                     else {
                         txDesc = String.init(format: "Event #%d info not available", self.betEvent!.eventID)
                     }
-                    txDate = String.init(format: "PAYOUT Event #%d", self.betEvent!.eventID)
+                    txDate = String.init(format: "REWARD Event #%d", self.betEvent!.eventID)
                 }
                 else    {
                     //txDesc = String.init(format: "Result not available at height %@", transaction.blockHeight)
-                    txDate = "PAYOUT"
+                    txDate = "REWARD"
                 }
                 if isInmature {
                     var confirmations = Int(self.currentHeight)-Int(transaction.blockHeight)
@@ -190,8 +190,8 @@ struct WgrTransactionInfo {
         else    {   // regular bet
             let eventID = self.betEntity!.eventID
             if eventID == 0 {
-                txDesc = String.init(format: "PARLAY (%d)", self.betEntity!.parlayBet!.eventID.count )
-                txDate = "BET"
+                txDesc = String.init(format: "MULTI (%d)", self.betEntity!.parlayBet!.eventID.count )
+                txDate = "STAKE"
             }
             else    {
                 if self.betEvent != nil {
@@ -200,7 +200,7 @@ struct WgrTransactionInfo {
                 }
                 else {
                     txDesc = String.init(format: "Event #%d info not available", self.betEntity!.eventID)
-                    txDate = String.init(format: "BET %@ ", self.betEntity!.outcome.description)
+                    txDate = String.init(format: "STAKE %@ ", self.betEntity!.outcome.description)
                 }
             }
         }

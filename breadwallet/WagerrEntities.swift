@@ -67,9 +67,9 @@ class BetTournament : BetMapping {
 
 enum EventMultipliers  {
     static var ODDS_MULTIPLIER : UInt32 = 10000
-    static var SPREAD_MULTIPLIER : UInt32 = 10
-    static var TOTAL_MULTIPLIER : UInt32 = 10
-    static var RESULT_MULTIPLIER : UInt32 = 10
+    static var SPREAD_MULTIPLIER : UInt32 = 100
+    static var TOTAL_MULTIPLIER : UInt32 = 100
+    static var RESULT_MULTIPLIER : UInt32 = 100
 }
 
 class BetEventDatabaseModel : BetCore {
@@ -352,7 +352,7 @@ class BetEventViewModel : BetEventDatabaseModel, Equatable {
     }
     
     func getEventDateForBet(bet: BetEntity) -> String  {
-        return String.init(format: "BET %@ ", bet.outcome.description)
+        return String.init(format: "STAKE %@ ", bet.outcome.description)
     }
     
     func zeroedOdds() -> Bool   {

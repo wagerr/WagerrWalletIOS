@@ -196,7 +196,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .events:
             return S.HomeScreen.betting
         case .buy:
-            return S.HomeScreen.buy
+            return (E.isTestnet) ? "" : S.HomeScreen.buy
         case .menu:
             return S.HomeScreen.admin
         }

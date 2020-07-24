@@ -312,6 +312,7 @@ struct ExplorerTxPayoutLegs : Codable {
     var description : String    {
         let betOutcome = BetOutcome(rawValue: Int32(outcome!));
         var ret = String.init(format:"#%d - %@, %@ - %@", event_id!, (betOutcome?.description)!, (lockedEvent?.home)!, (lockedEvent?.away)! )
+        let sign = ((lockedEvent?.spreadPoints)! > 0) ? "+" : "-"
 
         switch betOutcome {
         case .MONEY_LINE_HOME_WIN:
@@ -321,9 +322,9 @@ struct ExplorerTxPayoutLegs : Codable {
         case .MONEY_LINE_DRAW:
             ret += String.init(format: " (Price: %@)", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.drawOdds!)!))
         case .SPREADS_HOME:
-            ret += String.init(format: " (Price: %@, Spread: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadHomeOdds!)!), BetEventDatabaseModel.getSpreadTx(spread: (lockedEvent?.spreadPoints!)!))
+            ret += String.init(format: " (Price: %@, Spread: %@%.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadHomeOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
         case .SPREADS_AWAY:
-            ret += String.init(format: " (Price: %@, Spread: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadAwayOdds!)!), BetEventDatabaseModel.getSpreadTx(spread: (lockedEvent?.spreadPoints!)!))
+            ret += String.init(format: " (Price: %@, Spread: %@%.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadAwayOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
         case .TOTAL_OVER:
             ret += String.init(format: " (Price: %@, Total: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.totalOverOdds!)!), BetEventDatabaseModel.getTotalTx(total: (lockedEvent?.totalPoints!)!))
         case .TOTAL_UNDER:
@@ -367,7 +368,7 @@ struct ExplorerTxPayoutLockedEvent : Codable {
     let homeOdds : UInt32?
     let awayOdds : UInt32?
     let drawOdds : UInt32?
-    let spreadPoints : UInt32?
+    let spreadPoints : Int32?
     let spreadHomeOdds : UInt32?
     let spreadAwayOdds : UInt32?
     let totalPoints : UInt32?
@@ -406,7 +407,7 @@ struct ExplorerTxPayoutLockedEvent : Codable {
         homeOdds = try values.decodeIfPresent(UInt32.self, forKey: .homeOdds)
         awayOdds = try values.decodeIfPresent(UInt32.self, forKey: .awayOdds)
         drawOdds = try values.decodeIfPresent(UInt32.self, forKey: .drawOdds)
-        spreadPoints = try values.decodeIfPresent(UInt32.self, forKey: .spreadPoints)
+        spreadPoints = try values.decodeIfPresent(Int32.self, forKey: .spreadPoints)
         spreadHomeOdds = try values.decodeIfPresent(UInt32.self, forKey: .spreadHomeOdds)
         spreadAwayOdds = try values.decodeIfPresent(UInt32.self, forKey: .spreadAwayOdds)
         totalPoints = try values.decodeIfPresent(UInt32.self, forKey: .totalPoints)

@@ -105,7 +105,7 @@ struct WgrTransactionInfo {
                         ret += String.init(format: ", Total: %@", leg.total!)
                     }
                     if leg.spread != nil  {
-                        ret += String.init(format: ", Spread: %@", (explorerInfo?.spread!)!)
+                        ret += String.init(format: ", Spread: %@", leg.spread!)
                     }
                     if leg.betOutcome != nil    {
                         ret += String.init(format: ", Outcome: %@", (leg.betResult)! )
@@ -115,6 +115,8 @@ struct WgrTransactionInfo {
                 ret += String.init(format: "Multi Event Price: %@, Outcome: %@\n\n", explorerInfo!.parlayPriceTx, (explorerInfo?.betResultType)!)
             }
             else    {
+                guard explorerInfo?.homeTeam != nil    else     { return ret }
+                
                 ret = String.init(format: "%@ - %@", (explorerInfo?.homeTeam)!, (explorerInfo?.awayTeam)!)
 
                 ret += String.init(format: "\nPrice: %@", BetEventDatabaseModel.getOddTx( odd: UInt32((explorerInfo?.price!)! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))
@@ -127,7 +129,7 @@ struct WgrTransactionInfo {
                 if explorerInfo?.total != nil && Double((explorerInfo?.total)!)! > 0.0  {
                     ret += String.init(format: "  Total: %@", (explorerInfo?.total!)!)
                 }
-                if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! > 0.0  {
+                if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! != 0.0  {
                     ret += String.init(format: "  Spread: %@", (explorerInfo?.spread!)!)
                 }
                 if explorerInfo?.betResultType != nil    {

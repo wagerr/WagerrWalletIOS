@@ -312,7 +312,7 @@ struct ExplorerTxPayoutLegs : Codable {
     var description : String    {
         let betOutcome = BetOutcome(rawValue: Int32(outcome!));
         var ret = String.init(format:"#%d - %@, %@ - %@", event_id!, (betOutcome?.description)!, (lockedEvent?.home)!, (lockedEvent?.away)! )
-        let sign = ((lockedEvent?.spreadPoints)! > 0) ? "+" : "-"
+        var sign : String
 
         switch betOutcome {
         case .MONEY_LINE_HOME_WIN:
@@ -322,8 +322,10 @@ struct ExplorerTxPayoutLegs : Codable {
         case .MONEY_LINE_DRAW:
             ret += String.init(format: " (Price: %@)", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.drawOdds!)!))
         case .SPREADS_HOME:
+            sign = ((lockedEvent?.spreadPoints)! > 0) ? "+" : "-"
             ret += String.init(format: " (Price: %@, Spread: %@%.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadHomeOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
         case .SPREADS_AWAY:
+            sign = ((lockedEvent?.spreadPoints)! > 0) ? "-" : "+"
             ret += String.init(format: " (Price: %@, Spread: %@%.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadAwayOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
         case .TOTAL_OVER:
             ret += String.init(format: " (Price: %@, Total: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.totalOverOdds!)!), BetEventDatabaseModel.getTotalTx(total: (lockedEvent?.totalPoints!)!))

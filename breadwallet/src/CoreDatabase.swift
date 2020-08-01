@@ -940,9 +940,9 @@ class CoreDatabase {
             
 
             if sqlite3_errcode(self.db) != SQLITE_DONE { print("SQLITE error loadEvents: " + String(cString: sqlite3_errmsg(self.db))) }
-            DispatchQueue.main.async {
-                callback(events)
-            }
+        }
+        DispatchQueue.main.async {
+            callback(events)
         }
     }
 

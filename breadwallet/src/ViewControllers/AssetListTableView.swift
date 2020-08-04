@@ -12,7 +12,7 @@ class AssetListTableView: UITableViewController, Subscriber {
 
     var didSelectCurrency: ((CurrencyDef) -> Void)?
     var didTapBet: ((CurrencyDef) -> Void)?
-    var didTapBuy: ((CurrencyDef) -> Void)?
+    var didTapBuy: ((CurrencyDef, String?) -> Void)?
     var didTapSecurity: (() -> Void)?
     var didTapSupport: (() -> Void)?
     var didTapSettings: (() -> Void)?
@@ -176,7 +176,7 @@ class AssetListTableView: UITableViewController, Subscriber {
                 NSMutableAttributedString()
                     .bold("InstaSwap.io"))
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeSwapCell.cellIdentifier, for: indexPath) as! HomeSwapCell
-            cell.set(viewModel: viewModel)
+            cell.set(viewModel: viewModel, didTapBuy: didTapBuy!)
             return cell
         case .menu:
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuCell.cellIdentifier, for: indexPath) as! MenuCell
@@ -222,7 +222,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .events:
             didTapBet?( Currencies.btc )
         case .buy:
-            didTapBuy?( Currencies.btc )
+            didTapBuy?( Currencies.btc, "" )
         case .menu:
             guard let item = Menu(rawValue: indexPath.row) else { return }
             switch item {

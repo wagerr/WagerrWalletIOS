@@ -17,10 +17,12 @@ class SwapListController : UIViewController, Subscriber {
 
     //MARK: - Public
     let currency: CurrencyDef
+    let select : String?
     
-    init(currency: CurrencyDef, walletManager: WalletManager) {
+    init(currency: CurrencyDef, select: String?, walletManager: WalletManager) {
         self.walletManager = walletManager
         self.currency = currency
+        self.select = select
         self.headerView = SwapHeaderView(currency: currency)
         self.footerView = SwapFooterView(currency: currency)
         super.init(nibName: nil, bundle: nil)
@@ -32,7 +34,7 @@ class SwapListController : UIViewController, Subscriber {
             headerView.isWatchOnly = false
         }
 
-        footerView.buyCallback = { Store.perform(action: RootModalActions.Present(modal: .swap(currency: self.currency, didFinishSwap: self.refreshTable))) }
+        footerView.buyCallback = { Store.perform(action: RootModalActions.Present(modal: .swap(currency: self.currency, didFinishSwap: self.refreshTable, select: self.select))) }
     }
 
     //MARK: - Private
@@ -84,6 +86,16 @@ class SwapListController : UIViewController, Subscriber {
         addConstraints()
         addSubscriptions()
         setInitialData()
+        
+        if self.select != nil && self.select != ""  {
+            if #available(iOS 10.0, *) {
+                Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { timer in
+                    self.footerView.buyCallback!()
+                }
+            } else {
+                footerView.buyCallback!()
+            }
+        }
     }
 
     private func didSelectSwap(txInfo: [SwapViewModel], selectedIndex: Int) -> Void {

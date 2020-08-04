@@ -290,8 +290,8 @@ class ModalPresenter : Subscriber, Trackable {
         case .sell(let currency):
             presentPlatformWebViewController("/sell?currency=\(currency.code)")
             return nil
-        case .swap(let currency, let didFinishSwap):
-            return makeSwapView(currency: currency, didFinishSwap: didFinishSwap!)
+        case .swap(let currency, let didFinishSwap, let select):
+            return makeSwapView(currency: currency, didFinishSwap: didFinishSwap!, select: select)
         }
         
     }
@@ -333,7 +333,7 @@ class ModalPresenter : Subscriber, Trackable {
         return root
     }
     
-    private func makeSwapView(currency: CurrencyDef, didFinishSwap: @escaping (()-> Void) ) -> UIViewController? {
+    private func makeSwapView(currency: CurrencyDef, didFinishSwap: @escaping (()-> Void), select: String? ) -> UIViewController? {
         guard !(currency.state?.isRescanning ?? false) else {
             let alert = UIAlertController(title: S.Alert.error, message: S.Send.isRescanning, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: S.Button.ok, style: .cancel, handler: nil))
@@ -341,7 +341,7 @@ class ModalPresenter : Subscriber, Trackable {
             return nil
         }
         guard let walletManager = walletManagers[currency.code] else { return nil }
-        let sendVC = SwapViewController(wm: walletManager as! BTCWalletManager, currency: currency)
+        let sendVC = SwapViewController(wm: walletManager as! BTCWalletManager, currency: currency, select: select)
         currentRequest = nil
 
         let root = ModalViewController(childViewController: sendVC)

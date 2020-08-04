@@ -16,4 +16,5 @@ struct HomeEventViewModel {
 struct HomeSwapViewModel {
     var currency : CurrencyDef
     let title: NSAttributedString
+    var select : String? 
 }

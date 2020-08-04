@@ -14,6 +14,7 @@ enum ButtonType {
     case tertiary
     case blackTransparent
     case search
+    case swapCurrency
 }
 
 private let minTargetSize: CGFloat = 48.0
@@ -198,6 +199,16 @@ class ShadowButton: UIControl {
             shadowView.layer.shadowColor = UIColor.black.cgColor
             shadowView.layer.shadowOpacity = 0.15
             imageView?.tintColor = .grayTextTint
+        
+        case .swapCurrency:
+            container.backgroundColor = .primaryButton
+            label.textColor = .white
+            container.layer.borderColor = UIColor.white.cgColor
+            container.layer.borderWidth = 1.0
+            container.layer.cornerRadius = 2.0
+            shadowView.layer.shadowColor = UIColor.black.cgColor
+            shadowView.layer.shadowOpacity = 0.3
+            imageView?.tintColor = .white
         }
     }
 

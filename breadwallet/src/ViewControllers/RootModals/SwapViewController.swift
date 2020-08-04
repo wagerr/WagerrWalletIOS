@@ -19,11 +19,13 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     var presentScan: PresentScan?
     var onPublishSuccess: (()->Void)?
     var parentView: UIView? //ModalPresentable
+    let select: String?
     
-    init( wm : BTCWalletManager, currency: CurrencyDef) {
+    init( wm : BTCWalletManager, currency: CurrencyDef, select: String?) {
         self.currency = currency
         self.walletManager = wm
-        amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false)
+        self.select = select
+        amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false, selected: select ?? "BTC")
         refundWalletCell = AddressCell(currency: currency, noScan: true)
         refundWalletCellConstrainVisible = []
         refundWalletCellConstrainHidden = []
@@ -140,6 +142,9 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
             sendButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: E.isIPhoneXOrBetter ? -C.padding[5] : -C.padding[2]) ])
         addButtonActions()
         
+        let isCrypto = (select == "BTC")
+        refundWalletCell.isHidden = !isCrypto
+        refundWalletCell.constrain(((isCrypto) ? refundWalletCellConstrainVisible : refundWalletCellConstrainHidden))
     }
 
     var receiveAddress : String {

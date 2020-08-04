@@ -16,11 +16,12 @@ class SwapAmountViewController : AmountViewController {
     
     var availableCurrencies : [String]
     
-    override init(currency: CurrencyDef, isPinPadExpandedAtLaunch: Bool, isRequesting: Bool = false) {
-        self.availableCurrencies = [ "BTC" ]
+    init(currency: CurrencyDef, isPinPadExpandedAtLaunch: Bool, selected: String, isRequesting: Bool = false) {
+        self.availableCurrencies = [ selected ]
         super.init(currency: currency, isPinPadExpandedAtLaunch: isPinPadExpandedAtLaunch, isRequesting: isRequesting)
         self.currencyToggle = ShadowButton(title: availableCurrencies[0], type: .tertiary)
         self.canEditFee = false
+        self.selectedRate = Store.state[currency]!.rates.first( where: { $0.code == selected })
     }
     
     override internal func toggleCurrency() {

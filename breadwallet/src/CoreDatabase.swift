@@ -749,6 +749,30 @@ class CoreDatabase {
         deleteBetMapping("929972a7b2fdf55f6da7488ccaf7312fd5d22c4bca003ca089293c93f1c32917")
         deleteBetMapping("e4e3a4f782569fa3bf0135297942c8a1c791ec869ca036bf530ab95633d17815")    // 2020/01/27
     }
+    
+    func cleanDuplicateMappings()   {
+        let query = "delete from WGR_MAPPING where z_pk in (select z_pk "
+         + "from WGR_MAPPING where ZMAPPINGID in "
+         + "(select ZMAPPINGID from WGR_MAPPING where ZNAMESPACEID=3 "
+         + "group by ZNAMESPACEID, ZMAPPINGID "
+         + "having count(*)>1) "
+         + "and Z_PK not in (select max(Z_PK) from WGR_MAPPING where ZNAMESPACEID=3 "
+         + "group by ZNAMESPACEID, ZMAPPINGID "
+         + "having count(*)>1) )"
+        queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, query, -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            guard sqlite3_step(sql) == SQLITE_DONE else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+        }
+    }
 
     func saveBetEvent(_ ent: BetEventDatabaseModel) {
         queue.async {

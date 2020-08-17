@@ -127,8 +127,20 @@ struct Amount {
     }
     
     /// Token value in specified units as formatted string without symbol and always dot as separator
-    var tokenInstaswapFormattedValue : String {
-        var ret = tokenFormattedValue.replacingOccurrences(of: ",", with: ".")
+    var InstaswapFormattedValue : String {
+        let fiatFormat = localFormat.copy() as! NumberFormatter
+        fiatFormat.currencySymbol = ""
+        let fiatFormatted = fiatFormat.string(from: fiatValue as NSDecimalNumber)!
+        let formattedValue = (rate?.code == "BTC") ? tokenFormattedValue : fiatFormatted
+        let currencyDecimalSeparator = NumberFormatter().currencyDecimalSeparator ?? "."
+        let currencyGroupingSeparator = NumberFormatter().currencyGroupingSeparator ?? ""
+        var ret = formattedValue
+        if currencyGroupingSeparator != ""  {
+            ret = ret.replacingOccurrences(of: currencyGroupingSeparator, with: "")
+        }
+        if currencyDecimalSeparator != "."  {
+            ret = ret.replacingOccurrences(of: currencyDecimalSeparator, with: ".")
+        }
         ret = ret.trimmingCharacters(in: NSCharacterSet.whitespaces)
         return ret
     }

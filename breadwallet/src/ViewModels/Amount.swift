@@ -132,7 +132,15 @@ struct Amount {
         fiatFormat.currencySymbol = ""
         let fiatFormatted = fiatFormat.string(from: fiatValue as NSDecimalNumber)!
         let formattedValue = (rate?.code == "BTC") ? tokenFormattedValue : fiatFormatted
-        var ret = formattedValue.replacingOccurrences(of: ",", with: "")
+        let currencyDecimalSeparator = NumberFormatter().currencyDecimalSeparator ?? "."
+        let currencyGroupingSeparator = NumberFormatter().currencyGroupingSeparator ?? ""
+        var ret = formattedValue
+        if currencyGroupingSeparator != ""  {
+            ret = ret.replacingOccurrences(of: currencyGroupingSeparator, with: "")
+        }
+        if currencyDecimalSeparator != "."  {
+            ret = ret.replacingOccurrences(of: currencyDecimalSeparator, with: ".")
+        }
         ret = ret.trimmingCharacters(in: NSCharacterSet.whitespaces)
         return ret
     }

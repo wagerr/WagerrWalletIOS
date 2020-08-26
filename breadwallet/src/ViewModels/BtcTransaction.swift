@@ -78,12 +78,12 @@ struct WgrTransactionInfo {
     var eventDetailString : String {
         var ret = String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
         if explorerInfo != nil {
-            ret += String.init(format: "\nPrice: %.2f", (explorerInfo?.price!)!)
+            ret += String.init(format: "\nPrice: %.2f", (explorerInfo?.price ?? 0)!)
             if explorerInfo?.total != nil && Double((explorerInfo?.total)!)! > 0.0  {
-                ret += String.init(format: "  Total: %@", (explorerInfo?.total!)!)
+                ret += String.init(format: "  Total: %@", (explorerInfo?.total ?? 0)!)
             }
-            if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! > 0.0  {
-                ret += String.init(format: "  Spread: %@", (explorerInfo?.spread!)!)
+            if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! != 0.0  {
+                ret += String.init(format: "  Spread: %@", (explorerInfo?.spread ?? 0)!)
             }
         }
         return ret

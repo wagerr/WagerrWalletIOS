@@ -24,8 +24,8 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     init( wm : BTCWalletManager, currency: CurrencyDef, select: String?) {
         self.currency = currency
         self.walletManager = wm
-        self.select = select
-        amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false, selected: select ?? "BTC")
+        self.select = (select==nil || select=="") ? "BTC": select!
+        amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false, selected: self.select!)
         refundWalletCell = AddressCell(currency: currency, noScan: true)
         refundWalletCellConstrainVisible = []
         refundWalletCellConstrainHidden = []

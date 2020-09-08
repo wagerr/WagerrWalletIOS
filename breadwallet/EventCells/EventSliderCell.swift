@@ -99,8 +99,12 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         super.setupStyle()
         
         amountLabel.textColor = .primaryText
-        let minBet = Int(W.BetAmount.min)
-        self.amount = String.init( String(minBet))
+        let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
+        let minBet = UserDefaults.defaultBetAmount
+        let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
+        let currentValue = min(maxBet, Float(minBet) )
+        
+        self.amount = String.init( String(currentValue))
         amountLabel.delegate = self
         amountLabel.returnKeyType = UIReturnKeyType.done
         amountLabel.keyboardType = UIKeyboardType.decimalPad
@@ -114,9 +118,8 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         
         //setup slider
         self.betSlider.minimumValue = W.BetAmount.min;
-        let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
         self.betSlider.maximumValue = min(W.BetAmount.max, Float(balanceAmount) )
-        self.betSlider.value = self.betSlider.minimumValue;
+        self.betSlider.value = currentValue
         self.betSlider.isContinuous = true
         betSlider.addTarget(self, action: #selector(self.onSliderChange(sender:)), for: .valueChanged)
         

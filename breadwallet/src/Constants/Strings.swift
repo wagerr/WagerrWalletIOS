@@ -213,6 +213,7 @@ enum S {
         static let goTo = NSLocalizedString("BetSettings.goTo", value: "Go", comment: "Go")
         static let lockWarning = NSLocalizedString("BetSettings.lockWarning", value: "Attention: After the 7th incorrect pin attempt, the wallet database will be deleted. The seed phrase will be required to restore any balance", comment: "Warning")
         static let useAmerican = NSLocalizedString("BetSettings.useAmerican", value: "Use American notation in odds", comment: "American notation")
+        static let defaultBetAmount = NSLocalizedString("BetSettings.minBetAmount", value: "Default bet amount", comment: "Default bet amount")
     }
     
     enum Betting {

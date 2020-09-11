@@ -634,40 +634,73 @@ class CoreDatabase {
             sqlite3_prepare_v2(self.db, "select ZTXHASH from WGR_MAPPING where ZTXHASH = '\(ent.txHash)'", -1, &sql0, nil)
             defer { sqlite3_finalize(sql0) }
 
-            if sqlite3_step(sql0) == SQLITE_ROW {   // mapping already exists... abandon
-                return
-            }
-            
-            var sql: OpaquePointer? = nil
-            sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.mappingEnt)", -1, &sql, nil)
-            defer { sqlite3_finalize(sql) }
-
-            guard sqlite3_step(sql) == SQLITE_ROW else {
-                print(String(cString: sqlite3_errmsg(self.db)))
+            if sqlite3_step(sql0) == SQLITE_ROW {   // mapping hash already exists... abandon
                 sqlite3_exec(self.db, "rollback", nil, nil, nil)
                 return
             }
             
-            let pk = sqlite3_column_int(sql, 0)
-            var sql2: OpaquePointer? = nil
-            sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
-                "(Z_PK, ZVERSION, ZNAMESPACEID, ZMAPPINGID, ZSTRING, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
-                "values (\(pk + 1), \(ent.version), \(ent.namespaceID.rawValue), \(ent.mappingID) , ? , \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
-            sqlite3_bind_text(sql2, 1, ent.description, -1, SQLITE_TRANSIENT)
-            
-            defer { sqlite3_finalize(sql2) }
-            
-            guard sqlite3_step(sql2) == SQLITE_DONE else {
-                print("SQLITE error saveBetMapping: " + String(cString: sqlite3_errmsg(self.db)))
-                return
+            var sql1: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, "select ZHEIGHT, ZTXHASH from WGR_MAPPING where ZNAMESPACEID = \(ent.namespaceID.rawValue) AND ZMAPPINGID = \(ent.mappingID)", -1, &sql1, nil)
+            defer { sqlite3_finalize(sql1) }
+
+            var bUpdate : Bool = false
+            if sqlite3_step(sql1) == SQLITE_ROW {   // mapping already exists... update
+                let height = sqlite3_column_int(sql1, 0)
+                let oldhash = String(cString: sqlite3_column_text(sql1, 1))
+                if height == ent.blockheight    {        // abandon...
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                    return
+                }
+
+                if height < ent.blockheight    {
+                    bUpdate = true
+                }
             }
 
-            sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(pk + 1) " +
-                "where Z_ENT = \(self.mappingEnt) and Z_MAX = \(pk)", nil, nil, nil)
+            if bUpdate  {
+                sqlite3_exec(self.db, "update or rollback WGR_MAPPING set ZSTRING = '\(ent.description)', ZTIMESTAMP = \(ent.timestamp), ZHEIGHT = \(ent.blockheight), ZTXHASH = '\(ent.txHash)' " +
+                                    "where ZNAMESPACEID = \(ent.namespaceID.rawValue) AND ZMAPPINGID = \(ent.mappingID)", nil, nil, nil)
 
-            guard sqlite3_errcode(self.db) == SQLITE_OK else {
-                print(String(cString: sqlite3_errmsg(self.db)))
-                return
+                guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                    print(String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                    return
+                }
+            }
+            else    {       // insert
+                var sql: OpaquePointer? = nil
+                sqlite3_prepare_v2(self.db, "select Z_MAX from Z_PRIMARYKEY where Z_ENT = \(self.mappingEnt)", -1, &sql, nil)
+                defer { sqlite3_finalize(sql) }
+
+                guard sqlite3_step(sql) == SQLITE_ROW else {
+                    print(String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                    return
+                }
+                
+                let pk = sqlite3_column_int(sql, 0)
+                var sql2: OpaquePointer? = nil
+                sqlite3_prepare_v2(self.db, "insert or rollback into WGR_MAPPING " +
+                    "(Z_PK, ZVERSION, ZNAMESPACEID, ZMAPPINGID, ZSTRING, ZTIMESTAMP, ZHEIGHT, ZTXHASH) " +
+                    "values (\(pk + 1), \(ent.version), \(ent.namespaceID.rawValue), \(ent.mappingID) , ? , \(ent.timestamp), \(ent.blockheight), '\(ent.txHash)' )", -1, &sql2, nil)
+                sqlite3_bind_text(sql2, 1, ent.description, -1, SQLITE_TRANSIENT)
+                
+                defer { sqlite3_finalize(sql2) }
+                
+                guard sqlite3_step(sql2) == SQLITE_DONE else {
+                    print("SQLITE error saveBetMapping: " + String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                    return
+                }
+
+                sqlite3_exec(self.db, "update or rollback Z_PRIMARYKEY set Z_MAX = \(pk + 1) " +
+                    "where Z_ENT = \(self.mappingEnt) and Z_MAX = \(pk)", nil, nil, nil)
+
+                guard sqlite3_errcode(self.db) == SQLITE_OK else {
+                    print(String(cString: sqlite3_errmsg(self.db)))
+                    sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                    return
+                }
             }
 
             sqlite3_exec(self.db, "commit", nil, nil, nil)
@@ -695,6 +728,30 @@ class CoreDatabase {
         deleteBetMapping("d8e1e8389bbcffe1c79cf11e2206281377e54b99219ec6ccec296c2adb8ad65f")
         deleteBetMapping("929972a7b2fdf55f6da7488ccaf7312fd5d22c4bca003ca089293c93f1c32917")
         deleteBetMapping("e4e3a4f782569fa3bf0135297942c8a1c791ec869ca036bf530ab95633d17815")    // 2020/01/27
+    }
+    
+    func cleanDuplicateMappings( namespaceID : MappingNamespaceType)   {
+        let query = "delete from WGR_MAPPING where z_pk in (select z_pk "
+         + "from WGR_MAPPING where ZMAPPINGID in "
+            + "(select ZMAPPINGID from WGR_MAPPING where ZNAMESPACEID= \(namespaceID.rawValue) "
+         + "group by ZNAMESPACEID, ZMAPPINGID " 
+         + "having count(*)>1) "
+         + "and ZHEIGHT not in (select max(ZHEIGHT) from WGR_MAPPING where ZNAMESPACEID= \(namespaceID.rawValue) "
+         + "group by ZNAMESPACEID, ZMAPPINGID "
+         + "having count(*)>1) )"
+        queue.async {
+            sqlite3_exec(self.db, "begin exclusive", nil, nil, nil)
+            var sql: OpaquePointer? = nil
+            sqlite3_prepare_v2(self.db, query, -1, &sql, nil)
+            defer { sqlite3_finalize(sql) }
+
+            guard sqlite3_step(sql) == SQLITE_DONE else {
+                print(String(cString: sqlite3_errmsg(self.db)))
+                sqlite3_exec(self.db, "rollback", nil, nil, nil)
+                return
+            }
+            sqlite3_exec(self.db, "commit", nil, nil, nil)
+        }
     }
 
     func saveBetEvent(_ ent: BetEventDatabaseModel) {

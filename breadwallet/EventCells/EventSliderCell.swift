@@ -193,9 +193,9 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     
     func adjustSlider() {
         let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
-        let nMinBet = Int(minBet)
-        let nMaxBet = min(maxBet, Float(balanceAmount) )
-        let nAmount = Int(amount) ?? nMinBet
+        let minBet = Int(W.BetAmount.min)
+        let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
+        let nAmount = Int( Double(amount) ?? Double(minBet) )
 
         if (nAmount <= nMinBet)  { amount = String(nMinBet) }
         if (Float(nAmount) > nMaxBet)  { amount = String(Int(nMaxBet)) }

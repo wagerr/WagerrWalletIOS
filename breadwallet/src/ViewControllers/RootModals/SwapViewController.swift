@@ -23,8 +23,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
     init( wm : BTCWalletManager, currency: CurrencyDef) {
         self.currency = currency
         self.walletManager = wm
-        self.select = (select==nil || select=="") ? "BTC": select!
-        amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false, selected: self.select!)
+        amountView = SwapAmountViewController(currency: currency, isPinPadExpandedAtLaunch: false)
         refundWalletCell = AddressCell(currency: currency, noScan: true)
 
         super.init(nibName: nil, bundle: nil)
@@ -154,7 +153,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         amountView.didUpdateAmount = { [weak self] amount in
             self?.amount = amount
             if amount!.tokenValue > 0.0   {
-                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: "BTC", sendAmount: amount!.tokenInstaswapFormattedValue, handler: { [weak self] result in
+                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: "BTC", sendAmount: amount!.InstaswapFormattedValue, handler: { [weak self] result in
                         guard let `self2` = self,
                         case .success(let tickersData) = result else {
                             let alert = UIAlertController(title: S.Alert.error, message: S.Instaswap.APIError, preferredStyle: .alert)
@@ -263,7 +262,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         
         enableSendButton(isEnabled: false)
         
-        walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: "BTC", sendAmount: amount.tokenInstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
+        walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: "BTC", sendAmount: amount.InstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
             guard let `self2` = self,
                 case .success(let swapData) = result, swapData.apiInfo! == "OK" else {
                     let alert = UIAlertController(title: S.Alert.error, message: S.Instaswap.APIError, preferredStyle: .alert)

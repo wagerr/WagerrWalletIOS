@@ -197,8 +197,8 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
         let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
         let nAmount = Int( Double(amount) ?? Double(minBet) )
 
-        if (nAmount <= nMinBet)  { amount = String(nMinBet) }
-        if (Float(nAmount) > nMaxBet)  { amount = String(Int(nMaxBet)) }
+        if (nAmount <= minBet)  { amount = String(minBet) }
+        if (Float(nAmount) > maxBet)  { amount = String(Int(maxBet)) }
         betSlider.setValue(Float(nAmount), animated: true)
     }
     

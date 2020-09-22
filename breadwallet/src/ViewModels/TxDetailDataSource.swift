@@ -170,7 +170,7 @@ extension TxDetailDataSource: UITableViewDataSource {
             
         case .eventDetail:
             let labelCell = cell as! TxLabelCell
-            labelCell.value = transactionInfo.eventDetailString
+            labelCell.attrValue = transactionInfo.eventDetailString
         
         case .timestamp:
             let labelCell = cell as! TxLabelCell

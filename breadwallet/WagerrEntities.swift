@@ -527,7 +527,21 @@ class ParlayLegEntity   {
         }
     }
     
-    
+    public func getOddPoints() -> String    {
+        switch (outcome)    {
+            case .MONEY_LINE_HOME_WIN, .MONEY_LINE_AWAY_WIN:
+                return ""
+
+            case .SPREADS_HOME, .SPREADS_AWAY:
+                return event.txSpreadPoints
+
+            case .TOTAL_UNDER, .TOTAL_OVER:
+                return event.txTotalPoints
+
+            default:
+                return ""
+        }
+    }
 
     public func updateOdd() {
         switch (outcome)    {

@@ -62,7 +62,7 @@ enum SearchFilterType {
                 if txInfo.betEvent != nil && String(txInfo.betEvent!.eventID).contains(loweredText)  {
                     return true
                 }
-                if txInfo.betEvent != nil && txInfo.eventDetailString.lowercased().contains(loweredText)  {
+                if txInfo.betEvent != nil && txInfo.eventDetailString.string.lowercased().contains(loweredText)  {
                     return true
                 }
                 if let metaData = txInfo.transaction.metaData {

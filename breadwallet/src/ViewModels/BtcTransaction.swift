@@ -8,7 +8,7 @@
 
 import Foundation
 import BRCore
-
+import UIKit
 
 struct WgrTransactionInfo {
     var transaction : BtcTransaction
@@ -87,73 +87,90 @@ struct WgrTransactionInfo {
         return (betEvent != nil) ? betEvent!.shortTimestamp : ""
     }
     
-    var eventDetailString : String {
-        var ret = ""
+    var eventDetailString : NSAttributedString {
+        var ret = NSMutableAttributedString(string: "")
         if explorerInfo != nil  {
             if explorerInfo?.isParlay == 1  {
-                ret = ""
                 for leg in (explorerInfo?.legs)! {
-                    ret += String.init(format: "%@ - %@", leg.homeTeam!, leg.awayTeam!)
-                    ret += String.init(format: " ( Stake: %@, Price: %@ ", leg.market!, BetEventDatabaseModel.getOddTx( odd: UInt32(leg.price! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))
-                    if leg.homeScore != nil && leg.awayScore != nil {
-                        ret += String.init(format: ", Score: %@ - %@ ", leg.homeScoreTx, leg.awayScoreTx)
-                    }
-                    else    {
-                        ret += ", Score: Pending "
+                    ret.append(NSAttributedString(string: String.init(format: "%@ - %@", leg.homeTeam!, leg.awayTeam!)))
+                    ret.append(NSAttributedString(string: String.init(format: " ( Stake: %@, Price: %@ , ", leg.market!, BetEventDatabaseModel.getOddTx( odd: UInt32(leg.price! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))))
+                    if leg.spread != nil  {
+                        ret.append(NSAttributedString(string: String.init(format: "Spread: %@\n", leg.spread!)))
                     }
                     if leg.total != nil  {
-                        ret += String.init(format: ", Total: %@", leg.total!)
+                        ret.append(NSAttributedString(string: String.init(format: "Total: %@\n", leg.total!)))
                     }
-                    if leg.spread != nil  {
-                        ret += String.init(format: ", Spread: %@", leg.spread!)
+                
+                    if leg.homeScore != nil && leg.awayScore != nil {
+                        ret.append(NSAttributedString(string:  String.init(format: "Score: %@ - %@ ", leg.homeScoreTx, leg.awayScoreTx)))
+                    }
+                    else    {
+                        ret.append(NSAttributedString(string:  "Score: Pending "))
                     }
                     if leg.betOutcome != nil    {
-                        ret += String.init(format: ", Outcome: %@", (leg.betResult)! )
+                        ret.append(NSAttributedString(string: String.init(format: ", Outcome: %@ ", (leg.betResult)! )))
+                        let image1Attachment = NSTextAttachment()
+                        image1Attachment.image = UIImage(named: leg.resultIcon)
+                        image1Attachment.bounds = CGRect(x: 0, y: 0, width: 24, height: 24)
+                        let image1String = NSAttributedString(attachment: image1Attachment)
+                        ret.append(image1String)
                     }
-                    ret += " ) \n\n";
+                    ret.append(NSAttributedString(string: " ) \n\n"));
                 }
-                ret += String.init(format: "Multi Event Price: %@, Outcome: %@\n\n", explorerInfo!.parlayPriceTx, (explorerInfo?.betResultType)!)
+                ret.append(NSAttributedString(string: String.init(format: "Multi Event Price: %@, Outcome: %@ ", explorerInfo!.parlayPriceTx, (explorerInfo?.betResultType)!)))
+                let image1Attachment = NSTextAttachment()
+                image1Attachment.image = UIImage(named: explorerInfo!.resultIcon)
+                image1Attachment.bounds = CGRect(x: 0, y: 0, width: 24, height: 24)
+                let image1String = NSAttributedString(attachment: image1Attachment)
+                ret.append(image1String)
+                ret.append(NSAttributedString(string: " \n\n"));
             }
             else    {
                 guard explorerInfo?.homeTeam != nil    else     { return ret }
                 
-                ret = String.init(format: "%@ - %@", (explorerInfo?.homeTeam)!, (explorerInfo?.awayTeam)!)
+                ret = NSMutableAttributedString(string: String.init(format: "%@ - %@", (explorerInfo?.homeTeam)!, (explorerInfo?.awayTeam)!) )
 
-                ret += String.init(format: "\nPrice: %@", BetEventDatabaseModel.getOddTx( odd: UInt32((explorerInfo?.price!)! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))
-                if explorerInfo?.homeScore != nil && explorerInfo?.awayScore != nil {
-                    ret += String.init(format: ", Score: %@ - %@ ", explorerInfo!.homeScoreTx, explorerInfo!.awayScoreTx)
-                }
-                else    {
-                    ret += ", Score: Pending "
-                }
+                ret.append(NSAttributedString(string: String.init(format: "\nPrice: %@, ", BetEventDatabaseModel.getOddTx( odd: UInt32((explorerInfo?.price!)! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))))
                 if explorerInfo?.total != nil && Double((explorerInfo?.total)!)! > 0.0  {
-                    ret += String.init(format: "  Total: %@", (explorerInfo?.total!)!)
+                    ret.append(NSAttributedString(string: String.init(format: "Total: %@\n", (explorerInfo?.total!)!)))
                 }
                 if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! != 0.0  {
-                    ret += String.init(format: "  Spread: %@", (explorerInfo?.spread!)!)
+                    ret.append(NSAttributedString(string: String.init(format: "Spread: %@\n", (explorerInfo?.spread!)!)))
                 }
+                if explorerInfo?.homeScore != nil && explorerInfo?.awayScore != nil {
+                    ret.append(NSAttributedString(string: String.init(format: "Score: %@ - %@ ", explorerInfo!.homeScoreTx, explorerInfo!.awayScoreTx)))
+                }
+                else    {
+                    ret.append(NSAttributedString(string: "Score: Pending "))
+                }
+                
                 if explorerInfo?.betResultType != nil    {
-                    ret += String.init(format: ", Result: %@", (explorerInfo?.betResultType)! )
+                    ret.append(NSAttributedString(string: String.init(format: ", Result: %@ ", (explorerInfo?.betResultType)! )))
+                    let image1Attachment = NSTextAttachment()
+                    image1Attachment.image = UIImage(named: explorerInfo!.resultIcon)
+                    image1Attachment.bounds = CGRect(x: 0, y: 0, width: 24, height: 24)
+                    let image1String = NSAttributedString(attachment: image1Attachment)
+                    ret.append(image1String)
                 }
             }
         }
         else    {
             if explorerPayoutInfo != nil  {
                 for payout in explorerPayoutInfo!    {
-                    ret += String.init(format: "Reward: %.4f \n", payout.payout! )
+                    ret.append(NSAttributedString(string: String.init(format: "Reward: %.4f \n", payout.payout! )))
                     for leg in (payout.legs)!   {
-                        ret += leg.description + "\n"
+                        ret.append(NSAttributedString(string: leg.description + "\n"))
                     }
                     if payout.legs!.count > 1   {
-                        ret += String.init(format: "Multi Event Price: %@\n", payout.parlayPriceTx)
+                        ret.append(NSAttributedString(string: String.init(format: "Multi Event Price: %@\n", payout.parlayPriceTx)))
                     }
-                    ret += "\n"
+                    ret.append(NSAttributedString(string: "\n"))
                 }
             }
             else {
-                guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return "" }
+                guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return ret }
                 for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
-                    ret += String.init(format: "#%d - %@ \n", eventID, outcome.description)
+                    ret.append(NSAttributedString(string: String.init(format: "#%d - %@ \n", eventID, outcome.description)))
                 }
             }
         }

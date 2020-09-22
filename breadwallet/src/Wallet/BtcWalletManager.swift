@@ -325,7 +325,6 @@ extension BTCWalletManager : BRWalletListener {
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let myself = self else { return }
             myself.db?.cleanChainBugs()
-            myself.db?.fixPKCorruptions()
             myself.db?.cleanDuplicateMappings( namespaceID: MappingNamespaceType.SPORT )
             myself.db?.cleanDuplicateMappings( namespaceID: MappingNamespaceType.ROUNDS )
             myself.db?.cleanDuplicateMappings( namespaceID: MappingNamespaceType.TOURNAMENT )

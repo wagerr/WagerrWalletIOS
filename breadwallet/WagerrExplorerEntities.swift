@@ -141,6 +141,15 @@ struct ExplorerTxVout : Codable {
         legs = try values.decodeIfPresent([ExplorerTxLegs].self, forKey: .legs)
     }
 
+    var resultIcon : String  {
+        switch (betResultType) {
+            case "win":     return "win"
+            case "lose":    return "loss"
+            case "pending": return "pending"
+            default:  return "pending"
+        }
+    }
+    
     var homeScoreTx : String    {
         return String(format: "%d", UInt32(homeScore!) / EventMultipliers.RESULT_MULTIPLIER )
     }
@@ -210,6 +219,15 @@ struct ExplorerTxLegs : Codable {
         spread = try values.decodeIfPresent(String.self, forKey: .spread)
     }
 
+    var resultIcon : String  {
+        switch (betResult) {
+            case "win":     return "win"
+            case "lose":    return "loss"
+            case "pending": return "pending"
+            default:  return "pending"
+        }
+    }
+    
     var betOutcome : BetOutcome? {
         return BetOutcome(rawValue: Int32(outcome!));
     }

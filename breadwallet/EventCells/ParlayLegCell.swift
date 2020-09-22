@@ -22,6 +22,7 @@ class ParlayLegCell: UITableViewCell {
     //private let homeResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
     //private let awayResultLabel = UILabel(font: .customBody(size: 14.0), color: .primaryText)
     private let outcomeLabel = UILabel(font: .customBold(size: 14.0))
+    private let pointsLabel = UILabel(font: .customBold(size: 14.0))
     private let oddsLabel = EventBetLabel(font: .customBold(size: 18.0))
     private let deleteButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 32, height: 32))
     private let separator = UIView(color: .separatorGray)
@@ -47,6 +48,7 @@ class ParlayLegCell: UITableViewCell {
         homeTeamLabel.attributedText = viewModel.event.txAttrHomeTeam
         awayTeamLabel.attributedText = viewModel.event.txAttrAwayTeam
         outcomeLabel.text = viewModel.outcome.description
+        pointsLabel.text = viewModel.getOddPoints()
         oddsLabel.text = BetEventViewModel.getOddTx(odd: viewModel.odd)
         oddsLabel.textColor = .white
         oddsLabel.backgroundColor = viewModel.getOddColor()
@@ -68,6 +70,7 @@ class ParlayLegCell: UITableViewCell {
         container.addSubview(awayTeamLabel)
         container.addSubview(oddsLabel)
         container.addSubview(outcomeLabel)
+        container.addSubview(pointsLabel)
         container.addSubview(deleteButton)
         container.addSubview(separator)
         //container.addSubview(betsmart)
@@ -111,10 +114,21 @@ class ParlayLegCell: UITableViewCell {
         oddsLabel.constrain([
              oddsLabel.topAnchor.constraint(equalTo: deleteButton.topAnchor, constant: C.padding[1]/2),
              oddsLabel.trailingAnchor.constraint(equalTo: deleteButton.leadingAnchor, constant: -C.padding[1])])
-        outcomeLabel.constrain([
-            outcomeLabel.topAnchor.constraint(equalTo: deleteButton.topAnchor, constant: C.padding[1]/2),
-            outcomeLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])
         
+        if viewModel.getOddPoints()=="" {
+            outcomeLabel.constrain([
+                outcomeLabel.topAnchor.constraint(equalTo: deleteButton.topAnchor, constant: C.padding[1]/2),
+                outcomeLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])
+        }
+        else    {
+            outcomeLabel.constrain([
+                outcomeLabel.topAnchor.constraint(equalTo: deleteButton.topAnchor, constant: -C.padding[1]/2),
+                outcomeLabel.trailingAnchor.constraint(equalTo: oddsLabel.leadingAnchor, constant: -C.padding[1])])
+            
+            pointsLabel.constrain([
+                pointsLabel.topAnchor.constraint(equalTo: deleteButton.topAnchor, constant: C.padding[1]/2),
+                pointsLabel.leadingAnchor.constraint(equalTo: outcomeLabel.leadingAnchor, constant: C.padding[2])])
+        }
         separator.constrainBottomCorners(height: 0.5)
     }
     
@@ -128,6 +142,8 @@ class ParlayLegCell: UITableViewCell {
         awayTeamLabel.lineBreakMode = .byTruncatingTail
         //timestamp.setContentHuggingPriority(.required, for: .vertical)
         timestamp.sizeToFit()
+        
+        pointsLabel.isHidden = (viewModel.getOddPoints()=="")
         
         /*
         betsmart.setBackgroundImage(#imageLiteral(resourceName: "betsmartWidget"), for: .normal)

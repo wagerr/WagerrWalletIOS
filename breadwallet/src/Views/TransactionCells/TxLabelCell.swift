@@ -20,6 +20,15 @@ class TxLabelCell: TxDetailRowCell {
             valueLabel.text = newValue
         }
     }
+    
+    public var attrValue: NSAttributedString {
+        get {
+            return valueLabel.attributedText ?? NSAttributedString(string: "")
+        }
+        set {
+            valueLabel.attributedText = newValue
+        }
+    }
 
     // MARK: - Views
     

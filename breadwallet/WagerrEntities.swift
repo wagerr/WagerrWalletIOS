@@ -492,6 +492,7 @@ enum BetTransactionType : Int32 {
     case EVENT_PEERLESS_TOTAL = 0x0a
     case EVENT_PATCH = 0x0b
     case BET_PARLAY = 0x0c
+    case BET_NEW = 0x0d
     case UNKNOWN = -1
 }
 

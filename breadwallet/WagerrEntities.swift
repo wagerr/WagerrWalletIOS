@@ -386,6 +386,7 @@ enum BetResultType : Int32 {
     case STANDARD_PAYOUT = 0x01
     case EVENT_REFUND = 0x02
     case MONEYLINE_REFUND = 0x03
+    case UNDEFINED = 0  // bypass bug at tx 51224c440eeb7d1f81efd95a91853286e0e33c68e5e1aef2f54f4d9b8142142d
     case UNKNOWN = -1
 }
 

@@ -330,6 +330,7 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
             }
             else    { // fiat swap request, open KYC webview...
                 DispatchQueue.main.async {
+                    UIPasteboard.general.string = swapData.response?.stringValue!
                     let kycDetails = WebViewController(theURL: (swapData.response?.stringValue)!
                         , didClose: {
                             self.dismiss(animated: true, completion: nil) }

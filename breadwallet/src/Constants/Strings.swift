@@ -203,11 +203,21 @@ enum S {
         static let spreadPoints = NSLocalizedString("EventDetails.spreadPoints", value:"Spread Points", comment: "Over Odd")
         static let totalPoints = NSLocalizedString("EventDetails.totalPoints", value:"Total Points", comment: "Under Odds")
         static let potentialReward = NSLocalizedString("EventDetails.potentialReward", value:"Potential Reward", comment: "Potential Reward")
+        static let totalOdds = NSLocalizedString("EventDetails.totalOdds", value:"Total odds", comment: "Total Odds")
+        static let addLeg = NSLocalizedString("EventDetails.addLeg", value:"Add leg", comment: "Add leg")
+        static let removeLeg = NSLocalizedString("EventDetails.removeLeg", value:"Remove leg", comment: "Remove leg")
+        static let addLegError = NSLocalizedString("EventDetails.addLegError", value:"Only one leg per event allowed", comment: "Add leg error")
+    }
+    
+    enum ParlayDetails  {
+        static let title = NSLocalizedString("ParlayDetails.title", value:"Multi stake", comment: "Multi stake")
+        static let warning = NSLocalizedString("ParlayDetails.warning", value:"Multi stake needs 2 or more legs", comment: "Multi stake")
+        static let maxLegs = NSLocalizedString("ParlayDetails.maxLegs", value:"Max. number of legs is %@", comment: "Multi stake")
     }
 
     enum BetSettings {
         static let headerMessage = NSLocalizedString("BetSettings.headerMessage", value:"Wagerr Pro Display Settings", comment: "header message.")
-        static let useFeeCheck = NSLocalizedString("BetSettings.useFeeCheck", value:"Include Wagerr network share in betting odds", comment: "Use fee check text")
+        static let useFeeCheck = NSLocalizedString("BetSettings.useFeeCheck", value:"Include Wagerr network share in event odds", comment: "Use fee check text")
         static let newVersionTitle = NSLocalizedString("BetSettings.newVersion", value: "New version", comment: "New version available")
         static let newVersion = NSLocalizedString("BetSettings.newVersion", value: "There is a new version available!\n\nOld version: %d\nNew version: %d", comment: "New version available")
         static let goTo = NSLocalizedString("BetSettings.goTo", value: "Go", comment: "Go")
@@ -217,9 +227,9 @@ enum S {
     }
     
     enum Betting {
-        static let errorMinimum = NSLocalizedString("Betting.errorMinimum", value:"Minimum bet is %d %@", comment: "ninimum bet error message.")
-        static let errorTimeout = NSLocalizedString("Betting.errorTimeout", value:"Event is closed for betting", comment: "Event closed")
-        static let errorSyncinc = NSLocalizedString("Betting.errorSyncinc", value:"Cannot bet while still syncing", comment: "Syncing error")
+        static let errorMinimum = NSLocalizedString("Betting.errorMinimum", value:"Minimum is %d %@", comment: "ninimum error message.")
+        static let errorTimeout = NSLocalizedString("Betting.errorTimeout", value:"Event is closed for staking", comment: "Event closed")
+        static let errorSyncinc = NSLocalizedString("Betting.errorSyncinc", value:"Cannot stake while still syncing", comment: "Syncing error")
         static let payoutImmature = NSLocalizedString("Betting.payoutImmature", value:"Immature", comment: "Immature")
         static let betsmart = NSLocalizedString("Betting.betsmart", value:"Betsmart widget", comment: "Betsmart")
     }
@@ -341,7 +351,7 @@ enum S {
         static let faceIdLimit = NSLocalizedString("Settings.faceIdLimit", value:"Face ID Spending Limit", comment: "Face ID spending limit label")
         static let sendLogs = NSLocalizedString("Settings.sendLogs", value: "Send Logs", comment: "Send Logs option")
         static let resetCurrencies = NSLocalizedString("Settings.resetCurrencies", value: "Reset to Default Currencies", comment: "Reset currencies button")
-        static let betSettings = NSLocalizedString("Settings.betSettings", value: "Bet Settings", comment: "Bet Settings option")
+        static let betSettings = NSLocalizedString("Settings.betSettings", value: "Event Settings", comment: "Event Settings option")
     }
 
     enum About {
@@ -447,8 +457,8 @@ enum S {
     enum HomeScreen {
         static let totalAssets = NSLocalizedString("HomeScreen.totalAssets", value: "total assets", comment: "header")
         static let portfolio = NSLocalizedString("HomeScreen.portfolio", value: "Wallets", comment: "Section header")
-        static let betting = NSLocalizedString("HomeScreen.betting", value: "Betting", comment: "Section header")
-        static let buy = NSLocalizedString("HomeScreen.buy", value: "Buy WGR", comment: "Section header")
+        static let betting = NSLocalizedString("HomeScreen.betting", value: "Events", comment: "Section header")
+        static let buy = NSLocalizedString("HomeScreen.buy", value: "Buy", comment: "Section header")
         static let admin = NSLocalizedString("HomeScreen.admin", value: "Admin", comment: "Section header")
     }
 
@@ -472,8 +482,8 @@ enum S {
         static let received = NSLocalizedString("Search.received", value: "received", comment: "Received filter label")
         static let pending = NSLocalizedString("Search.pending", value: "pending", comment: "Pending filter label")
         static let complete = NSLocalizedString("Search.complete", value: "complete", comment: "Complete filter label")
-        static let bethistory = NSLocalizedString("Search.bethistory", value: "bet history", comment: "Bet history filter label")
-        static let payouts = NSLocalizedString("Search.payouts", value: "payouts", comment: "Payout filter label")
+        static let bethistory = NSLocalizedString("Search.bethistory", value: "history", comment: "history filter label")
+        static let payouts = NSLocalizedString("Search.payouts", value: "rewards", comment: "Reward filter label")
         static let search = NSLocalizedString("Search.search", value: "Search", comment: "Search bar placeholder text")
     }
     
@@ -504,6 +514,7 @@ enum S {
         static let stateTitle = NSLocalizedString("Instaswap.stateTitle", value:"Status", comment: "state title")
         static let TOScontent = NSLocalizedString("Instaswap.TOScontent", value:"I have read and accept the ", comment: "")
         static let TOSlink = NSLocalizedString("Instaswap.TOSlink", value:"Terms of Service", comment: "")
+        static let APIError = NSLocalizedString("Instaswap.APIError", value:"Service currently not available.", comment: "")
     }
 
     enum Prompts {

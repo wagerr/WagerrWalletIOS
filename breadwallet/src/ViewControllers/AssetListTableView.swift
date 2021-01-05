@@ -121,7 +121,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .events:
             return 1
         case .buy:
-            return 1
+            return (E.isTestnet) ? 0 : 1
         case .menu:
             return Menu.allItems.count
         }
@@ -166,7 +166,7 @@ class AssetListTableView: UITableViewController, Subscriber {
             
         case .events:
             var viewModel : HomeEventViewModel!
-            viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports Betting")
+            viewModel = HomeEventViewModel(currency: Currencies.btc, title: "Sports")
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeBetEventCell.cellIdentifier, for: indexPath) as! HomeBetEventCell
             cell.set(viewModel: viewModel)
             return cell
@@ -196,7 +196,7 @@ class AssetListTableView: UITableViewController, Subscriber {
         case .events:
             return S.HomeScreen.betting
         case .buy:
-            return S.HomeScreen.buy
+            return (E.isTestnet) ? "" : S.HomeScreen.buy
         case .menu:
             return S.HomeScreen.admin
         }

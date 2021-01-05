@@ -106,7 +106,8 @@ enum RootModal {
     case none
     case send(currency: CurrencyDef)
     case receive(currency: CurrencyDef)
-    case sendbet(event: BetEventViewModel)
+    case sendbet(event: BetEventViewModel, didChangeLegs: (() -> Void)?)
+    case sendparlay(parlay: ParlayBetEntity, didChangeLegs: (() -> Void)?)
     case loginAddress
     case loginScan
     case requestAmount(currency: CurrencyDef, address: String)
@@ -132,6 +133,7 @@ struct WalletState {
     let transactions: [Transaction]
     let events: [BetEventViewModel]
     let swapTransactions: [SwapViewModel]
+    let parlayBetData : ParlayBetEntity?
     let lastBlockTimestamp: UInt32
     let name: String
     let creationDate: Date
@@ -154,6 +156,7 @@ struct WalletState {
                            transactions: [],
                            events: [],
                            swapTransactions: [],
+                           parlayBetData: nil,
                            lastBlockTimestamp: 0,
                            name: S.AccountHeader.defaultWalletName,
                            creationDate: Date.zeroValue(),
@@ -174,6 +177,7 @@ struct WalletState {
                     transactions: [Transaction]? = nil,
                     events: [BetEventViewModel]? = nil,
                     swapTransactions: [SwapViewModel]? = nil,
+                    parlayBetData : ParlayBetEntity? = nil,
                     lastBlockTimestamp: UInt32? = nil,
                     name: String? = nil,
                     creationDate: Date? = nil,
@@ -194,6 +198,7 @@ struct WalletState {
                            transactions: transactions ?? self.transactions,
                            events: events ?? self.events,
                            swapTransactions: swapTransactions ?? self.swapTransactions,
+                           parlayBetData: parlayBetData ?? self.parlayBetData,
                            lastBlockTimestamp: lastBlockTimestamp ?? self.lastBlockTimestamp,
                            name: name ?? self.name,
                            creationDate: creationDate ?? self.creationDate,
@@ -237,8 +242,10 @@ func ==(lhs: RootModal, rhs: RootModal) -> Bool {
         return lhsCurrency.code == rhsCurrency.code
     case (.receive(let lhsCurrency), .receive(let rhsCurrency)):
         return lhsCurrency.code == rhsCurrency.code
-    case (.sendbet(let lhsEvent), .sendbet(let rhsEvent)):
+    case (.sendbet(let lhsEvent, let lhsFn), .sendbet(let rhsEvent, let rhsFn)):
         return lhsEvent.eventID == rhsEvent.eventID
+    case (.sendparlay(let lhsParlay, let lhsFn), .sendparlay(let rhsParlay, let rhsFs)):
+        return lhsParlay == rhsParlay
     case (.loginAddress, .loginAddress):
         return true
     case (.loginScan, .loginScan):

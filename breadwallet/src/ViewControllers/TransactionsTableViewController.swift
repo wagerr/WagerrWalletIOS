@@ -199,7 +199,9 @@ class TransactionsTableViewController : UITableViewController, Subscriber, Track
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if hasExtraSection && indexPath.section == 0 { return }
         let tx = transactions[indexPath.row]
-        didSelectTransaction(transactionInfo[tx.hash]!, indexPath.row)
+        if transactionInfo[tx.hash] != nil  {
+            didSelectTransaction(transactionInfo[tx.hash]!, indexPath.row)
+        }
     }
 
     private func reload() {

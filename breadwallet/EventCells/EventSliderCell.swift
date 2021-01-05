@@ -1,5 +1,5 @@
 //
-//  EventSpinnerCell.swift
+//  EventSliderCell.swift
 //  breadwallet
 //
 //  Created by MIP
@@ -9,7 +9,13 @@
 import UIKit
 import BRCore
 
-class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
+enum LegButtonMode {
+    case add
+    case remove
+    case hidden
+}
+
+class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     var betChoice : EventBetChoice?
     var cellDelegate: EventBetSliderDelegate?
     
@@ -37,13 +43,22 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
             return amountLabel.frame
         }
     }
+    
+    internal var minBet : Float {
+        return W.BetAmount.min
+    }
+    
+    internal var maxBet : Float {
+        return W.BetAmount.max
+    }
+    
     // MARK: Views
-    private let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
-    private let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))
-    private let rewardLabel = UILabel(font: UIFont.customBody(size: 16.0))
-    private let betSlider = BetSlider(frame: CGRect(x: 50.0, y: 10.0, width: 850.0, height: 35.0))
-    private let doBetButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-    private let doCancelButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+    internal let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
+    internal let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))
+    internal let rewardLabel = UILabel(font: UIFont.customBody(size: 16.0))
+    internal let betSlider = BetSlider(frame: CGRect(x: 50.0, y: 10.0, width: 850.0, height: 35.0))
+    internal let doBetButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+    internal let doCancelButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
     
     // MARK: - Init
     
@@ -81,6 +96,10 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
             rewardLabel.leadingAnchor.constraint(equalTo: amountLabel.leadingAnchor),
             rewardLabel.topAnchor.constraint(equalTo: betSlider.bottomAnchor, constant: C.padding[1]/2)
         ])
+        addButtonConstraints()
+    }
+    
+    func addButtonConstraints() {
         doBetButton.constrain([
             doBetButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -C.padding[4]),
             doBetButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
@@ -142,7 +161,7 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
         doCancelButton.isUserInteractionEnabled = true
         doCancelButton.addGestureRecognizer(tapActionCancel)
     }
-    
+
     // MARK: - Tap actions
     @objc func actionTappedOk(tapGestureRecognizer: UITapGestureRecognizer) {
         textFieldDidEndEditing(amountLabel)
@@ -190,14 +209,14 @@ class EventSliderCell: EventDetailRowCell, UITextFieldDelegate {
     
     func addDoneButtonOnKeyboard()
     {
-        var doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
         doneToolbar.barStyle = UIBarStyle.blackTranslucent
 
-        var flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        var done: UIBarButtonItem = UIBarButtonItem(title: S.RecoverWallet.done, style: UIBarButtonItemStyle.done, target: self, action: #selector(self.doneButtonAction))
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: S.RecoverWallet.done, style: UIBarButtonItemStyle.done, target: self, action: #selector(self.doneButtonAction))
         done.tintColor = .white
 
-        var items = NSMutableArray()
+        let items = NSMutableArray()
         items.add(flexSpace)
         items.add(done)
 
@@ -245,5 +264,95 @@ extension UIImage {
         guard let outputImage = UIGraphicsGetImageFromCurrentImageContext() else { return UIImage() }
         UIGraphicsEndImageContext()
         return outputImage
+    }
+}
+
+class EventSliderCell: EventSliderCellBase {
+
+    internal let doAddLegButton = UIImageView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+    internal let addLegTitleLabel = UILabel(font: UIFont.customBody(size: 16.0))
+
+    override func addSubviews() {
+        super.addSubviews()
+        container.addSubview(doAddLegButton)
+        container.addSubview(addLegTitleLabel)
+    }
+
+    override func addConstraints() {
+        super.addConstraints()
+        
+        addLegTitleLabel.constrain([
+            addLegTitleLabel.leadingAnchor.constraint(equalTo: doAddLegButton.trailingAnchor, constant: C.padding[1]),
+            addLegTitleLabel.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[2])
+        ])
+    }
+    
+    override func addButtonConstraints() {
+        doBetButton.constrain([
+            doBetButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: -C.padding[8]),
+            doBetButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
+            doBetButton.widthAnchor.constraint(equalToConstant: 44.0),
+            doBetButton.heightAnchor.constraint(equalToConstant: 44.0)
+        ])
+        doCancelButton.constrain([
+            doCancelButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            doCancelButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
+            doCancelButton.widthAnchor.constraint(equalToConstant: 40.0),
+            doCancelButton.heightAnchor.constraint(equalToConstant: 40.0)
+        ])
+        doAddLegButton.constrain([
+            doAddLegButton.centerXAnchor.constraint(equalTo: centerXAnchor, constant: C.padding[8]),
+            doAddLegButton.topAnchor.constraint(equalTo: rewardLabel.bottomAnchor, constant: C.padding[1]),
+            doAddLegButton.widthAnchor.constraint(equalToConstant: 44.0),
+            doAddLegButton.heightAnchor.constraint(equalToConstant: 44.0)
+        ])
+        
+    }
+
+    override func setupStyle() {
+        super.setupStyle()
+        
+        addLegTitleLabel.text = S.EventDetails.addLeg
+        doAddLegButton.image =   #imageLiteral(resourceName: "plusAdd")  //.withRenderingMode(.alwaysTemplate)
+                
+        let tapActionAddLeg = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAddRemove(tapGestureRecognizer:)))
+        doAddLegButton.isUserInteractionEnabled = true
+        doAddLegButton.addGestureRecognizer(tapActionAddLeg)
+        let tapActionAddLeg2 = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedAddRemove(tapGestureRecognizer:)))
+        addLegTitleLabel.isUserInteractionEnabled = true
+        addLegTitleLabel.addGestureRecognizer(tapActionAddLeg2)
+    }
+
+    // MARK: - Tap actions
+    @objc func actionTappedAddRemove(tapGestureRecognizer: UITapGestureRecognizer) {
+        textFieldDidEndEditing(amountLabel)
+        if addLegTitleLabel.text == S.EventDetails.addLeg  {
+            self.cellDelegate?.didTapAddLeg(choice: betChoice!)
+            updateLegButton(mode: .remove)
+        }
+        else    {
+            self.cellDelegate?.didTapRemoveLeg(choice: betChoice!)
+            updateLegButton(mode: .add)
+        }
+    }
+    
+    func updateLegButton( mode : LegButtonMode )  {
+        switch mode {
+            case .add:
+                doAddLegButton.isHidden = false
+                addLegTitleLabel.isHidden = false
+                doAddLegButton.image = #imageLiteral(resourceName: "plusAdd")
+                addLegTitleLabel.text = S.EventDetails.addLeg
+            
+            case .remove:
+                doAddLegButton.isHidden = false
+                addLegTitleLabel.isHidden = false
+                doAddLegButton.image = #imageLiteral(resourceName: "minusDel")
+                addLegTitleLabel.text = S.EventDetails.removeLeg
+            
+            case .hidden:
+                doAddLegButton.isHidden = true
+                addLegTitleLabel.isHidden = true
+        }
     }
 }

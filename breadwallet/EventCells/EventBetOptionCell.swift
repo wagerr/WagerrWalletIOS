@@ -23,6 +23,7 @@ enum EventBetType   {
     case over
     case under
     case none
+    case parlay
 }
 
 struct EventBetChoice {

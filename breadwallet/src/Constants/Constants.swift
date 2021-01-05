@@ -87,8 +87,14 @@ struct W    {
         static let selectSize = CGFloat(30.0)
     }
     struct Blockchain   {
-        static let payoutMaturity = 101
+        static let payoutMaturity =  E.isTestnet ? 60 : 101
         static let cutoffSeconds = 12.0 * 60
         static let txUnconfirmed = 2147483647
+        static let parlayMaxLegs = 5
+    }
+    struct Parlay   {
+        static let min: Float = 25.0
+        static let max: Float = 3000.0
+        static let maxLegs = 5
     }
 }

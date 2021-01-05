@@ -85,9 +85,15 @@ class TxDetailViewController: UIViewController, Subscriber {
                 WgrTransactionInfo.create(tx: tx as! BtcTransaction, wm: self.walletManager as! BTCWalletManager, callback: { txInfo in
                     self.transactionInfo = txInfo!
                     self.transaction = tx
+                    
+                    self.LoadAPIData()
                 })
         })
-        
+
+        LoadAPIData()
+    }
+    
+    private func LoadAPIData()    {
         walletManager?.apiClient!.ExplorerTxInfo(txHash: transaction.hash, handler: { [weak self] result in
             guard let `self` = self,
                 case .success(let explorerData) = result else { return }
@@ -102,6 +108,31 @@ class TxDetailViewController: UIViewController, Subscriber {
             }
         })
         
+        if transactionInfo.isCoinbase   { // payout
+            // load all payout outputs and call API for each one.
+            var payoutInfo : [ExplorerTxPayoutData] = []
+            let opCodeManager = WagerrOpCodeManager();
+            
+            let vOuts = opCodeManager.getPayoutOutputsFromCoreTx ( transactionInfo.transaction.getRawTransactionRef(), wallet: walletManager! )
+            if vOuts != nil {
+                let myGroup = DispatchGroup()
+                for vout in vOuts!  {
+                    myGroup.enter()
+                    walletManager?.apiClient!.ExplorerTxPayoutInfo(txHash: transaction.hash, vout: vout, handler: { [weak self] result in
+                        guard let `self` = self,
+                            case .success(let explorerData) = result else { return }
+                        payoutInfo.append(explorerData)
+                        myGroup.leave()
+                    })
+                }
+                myGroup.notify(queue: .main) {
+                    DispatchQueue.main.async {
+                        self.transactionInfo.explorerPayoutInfo = payoutInfo
+                        self.reload()
+                    }
+                }
+            }
+        }
     }
     
     private func setup() {

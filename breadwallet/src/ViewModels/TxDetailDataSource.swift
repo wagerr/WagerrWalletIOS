@@ -73,12 +73,7 @@ class TxDetailDataSource: NSObject {
         }
         
         fields.append(.timestamp)
-        
-        if txInfo.betEvent != nil   {
-            fields.append(.event)
-            fields.append(.eventDetail)
-        }
-        
+        fields.append(.eventDetail)
         fields.append(.address)
         
         if viewModel.comment != nil      { fields.append(.memo) }
@@ -95,6 +90,10 @@ class TxDetailDataSource: NSObject {
     
     func registerCells(forTableView tableView: UITableView) {
         fields.forEach { $0.registerCell(forTableView: tableView) }
+        // register eventDetail cell manually
+        var fields2 : [Field] = []
+        fields2.append(.eventDetail)
+        fields2.forEach { $0.registerCell(forTableView: tableView) }
     }
     
     fileprivate func title(forField field: Field) -> String {
@@ -171,7 +170,7 @@ extension TxDetailDataSource: UITableViewDataSource {
             
         case .eventDetail:
             let labelCell = cell as! TxLabelCell
-            labelCell.value = transactionInfo.eventDetailString
+            labelCell.attrValue = transactionInfo.eventDetailString
         
         case .timestamp:
             let labelCell = cell as! TxLabelCell

@@ -47,6 +47,7 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
     
     var isWatchOnly: Bool = false {
         didSet {
+            /*
             if E.isTestnet || isWatchOnly {
                 if E.isTestnet && isWatchOnly {
                     modeLabel.text = "(Testnet - Watch Only)"
@@ -57,6 +58,7 @@ class EventsHeaderView : UIView, GradientDrawable, Subscriber, UITextFieldDelega
                 }
                 modeLabel.isHidden = false
             }
+             */
             if E.isScreenshots {
                 modeLabel.isHidden = true
             }

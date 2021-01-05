@@ -23,10 +23,12 @@ protocol EventBetOptionDelegate  {
 protocol EventBetSliderDelegate  {
     func didTapOk(choice: EventBetChoice, amount: Int)
     func didTapCancel()
+    func didTapAddLeg(choice: EventBetChoice)
+    func didTapRemoveLeg(choice: EventBetChoice)
 }
 
 class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDelegate, EventBetSliderDelegate, Trackable {
-       
+    
     // MARK: - Private Vars
     
     private let container = UIView()
@@ -35,6 +37,8 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private let footer = UIView()
     private let separator = UIView()
     private let tableView = UITableView()
+    private let parlayOpenButton = UIButton(type: .custom)
+    private let parlayBet: ParlayBetEntity?
     
     private var sliderPosToRemove : Int = 0
     private var containerHeightConstraint: NSLayoutConstraint!
@@ -54,6 +58,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     private let confirmTransitioningDelegate = PinTransitioningDelegate()
     var presentVerifyPin: ((String, @escaping ((String) -> Void))->Void)?
     var onPublishSuccess: (()->Void)?
+    var didChangeLegs: (()->Void)
     
     private let transitionDelegate = ModalTransitionDelegate(type: .transactionDetail)
     
@@ -70,11 +75,13 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
     
     // MARK: - Init
     
-    init(event: BetEventViewModel, wm: BTCWalletManager, sender: BitcoinSender) {
+    init(event: BetEventViewModel, wm: BTCWalletManager, sender: BitcoinSender, didChangeLegs: @escaping (()-> Void)) {
         self.event = event
         self.viewModel = event
         self.walletManager = wm
         self.sender = sender
+        self.didChangeLegs = didChangeLegs
+        self.parlayBet = wm.parlayBet
         //self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.betSlip, currency: event.currency)
         
         super.init(nibName: nil, bundle: nil)
@@ -138,9 +145,28 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         }
         
         dataSource?.registerBetChoice(choice: choice)
+        updateLegButton( choice: choice )
     }
     
-    // bet slider cell delegates
+    func updateLegButton( choice: EventBetChoice )  {
+        switch (walletManager.parlayBet.checkBetInParlay(eventID: viewModel.eventID, outcome: choice.getOutcome()))  {
+            case .OUTCOME_IN_LEG:
+                dataSource?.updateLegButton(mode: .remove)
+            
+            case .EVENT_IN_LEG:
+                dataSource?.updateLegButton(mode: .hidden)
+            
+            case .NOT_IN_LEG:
+                if walletManager.parlayBet.legCount == W.Parlay.maxLegs   {
+                    dataSource?.updateLegButton(mode: .hidden)
+                }
+                else    {
+                    dataSource?.updateLegButton(mode: .add)
+                }
+        }
+    }
+    
+    // MARK: bet slider cell delegates
     func didTapOk(choice: EventBetChoice, amount: Int) {
         // check event timestamp
         let now = Date()
@@ -171,7 +197,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             let confirm = ConfirmationViewController(amount: Amount(amount: cryptoAmount, currency: currency),
                                                      fee: feeAmount,
                                                      feeType: .regular,
-                                                     address: "Betting",
+                                                     address: "Event contract",
                                                      isUsingBiometrics: sender.canUseBiometrics,
                                                      currency: currency)
             confirm.successCallback = doSend
@@ -186,6 +212,38 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         
     }
        
+    func didTapCancel() {
+        dataSource?.prepareBetLayout(choice: nil)
+        tableView.beginUpdates()
+        tableView.deleteRows(at: [IndexPath(row: sliderPosToRemove, section: 0)], with: .none)
+        tableView.endUpdates()
+        sliderPosToRemove = 0
+        let choice = EventBetChoice.init(option: .none, type: .none, odd: 1.0 )
+        dataSource?.cleanBetOptions( choice: choice )
+    }
+
+    func didTapAddLeg(choice: EventBetChoice)   {
+        let leg = ParlayLegEntity.init(event: viewModel, outcome: choice.getOutcome(), odd: UInt32(0))
+        leg.updateOdd()
+        if walletManager.parlayBet.add(leg: leg)    {
+            didChangeLegsBetSlip()
+        }
+        else {
+            if walletManager.parlayBet.legCount == W.Parlay.maxLegs   {
+                self.showAlert(title: S.Alert.error, message: String.init(format: S.ParlayDetails.maxLegs, W.Parlay.maxLegs), buttonLabel: S.Button.ok)
+            }
+            else    {
+                self.showAlert(title: S.Alert.error, message: S.EventDetails.addLegError, buttonLabel: S.Button.ok)
+            }
+        }
+    }
+    
+    func didTapRemoveLeg(choice: EventBetChoice)    {
+        walletManager.parlayBet.removeByEventID(eventID: viewModel.eventID)
+        didChangeLegsBetSlip()
+    }
+    
+    // MARK: other tap events
     func didTapBetsmart(teamName : String)   {
         var style = "light"
         if #available(iOS 13.0, *) {
@@ -234,16 +292,6 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         }
     }
     
-    func didTapCancel() {
-        dataSource?.prepareBetLayout(choice: nil)
-        tableView.beginUpdates()
-        tableView.deleteRows(at: [IndexPath(row: sliderPosToRemove, section: 0)], with: .none)
-        tableView.endUpdates()
-        sliderPosToRemove = 0
-        let choice = EventBetChoice.init(option: .none, type: .none, odd: 1.0 )
-        dataSource?.cleanBetOptions( choice: choice )
-    }
-
     private func setup() {
         addSubViews()
         addConstraints()
@@ -258,6 +306,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         view.addSubview(tableView)
         view.addSubview(footer)
         view.addSubview(separator)
+        view.addSubview(parlayOpenButton)
     }
     
     private func addConstraints() {
@@ -287,6 +336,13 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
             separator.topAnchor.constraint(equalTo: footer.topAnchor, constant: 1.0),
             separator.trailingAnchor.constraint(equalTo: footer.trailingAnchor),
             separator.heightAnchor.constraint(equalToConstant: 0.5) ])
+        
+        parlayOpenButton.translatesAutoresizingMaskIntoConstraints = false
+        parlayOpenButton.trailingAnchor.constraint(equalTo: view.trailingAnchor , constant: -10).isActive = true
+        parlayOpenButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+        parlayOpenButton.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
+        parlayOpenButton.widthAnchor.constraint(equalToConstant: 44.0).isActive = true
+        parlayOpenButton.isHidden = (parlayBet?.legCount == 0) ? true : false
     }
     
     private func setupActions() {
@@ -316,7 +372,38 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         tableView.dataSource = dataSource
         tableView.reloadData()
         
-        //header.setTitle(viewModel.title)
+        parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        parlayOpenButton.titleLabel!.font = UIFont.customBold(size: 22.0)
+        parlayOpenButton.frame.size = CGSize(width: 44, height: 44)
+        parlayOpenButton.backgroundColor = .systemOrange
+        parlayOpenButton.clipsToBounds = true
+        parlayOpenButton.layer.cornerRadius = 24
+        parlayOpenButton.layer.borderWidth = 0.0
+        
+        let tapActionOpenParlay = UITapGestureRecognizer(target: self, action:#selector(self.actionTappedOpenParlay(tapGestureRecognizer:)))
+        parlayOpenButton.isUserInteractionEnabled = true
+        parlayOpenButton.addGestureRecognizer(tapActionOpenParlay)
+    }
+        
+    @objc func actionTappedOpenParlay(tapGestureRecognizer: UITapGestureRecognizer) {
+        Store.perform(action: RootModalActions.Present(modal: .sendparlay(parlay: (walletManager as! BTCWalletManager).parlayBet, didChangeLegs: didChangeLegsBetSlip) ))
+    }
+    
+    private func didChangeLegsBetSlip()    {
+        if parlayBet?.legCount == 0 {
+            parlayOpenButton.isHidden = true
+        }
+        else    {
+            parlayOpenButton.isHidden = false
+            parlayOpenButton.setTitle( String.init(parlayBet!.legCount) , for: .normal)
+        }
+        // refresh parlay button
+        if ( dataSource?.currChoice != nil)     {
+            updateLegButton(choice: dataSource!.currChoice! )
+        }
+        
+        // bubble up
+        didChangeLegs()
     }
     
     private func reload() {
@@ -428,7 +515,7 @@ enum EventExplorerType {
 extension EventDetailViewController {
 
     static func navigate(to: String, type: EventExplorerType) {
-        let baseURL = "https://explorer.wagerr.com/#"
+        let baseURL = (E.isTestnet) ? "https://explorer2.wagerr.com/#" : "https://explorer.wagerr.com/#"
         var typeURL = ""
         switch type {
             case .address:

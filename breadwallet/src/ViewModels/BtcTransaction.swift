@@ -8,7 +8,7 @@
 
 import Foundation
 import BRCore
-
+import UIKit
 
 struct WgrTransactionInfo {
     var transaction : BtcTransaction
@@ -17,6 +17,7 @@ struct WgrTransactionInfo {
     var betEvent : BetEventViewModel?
     var currentHeight : UInt32
     var explorerInfo : ExplorerTxVout?
+    var explorerPayoutInfo : [ExplorerTxPayoutData]?
     
     init(tx: BtcTransaction, ent: BetEntity?, res: BetResult?, event: BetEventViewModel?, currHeight: UInt32)  {
         self.transaction = tx
@@ -36,6 +37,9 @@ struct WgrTransactionInfo {
         
         ent = opCodeManager.getEventIdFromCoreTx( (tx.getRawTransactionRef())  )
         if ent == nil {
+            // results in block - 1 rule is no longer enforced (testnet July 2020), show generic "payout" then use API for tx detail
+            callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+             /*
             if tx.isCoinbase    {
                 wm.db?.loadResultAtHeigh(blockHeight: Int(tx.blockHeight-1), callback: { result in
                     res = result
@@ -49,16 +53,24 @@ struct WgrTransactionInfo {
                         callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
                     }
                 })
+                
+                callback( WgrTransactionInfo(tx: tx, ent: ent, res: nil, event: nil, currHeight: currHeight) )
             }
             else    {
                 callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
             }
+             */
         }
         else    {
-            wm.db?.loadEvents( ent!.eventID, 0, callback: { events in
-                event = events[0] ?? nil
+            if ent!.eventID == 0    {
                 callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
-            })
+            }
+            else    {
+                wm.db?.loadEvents( ent!.eventID, 0, callback: { events in
+                    event = events[0] ?? nil
+                    callback( WgrTransactionInfo(tx: tx, ent: ent, res: res, event: event, currHeight: currHeight) )
+                })
+            }
         }
     }
     
@@ -75,15 +87,91 @@ struct WgrTransactionInfo {
         return (betEvent != nil) ? betEvent!.shortTimestamp : ""
     }
     
-    var eventDetailString : String {
-        var ret = String.init(format: "%@ %@ - %@ %@", self.betEvent!.txHomeTeam, self.betEvent!.txHomeScore, self.betEvent!.txAwayScore, self.betEvent!.txAwayTeam)
-        if explorerInfo != nil {
-            ret += String.init(format: "\nPrice: %.2f", (explorerInfo?.price ?? 0)!)
-            if explorerInfo?.total != nil && Double((explorerInfo?.total)!)! > 0.0  {
-                ret += String.init(format: "  Total: %@", (explorerInfo?.total ?? 0)!)
+    var eventDetailString : NSAttributedString {
+        var ret = NSMutableAttributedString(string: "")
+        if explorerInfo != nil  {
+            if explorerInfo?.isParlay == 1  {
+                for leg in (explorerInfo?.legs)! {
+                    ret.append(NSAttributedString(string: String.init(format: "%@ - %@", leg.homeTeam!, leg.awayTeam!)))
+                    ret.append(NSAttributedString(string: String.init(format: " ( Stake: %@, Price: %@ , ", leg.market!, BetEventDatabaseModel.getOddTx( odd: UInt32(leg.price! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))))
+                    if leg.spread != nil  {
+                        ret.append(NSAttributedString(string: String.init(format: "Spread: %@\n", leg.spread!)))
+                    }
+                    if leg.total != nil  {
+                        ret.append(NSAttributedString(string: String.init(format: "Total: %@\n", leg.total!)))
+                    }
+                
+                    if leg.homeScore != nil && leg.awayScore != nil {
+                        ret.append(NSAttributedString(string:  String.init(format: "Score: %@ - %@ ", leg.homeScoreTx, leg.awayScoreTx)))
+                    }
+                    else    {
+                        ret.append(NSAttributedString(string:  "Score: Pending "))
+                    }
+                    if leg.betOutcome != nil    {
+                        ret.append(NSAttributedString(string: String.init(format: ", Outcome: %@ ", (leg.betResult)! )))
+                        let image1Attachment = NSTextAttachment()
+                        image1Attachment.image = UIImage(named: leg.resultIcon)
+                        image1Attachment.bounds = CGRect(x: 0, y: 0, width: 24, height: 24)
+                        let image1String = NSAttributedString(attachment: image1Attachment)
+                        ret.append(image1String)
+                    }
+                    ret.append(NSAttributedString(string: " ) \n\n"));
+                }
+                ret.append(NSAttributedString(string: String.init(format: "Multi Event Price: %@, Outcome: %@ ", explorerInfo!.parlayPriceTx, (explorerInfo?.betResultType)!)))
+                let image1Attachment = NSTextAttachment()
+                image1Attachment.image = UIImage(named: explorerInfo!.resultIcon)
+                image1Attachment.bounds = CGRect(x: 0, y: 0, width: 24, height: 24)
+                let image1String = NSAttributedString(attachment: image1Attachment)
+                ret.append(image1String)
+                ret.append(NSAttributedString(string: " \n\n"));
             }
-            if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! != 0.0  {
-                ret += String.init(format: "  Spread: %@", (explorerInfo?.spread ?? 0)!)
+            else    {
+                guard explorerInfo?.homeTeam != nil    else     { return ret }
+                
+                ret = NSMutableAttributedString(string: String.init(format: "%@ - %@", (explorerInfo?.homeTeam)!, (explorerInfo?.awayTeam)!) )
+
+                ret.append(NSAttributedString(string: String.init(format: "\nPrice: %@, ", BetEventDatabaseModel.getOddTx( odd: UInt32((explorerInfo?.price!)! * Double(EventMultipliers.ODDS_MULTIPLIER)) ))))
+                if explorerInfo?.total != nil && Double((explorerInfo?.total)!)! > 0.0  {
+                    ret.append(NSAttributedString(string: String.init(format: "Total: %@\n", (explorerInfo?.total!)!)))
+                }
+                if explorerInfo?.spread != nil && Double((explorerInfo?.spread)!)! != 0.0  {
+                    ret.append(NSAttributedString(string: String.init(format: "Spread: %@\n", (explorerInfo?.spread!)!)))
+                }
+                if explorerInfo?.homeScore != nil && explorerInfo?.awayScore != nil {
+                    ret.append(NSAttributedString(string: String.init(format: "Score: %@ - %@ ", explorerInfo!.homeScoreTx, explorerInfo!.awayScoreTx)))
+                }
+                else    {
+                    ret.append(NSAttributedString(string: "Score: Pending "))
+                }
+                
+                if explorerInfo?.betResultType != nil    {
+                    ret.append(NSAttributedString(string: String.init(format: ", Result: %@ ", (explorerInfo?.betResultType)! )))
+                    let image1Attachment = NSTextAttachment()
+                    image1Attachment.image = UIImage(named: explorerInfo!.resultIcon)
+                    image1Attachment.bounds = CGRect(x: 0, y: 0, width: 24, height: 24)
+                    let image1String = NSAttributedString(attachment: image1Attachment)
+                    ret.append(image1String)
+                }
+            }
+        }
+        else    {
+            if explorerPayoutInfo != nil  {
+                for payout in explorerPayoutInfo!    {
+                    ret.append(NSAttributedString(string: String.init(format: "Reward: %.4f \n", payout.payout! )))
+                    for leg in (payout.legs)!   {
+                        ret.append(NSAttributedString(string: leg.description + "\n"))
+                    }
+                    if payout.legs!.count > 1   {
+                        ret.append(NSAttributedString(string: String.init(format: "Multi Event Price: %@\n", payout.parlayPriceTx)))
+                    }
+                    ret.append(NSAttributedString(string: "\n"))
+                }
+            }
+            else {
+                guard let _ = betEntity, let pb = betEntity?.parlayBet else    { return ret }
+                for (eventID, outcome) in zip(pb.eventID, pb.outcome)   {
+                    ret.append(NSAttributedString(string: String.init(format: "#%d - %@ \n", eventID, outcome.description)))
+                }
             }
         }
         return ret
@@ -102,11 +190,11 @@ struct WgrTransactionInfo {
                     else {
                         txDesc = String.init(format: "Event #%d info not available", self.betEvent!.eventID)
                     }
-                    txDate = String.init(format: "PAYOUT Event #%d", self.betEvent!.eventID)
+                    txDate = String.init(format: "REWARD Event #%d", self.betEvent!.eventID)
                 }
                 else    {
-                    txDesc = String.init(format: "Result not available at height %@", transaction.blockHeight)
-                    txDate = "PAYOUT"
+                    //txDesc = String.init(format: "Result not available at height %@", transaction.blockHeight)
+                    txDate = "REWARD"
                 }
                 if isInmature {
                     var confirmations = Int(self.currentHeight)-Int(transaction.blockHeight)
@@ -119,13 +207,20 @@ struct WgrTransactionInfo {
             }
         }
         else    {   // regular bet
-            if self.betEvent != nil {
-                txDesc = self.betEvent!.getDescriptionForBet(bet: self.betEntity!)
-                txDate = self.betEvent!.getEventDateForBet(bet: self.betEntity!)
+            let eventID = self.betEntity!.eventID
+            if eventID == 0 {
+                txDesc = String.init(format: "MULTI (%d)", self.betEntity!.parlayBet!.eventID.count )
+                txDate = "STAKE"
             }
-            else {
-                txDesc = String.init(format: "Event #%d info not available", self.betEntity!.eventID)
-                txDate = String.init(format: "BET %@ ", self.betEntity!.outcome.description)
+            else    {
+                if self.betEvent != nil {
+                    txDesc = self.betEvent!.getDescriptionForBet(bet: self.betEntity!)
+                    txDate = self.betEvent!.getEventDateForBet(bet: self.betEntity!)
+                }
+                else {
+                    txDesc = String.init(format: "Event #%d info not available", self.betEntity!.eventID)
+                    txDate = String.init(format: "STAKE %@ ", self.betEntity!.outcome.description)
+                }
             }
         }
         return ( date: txDate, description: txDesc )
@@ -160,7 +255,7 @@ struct BtcTransaction: Transaction {
     }
     
     var isCoinbase : Bool   {
-        return tx.pointee.inCount==1 && tx.pointee.outCount>1 && tx.pointee.outputs[0].swiftAddress.isEmpty
+        return tx.pointee.inCount==1 && tx.pointee.outCount>1 && tx.pointee.outputs[0].swiftAddress.isEmpty &&  tx.pointee.inputs[0].swiftAddress.isEmpty
     }
     
     let amount: UInt256

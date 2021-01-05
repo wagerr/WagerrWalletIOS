@@ -67,9 +67,9 @@ class BetTournament : BetMapping {
 
 enum EventMultipliers  {
     static var ODDS_MULTIPLIER : UInt32 = 10000
-    static var SPREAD_MULTIPLIER : UInt32 = 10
-    static var TOTAL_MULTIPLIER : UInt32 = 10
-    static var RESULT_MULTIPLIER : UInt32 = 10
+    static var SPREAD_MULTIPLIER : UInt32 = 100
+    static var TOTAL_MULTIPLIER : UInt32 = 100
+    static var RESULT_MULTIPLIER : UInt32 = 100
 }
 
 class BetEventDatabaseModel : BetCore {
@@ -148,24 +148,29 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txHomeOdds : String {
-        return getOddTx(odd: homeOdds)
+        return BetEventDatabaseModel.getOddTx(odd: homeOdds)
     }
     var txAwayOdds : String {
-        return getOddTx(odd: awayOdds)
+        return BetEventDatabaseModel.getOddTx(odd: awayOdds)
     }
     var txDrawOdds : String {
-        return getOddTx(odd: drawOdds)
+        return BetEventDatabaseModel.getOddTx(odd: drawOdds)
     }
     
     var txSpreadPoints : String {
-        return (spreadPoints==0) ? "N/A" : String(format: "%.1f", Float(spreadPoints) / Float(EventMultipliers.SPREAD_MULTIPLIER) )
+        return BetEventDatabaseModel.getSpreadTx(spread: spreadPoints)
+    }
+    
+    static func getSpreadTx(spread: UInt32) -> String {
+        let signed   = Int16(bitPattern: UInt16(spread))
+        return (spread==0) ? "N/A" : String(format: "%.1f", abs(Float(signed) / Float(EventMultipliers.SPREAD_MULTIPLIER)) )
     }
     
     var getOddFormatString : String   {
         return (UserDefaults.showAmericanNotationInOdds) ? "%.0f" : "%.2f" ;
     }
     
-    func getOddTx(odd : UInt32) -> String   {
+    static func getOddTx(odd : UInt32) -> String   {
         //return (odd==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd: Float(odd) / //Float(EventMultipliers.ODDS_MULTIPLIER) ) )
         var ret = (odd==0) ? "N/A" : getOddNumberFormat.string(from: NSNumber(value: getOdd(odd: Float(odd) / Float(EventMultipliers.ODDS_MULTIPLIER) )) )!
         
@@ -176,7 +181,7 @@ class BetEventDatabaseModel : BetCore {
         return ret
     }
     
-    var getOddNumberFormat : NumberFormatter   {
+    static var getOddNumberFormat : NumberFormatter   {
         let nf = NumberFormatter()
         nf.numberStyle = .decimal
         nf.decimalSeparator = "."
@@ -187,13 +192,13 @@ class BetEventDatabaseModel : BetCore {
         return nf
     }
     
-    private func getOdd( odd : Float ) -> Float   {
+    public static func getOdd( odd : Float ) -> Float   {
         var ret = (UserDefaults.showNetworkFeesInOdds) ? odd : ((odd-1)*0.94)+1
         ret = (UserDefaults.showAmericanNotationInOdds) ? DecimalToAmerican(odd: ret) : ret
         return ret
     }
     
-    func DecimalToAmerican( odd : Float ) -> Float    {
+    static func DecimalToAmerican( odd : Float ) -> Float    {
         if odd > 2.0    {
             return (odd - 1.0) * 100.0
         }
@@ -203,24 +208,32 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txSpreadPointsFormatted : String    {
-        let fmt = (homeOdds>awayOdds) ? "+%@/-%@" : "-%@/+%@"
+        //let fmt = (homeOdds>awayOdds) ? "+%@/-%@" : "-%@/+%@"
+        // spreads v2
+        let signed   = Int16( bitPattern: UInt16(spreadPoints))
+        let fmt = (signed>0) ? "+%@/-%@" : "-%@/+%@"
         return String.init(format: fmt, txSpreadPoints, txSpreadPoints)
     }
     
     var txHomeSpread : String {
-        return getOddTx(odd: spreadHomeOdds)
+        return BetEventDatabaseModel.getOddTx(odd: spreadHomeOdds)
     }
     var txAwaySpread : String {
-        return getOddTx(odd: spreadAwayOdds)
+        return BetEventDatabaseModel.getOddTx(odd: spreadAwayOdds)
     }
     var txTotalPoints : String {
-        return (totalPoints==0) ? "N/A" : String(format: "%.1f", Float(totalPoints) / Float(EventMultipliers.TOTAL_MULTIPLIER) )
+        return BetEventDatabaseModel.getTotalTx(total: totalPoints)
     }
+    
+    static func getTotalTx(total: UInt32) -> String {
+        return (total==0) ? "N/A" : String(format: "%.1f", Float(total) / Float(EventMultipliers.TOTAL_MULTIPLIER))
+    }
+    
     var txOverOdds : String {
-        return getOddTx(odd: overOdds)
+        return BetEventDatabaseModel.getOddTx(odd: overOdds)
     }
     var txUnderOdds : String {
-        return getOddTx(odd: underOdds)
+        return BetEventDatabaseModel.getOddTx(odd: underOdds)
     }
     
     var hasSpreads : Bool   {
@@ -339,7 +352,7 @@ class BetEventViewModel : BetEventDatabaseModel, Equatable {
     }
     
     func getEventDateForBet(bet: BetEntity) -> String  {
-        return String.init(format: "BET %@ ", bet.outcome.description)
+        return String.init(format: "STAKE %@ ", bet.outcome.description)
     }
     
     func zeroedOdds() -> Bool   {
@@ -415,6 +428,7 @@ class BetResult : BetCore {
 enum BetType : Int32 {
     case PEERLESS = 0x03
     case CHAINLOTTO = 0x07
+    case PARLAY = 0x0C
     case UNKNOWN = -1
 }
 
@@ -455,6 +469,7 @@ class BetEntity : BetCore {
     var eventID : UInt64
     var outcome : BetOutcome
     var amount : UInt64
+    var parlayBet : ParlayBetEntity?
 
     init(blockheight: UInt64, timestamp: TimeInterval, txHash: String, version: UInt32, type: BetType, eventID: UInt64, outcome: BetOutcome, amount: UInt64) {
         self.type = type
@@ -478,6 +493,175 @@ enum BetTransactionType : Int32 {
     case EVENT_PEERLESS_TOTAL = 0x0a
     case EVENT_PATCH = 0x0b
     case BET_PARLAY = 0x0c
+    case BET_NEW = 0x0d
     case UNKNOWN = -1
+}
+
+class ParlayLegEntity   {
+
+    var event : BetEventViewModel {
+        didSet {
+            updateOdd()
+        }
+    }
+    public let outcome : BetOutcome
+    public var odd : UInt32
+    
+    init(event : BetEventViewModel, outcome: BetOutcome, odd: UInt32)   {
+        self.event = event
+        self.outcome = outcome
+        self.odd = odd
+    }
+
+    public func getOddColor() -> UIColor    {
+        switch (outcome)    {
+            case .MONEY_LINE_HOME_WIN, .SPREADS_HOME, .TOTAL_OVER:
+                return .colorHome;
+
+            case .MONEY_LINE_AWAY_WIN, .SPREADS_AWAY, .TOTAL_UNDER:
+                return .colorAway;
+
+            case .MONEY_LINE_DRAW:
+                return .colorDraw;
+
+            default:
+                return .colorHome;
+        }
+    }
+    
+    public func getOddPoints() -> String    {
+        switch (outcome)    {
+            case .MONEY_LINE_HOME_WIN, .MONEY_LINE_AWAY_WIN:
+                return ""
+
+            case .SPREADS_HOME, .SPREADS_AWAY:
+                return event.txSpreadPoints
+
+            case .TOTAL_UNDER, .TOTAL_OVER:
+                return event.txTotalPoints
+
+            default:
+                return ""
+        }
+    }
+
+    public func updateOdd() {
+        switch (outcome)    {
+            case .MONEY_LINE_HOME_WIN:
+                odd = event.homeOdds;
+
+            case .SPREADS_HOME:
+                odd = event.spreadHomeOdds;
+
+            case .TOTAL_OVER:
+                odd = event.overOdds;
+
+            case .MONEY_LINE_AWAY_WIN:
+                odd = event.awayOdds;
+
+            case .SPREADS_AWAY:
+                odd = event.spreadAwayOdds;
+
+            case .TOTAL_UNDER:
+                odd = event.underOdds;
+
+            case .MONEY_LINE_DRAW:
+                odd = event.drawOdds;
+
+            default:
+                odd = 0;
+        }
+    }
+
+    public func isValid( ) -> Bool {
+        let now = Date()
+        return event.eventTimestamp - now.timeIntervalSinceReferenceDate >= W.Blockchain.cutoffSeconds
+    }
+}
+
+class ParlayBetEntity   {
+
+    var currency: CurrencyDef { return Currencies.btc }     // always WGR
+    var legs = [ParlayLegEntity]()
+    var amount : Amount = Amount( amount: 0 , currency: Currencies.btc)
+
+    var eventID = [UInt32]()
+    var outcome = [BetOutcome]()
+    
+    public func get( index : Int ) -> ParlayLegEntity
+    {
+        return legs[index];
+    }
+
+    public func add( leg : ParlayLegEntity ) -> Bool {
+        if legs.count == W.Parlay.maxLegs    { // validate max legs
+            return false
+        }
+        // validate rule only one leg per event
+        if ( searchLegByEventID(eventID: leg.event.eventID) > -1 )   {
+            return false;
+        }
+        legs.append(leg)
+        return true
+    }
+
+    public func removeAt( index : Int ) -> Void    {
+        legs.remove(at: index)
+    }
+    
+    public func removeByEventID( eventID : UInt64 ) -> Void   {
+        let index : Int = searchLegByEventID(eventID: eventID);
+        if index > -1  {
+            removeAt(index: index);
+        }
+    }
+
+    var legCount : Int    {
+        return legs.count;
+    }
+
+    public func clearLegs() -> Void {
+        legs.removeAll();
+    }
+
+    enum BetInParlayResult {
+        case NOT_IN_LEG
+        case EVENT_IN_LEG
+        case OUTCOME_IN_LEG
+    }
+
+    public func checkBetInParlay( eventID : UInt64, outcome : BetOutcome) -> BetInParlayResult    {
+        let index : Int = searchLegByEventID(eventID: eventID);
+        if ( index > -1 ) {
+            if (legs[index].outcome == outcome)    {
+                return .OUTCOME_IN_LEG
+            }
+            else    {
+                return .EVENT_IN_LEG;
+            }
+        }
+        else {
+            return .NOT_IN_LEG;
+        }
+    }
+
+    public func searchLegByEventID( eventID : UInt64 ) -> Int   {
+        let retIndex = legs.firstIndex(where: { $0.event.eventID == eventID })
+        return retIndex ?? -1
+    }
+}
+
+extension ParlayBetEntity : Equatable {}
+
+func ==(lhs: ParlayBetEntity, rhs: ParlayBetEntity) -> Bool {
+    return lhs.legs == rhs.legs 
+}
+
+extension ParlayLegEntity : Equatable {}
+
+func ==(lhs: ParlayLegEntity, rhs: ParlayLegEntity) -> Bool {
+    return lhs.event == rhs.event &&
+        lhs.odd == rhs.odd &&
+        lhs.outcome == rhs.outcome
 }
 

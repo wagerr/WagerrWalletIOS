@@ -23,6 +23,9 @@
 		062D29B023A65DDD009ADC9E /* EventSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 062D29AF23A65DDD009ADC9E /* EventSliderCell.swift */; };
 		0635AF9C240F98AB009C12F5 /* TOSCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AF9B240F98AB009C12F5 /* TOSCell.swift */; };
 		0635AFA0242DE71A009C12F5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AF9F242DE71A009C12F5 /* WebViewController.swift */; };
+		0635AFA2243A3EBD009C12F5 /* ParlaySliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA1243A3EBD009C12F5 /* ParlaySliderCell.swift */; };
+		0635AFA6243F1EB0009C12F5 /* ParlayDetailDatasource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA5243F1EB0009C12F5 /* ParlayDetailDatasource.swift */; };
+		0635AFA8243F1FB6009C12F5 /* ParlayLegCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA7243F1FB6009C12F5 /* ParlayLegCell.swift */; };
 		0642675023EECFF90022A143 /* SwapListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642674F23EECFF90022A143 /* SwapListCell.swift */; };
 		0642675223F174E60022A143 /* HomeSwapCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642675123F174E60022A143 /* HomeSwapCell.swift */; };
 		0642675423F1BA250022A143 /* SwapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0642675323F1BA250022A143 /* SwapViewController.swift */; };
@@ -34,7 +37,9 @@
 		0670668823AF596200D4238D /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668723AF596200D4238D /* Checkbox.swift */; };
 		0670668A23B0C61500D4238D /* EventHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0670668923B0C61500D4238D /* EventHeaderCell.swift */; };
 		06747C68234BBFC400E52463 /* quark.c in Sources */ = {isa = PBXBuildFile; fileRef = 06FB16CB20BFF44B00EA6D9E /* quark.c */; };
-		0682C7942495088800E433FA /* WagerrExplorerEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0682C7932495088800E433FA /* WagerrExplorerEntities.swift */; };
+		0682C7922494CB5E00E433FA /* WagerrExplorerEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0682C7912494CB5D00E433FA /* WagerrExplorerEntities.swift */; };
+		069B4E8024430E4A009DD5DE /* ParlayDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0635AFA3243F1826009C12F5 /* ParlayDetailViewController.swift */; };
+		069B4E8224432158009DD5DE /* WarningRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069B4E8124432158009DD5DE /* WarningRowCell.swift */; };
 		06A3D905239DB5CC00518AD8 /* EventsPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */; };
 		06C0C6C220B360C10047C540 /* x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C020B360C00047C540 /* x11.c */; };
 		06C0C6E120B377250047C540 /* keccak.c in Sources */ = {isa = PBXBuildFile; fileRef = 06C0C6C820B377250047C540 /* keccak.c */; };
@@ -710,6 +715,10 @@
 		062D29AF23A65DDD009ADC9E /* EventSliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventSliderCell.swift; sourceTree = "<group>"; };
 		0635AF9B240F98AB009C12F5 /* TOSCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TOSCell.swift; sourceTree = "<group>"; };
 		0635AF9F242DE71A009C12F5 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		0635AFA1243A3EBD009C12F5 /* ParlaySliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParlaySliderCell.swift; sourceTree = "<group>"; };
+		0635AFA3243F1826009C12F5 /* ParlayDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ParlayDetailViewController.swift; path = src/ViewControllers/ParlayDetailViewController.swift; sourceTree = "<group>"; };
+		0635AFA5243F1EB0009C12F5 /* ParlayDetailDatasource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParlayDetailDatasource.swift; sourceTree = "<group>"; };
+		0635AFA7243F1FB6009C12F5 /* ParlayLegCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParlayLegCell.swift; sourceTree = "<group>"; };
 		063B76E820C282A600B3CB35 /* neoscrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = neoscrypt.h; sourceTree = "<group>"; };
 		063B76E920C282A600B3CB35 /* neoscrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = neoscrypt.c; sourceTree = "<group>"; };
 		063B76EB20C33A3000B3CB35 /* hash9.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hash9.c; sourceTree = "<group>"; };
@@ -724,7 +733,8 @@
 		0670668523AF585100D4238D /* BetSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BetSettingsViewController.swift; path = src/ViewControllers/BetSettingsViewController.swift; sourceTree = "<group>"; };
 		0670668723AF596200D4238D /* Checkbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
 		0670668923B0C61500D4238D /* EventHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventHeaderCell.swift; sourceTree = "<group>"; };
-		0682C7932495088800E433FA /* WagerrExplorerEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WagerrExplorerEntities.swift; sourceTree = "<group>"; };
+		0682C7912494CB5D00E433FA /* WagerrExplorerEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WagerrExplorerEntities.swift; sourceTree = "<group>"; };
+		069B4E8124432158009DD5DE /* WarningRowCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WarningRowCell.swift; sourceTree = "<group>"; };
 		06A3D904239DB5CC00518AD8 /* EventsPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsPickerView.swift; sourceTree = "<group>"; };
 		06C0C6BE20B360BF0047C540 /* x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x11.h; sourceTree = "<group>"; };
 		06C0C6C020B360C00047C540 /* x11.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x11.c; sourceTree = "<group>"; };
@@ -1996,8 +2006,11 @@
 				062D29AD23A62EBC009ADC9E /* EventBetOptionCell.swift */,
 				062D29A923A515A6009ADC9E /* EventDateCell.swift */,
 				062D29AF23A65DDD009ADC9E /* EventSliderCell.swift */,
+				0635AFA1243A3EBD009C12F5 /* ParlaySliderCell.swift */,
 				062D29A723A5147A009ADC9E /* EventDetailRowCell.swift */,
+				069B4E8124432158009DD5DE /* WarningRowCell.swift */,
 				06086225238AAB8C002F4E9B /* EventListCell.swift */,
+				0635AFA7243F1FB6009C12F5 /* ParlayLegCell.swift */,
 			);
 			path = EventCells;
 			sourceTree = "<group>";
@@ -3074,7 +3087,7 @@
 				CEDA9EDB1FDE0C56005E8D1B /* countries.plist */,
 				06673E8D2377EA8500549005 /* WagerrOpCodeManager.swift */,
 				06673E8F2377F25200549005 /* WagerrEntities.swift */,
-				0682C7932495088800E433FA /* WagerrExplorerEntities.swift */,
+				0682C7912494CB5D00E433FA /* WagerrExplorerEntities.swift */,
 				06C729C823EAED3F00E55360 /* InstaSwapEntities.swift */,
 			);
 			path = breadwallet;
@@ -3338,6 +3351,7 @@
 				CEEC70931E96A24F00EF788E /* DefaultCurrencyViewController.swift */,
 				CE65C662207B023F000C99C4 /* EditWalletsViewController.swift */,
 				06086227238B10A2002F4E9B /* EventDetailViewController.swift */,
+				0635AFA3243F1826009C12F5 /* ParlayDetailViewController.swift */,
 				0608621C238A9F3F002F4E9B /* EventListController.swift */,
 				06086220238AA1C2002F4E9B /* EventsTableViewController.swift */,
 				CEA05CC21F21B53C00D850F0 /* FeeSelector.swift */,
@@ -3667,6 +3681,7 @@
 				7CBA74E52022784D00FBBFA9 /* AssetListViewModel.swift */,
 				0608621A238A961E002F4E9B /* HomeViewModels.swift */,
 				06086229238B11B1002F4E9B /* EventDetailDatasource.swift */,
+				0635AFA5243F1EB0009C12F5 /* ParlayDetailDatasource.swift */,
 			);
 			name = ViewModels;
 			path = src/ViewModels;
@@ -4321,7 +4336,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/sh\n\n# This script adds the version number to the icon of internal releases.\n\nexport PATH=/opt/local/bin/:/opt/local/sbin:$PATH:/usr/local/bin:\nif [ \"${CONFIGURATION}\" == \"Release\" ]; then\nexit 0;\nfi\n\nsh scripts/icon_versioning.sh";
+			shellScript = "#!/bin/sh\n\n# This script adds the version number to the icon of internal releases.\n\nexport PATH=/opt/local/bin/:/opt/local/sbin:$PATH:/usr/local/bin:\nif [ \"${CONFIGURATION}\" == \"Release\" ]; then\nexit 0;\nfi\n\nsh scripts/icon_versioning.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -4497,6 +4512,7 @@
 				CEE0EF521EBD14B60018DB36 /* PinTransitioningDelegate.swift in Sources */,
 				CE45C1FD1E7650F5002C3847 /* KVStoreCoordinator.swift in Sources */,
 				754AE0BC1DFE8A46007FD001 /* BRCore.swift in Sources */,
+				069B4E8024430E4A009DD5DE /* ParlayDetailViewController.swift in Sources */,
 				22A9A94A1DF61945000F0016 /* BRCameraPlugin.swift in Sources */,
 				CEC6AA3B1DEE4EB000EE5AFD /* CGRect+Additions.swift in Sources */,
 				7C5AC8A6203B93D3001B221E /* TxListCell.swift in Sources */,
@@ -4595,6 +4611,7 @@
 				CEBF292E1EF99E55005C330A /* LightWeightAlert.swift in Sources */,
 				CEBF32EE1DDBC30000348FC6 /* ShadowButton.swift in Sources */,
 				7CBF4B6B2008899100E003AA /* TxAddressCell.swift in Sources */,
+				0635AFA2243A3EBD009C12F5 /* ParlaySliderCell.swift in Sources */,
 				7C35E717200ADF450064808F /* Transaction.swift in Sources */,
 				CEB909F71E5FE654001804DC /* EnterPhraseCollectionViewController.swift in Sources */,
 				CEF3D2DD1E8CBA790070178E /* LAContext+Extensions.swift in Sources */,
@@ -4603,13 +4620,14 @@
 				CE6BCF5D1EE9E89A0029849C /* CustomTitleView.swift in Sources */,
 				CE2DC1391EBC36EE000FE727 /* Prompt.swift in Sources */,
 				CE83DE2A1E9EB7F600D07636 /* SendAmountCell.swift in Sources */,
-				0682C7942495088800E433FA /* WagerrExplorerEntities.swift in Sources */,
 				22A9A9521DF61945000F0016 /* BRKVStorePlugin.swift in Sources */,
 				CEAFC8611E5D5B0500E4FD06 /* SegmentedButton.swift in Sources */,
 				CE30F0E61EB27844004B8EE5 /* PhoneWCSessionManager.swift in Sources */,
 				7503773D1DF57428005EB8AE /* WalletManager+Auth.swift in Sources */,
 				22A9A9581DF61945000F0016 /* BRWebViewController.swift in Sources */,
 				CEC4CF091F0C84AB00E5C82E /* UIViewController+Alerts.swift in Sources */,
+				0635AFA8243F1FB6009C12F5 /* ParlayLegCell.swift in Sources */,
+				0682C7922494CB5E00E433FA /* WagerrExplorerEntities.swift in Sources */,
 				CE27F9591E2C8EA300F7F7F2 /* Amount.swift in Sources */,
 				CE1280F61EEA855C00D27649 /* Date+Additions.swift in Sources */,
 				CED82D4E1E575A5500507A9B /* main.swift in Sources */,
@@ -4704,10 +4722,12 @@
 				22122B721F0B8996000E9AB9 /* BRAPIClient+Events.swift in Sources */,
 				CE4B6C201E233C2C00CF935B /* UITableView+Additions.swift in Sources */,
 				CE760EDC1E561DF900EFAC2B /* SecurityCenterViewController.swift in Sources */,
+				0635AFA6243F1EB0009C12F5 /* ParlayDetailDatasource.swift in Sources */,
 				0608622A238B11B1002F4E9B /* EventDetailDatasource.swift in Sources */,
 				CEEC70861E94397D00EF788E /* UserDefaults+Additions.swift in Sources */,
 				0642675423F1BA250022A143 /* SwapViewController.swift in Sources */,
 				22A9A9501DF61945000F0016 /* BRHTTPServer.swift in Sources */,
+				069B4E8224432158009DD5DE /* WarningRowCell.swift in Sources */,
 				CE1E7A9A20938DFD00C86BB7 /* MenuButton.swift in Sources */,
 				22A9A9531DF61945000F0016 /* BRLinkPlugin.swift in Sources */,
 				7CA3BC302006864C00517BF7 /* Currency.swift in Sources */,
@@ -5500,12 +5520,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -5520,12 +5540,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -5543,12 +5563,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE = "";
@@ -5568,12 +5588,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -5593,12 +5613,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				OTHER_SWIFT_FLAGS = "-DDebug";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -5619,12 +5639,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -5696,13 +5716,13 @@
 		75A2A8011DA5935F00A983D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Internal";
-				CURRENT_PROJECT_VERSION = 349;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5712,13 +5732,13 @@
 		75A2A8021DA5935F00A983D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Internal";
-				CURRENT_PROJECT_VERSION = 349;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5729,11 +5749,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5744,11 +5764,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -5758,12 +5778,12 @@
 		75A2A8251DA5938500A983D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5774,12 +5794,12 @@
 		75A2A8261DA5938500A983D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -5931,12 +5951,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				OTHER_SWIFT_FLAGS = "-DDebug -DScreenshots -DTestnet";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -5984,12 +6004,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -6004,12 +6024,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -6023,13 +6043,13 @@
 		CEA7E68E1F09AC6A001F8C27 /* Screenshots */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Internal";
-				CURRENT_PROJECT_VERSION = 349;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6040,11 +6060,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6054,12 +6074,12 @@
 		CEA7E6901F09AC6A001F8C27 /* Screenshots */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6255,19 +6275,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Internal";
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Testnet";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				OTHER_SWIFT_FLAGS = "-DDebug -DTestnet";
-				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.testnet;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -6313,13 +6333,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.4.9;
-				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
+				MARKETING_VERSION = 3.4.4;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.testnet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -6333,13 +6353,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
-				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
+				MARKETING_VERSION = 3.4.4;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.testnet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -6352,14 +6372,14 @@
 		CEA7E6A11F0AAA84001F8C27 /* Testnet */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Internal";
-				CURRENT_PROJECT_VERSION = 349;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
-				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
+				MARKETING_VERSION = 3.4.4;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.testnet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
 			};
@@ -6369,12 +6389,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
-				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
+				MARKETING_VERSION = 3.4.4;
+				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.testnet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -6383,12 +6403,12 @@
 		CEA7E6A31F0AAA84001F8C27 /* Testnet */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6582,12 +6602,12 @@
 				CODE_SIGN_ENTITLEMENTS = breadwallet/breadwallet.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/**";
 				INFOPLIST_FILE = breadwallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				OTHER_SWIFT_FLAGS = "-DTestflight -DDebug";
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet;
 				PRODUCT_NAME = "Wagerr Pro";
@@ -6635,12 +6655,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				IBSC_MODULE = breadwallet_WatchKit_Extension;
 				INFOPLIST_FILE = "breadwallet WatchKit App/Info.plist";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp;
 				PRODUCT_NAME = "Wagerr Pro";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -6655,12 +6675,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = "breadwallet WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
@@ -6674,13 +6694,13 @@
 		CEE0EF5A1EBF8D7F0018DB36 /* Testflight */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Internal";
-				CURRENT_PROJECT_VERSION = 349;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = MessagesExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.watchkitapp.Ext;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;
@@ -6691,11 +6711,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TodayExtension/TodayExtension.entitlements;
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = TodayExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -6705,12 +6725,12 @@
 		CEE0EF5C1EBF8D7F0018DB36 /* Testflight */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 349;
+				CURRENT_PROJECT_VERSION = 344;
 				DEVELOPMENT_TEAM = GZ55ZWQ3G3;
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 3.4.9;
+				MARKETING_VERSION = 3.4.4;
 				PRODUCT_BUNDLE_IDENTIFIER = org.wagerr.betwallet.TodayExt;
 				PRODUCT_NAME = "Wagerr Pro";
 				SKIP_INSTALL = YES;

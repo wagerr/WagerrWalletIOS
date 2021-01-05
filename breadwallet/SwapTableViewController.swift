@@ -137,11 +137,16 @@ class SwapTableViewController : UITableViewController, Subscriber, Trackable {
     
     @objc public func updateSwapTransactions() {
         self.walletManager.apiClient!.InstaswapListSwaps(wallet: receiveAddress, handler: { [weak self] result in
-            guard let `self` = self,
-            case .success(let listData) = result else { return }
+            guard let `self2` = self,
+            case .success(let listData) = result else {
+                let alert = UIAlertController(title: S.Alert.error, message: S.Instaswap.APIError, preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: S.Button.ok, style: .default, handler: nil))
+                self!.present(alert, animated: true)
+                return
+            }
             DispatchQueue.main.async {
                 let allSwaps = listData.response.map { SwapViewModel(response: $0) }
-                Store.perform(action: WalletChange(self.currency).setSwapTransactions(allSwaps))
+                Store.perform(action: WalletChange(self2.currency).setSwapTransactions(allSwaps))
             }
         })
     }

@@ -657,7 +657,7 @@ class CoreDatabase {
                     bUpdate = true
                 }
             }
-                
+
             if bUpdate  {
                 sqlite3_exec(self.db, "update or rollback WGR_MAPPING set ZSTRING = '\(ent.description)', ZTIMESTAMP = \(ent.timestamp), ZHEIGHT = \(ent.blockheight), ZTXHASH = '\(ent.txHash)' " +
                                     "where ZNAMESPACEID = \(ent.namespaceID.rawValue) AND ZMAPPINGID = \(ent.mappingID)", nil, nil, nil)

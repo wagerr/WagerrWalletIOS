@@ -1,5 +1,5 @@
 //
-//  SendViewController.swift
+//  SwapViewController.swift
 //  breadwallet
 //
 //  Created by Adrian Corscadden on 2016-11-30.
@@ -182,25 +182,30 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
 
             guard amount != nil else    { return }
             self?.amount = amount
-            if amount!.tokenValue > 0.0   {
-                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: "BTC", sendAmount: amount!.InstaswapFormattedValue, handler: { [weak self] result in
-                        guard let `self2` = self,
-                        case .success(let tickersData) = result else {
-                            let alert = UIAlertController(title: S.Alert.error, message: S.Instaswap.APIError, preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: S.Button.ok, style: .default, handler: nil))
-                            self!.present(alert, animated: true)
-                            return
-                        }
+            let value = (isCrypto) ? amount!.tokenValue : amount!.fiatValue
+            
+            if value > 0.0   {
+                self!.walletManager.apiClient!.InstaswapTickers(getCoin: self!.currency.code, giveCoin: selectedCurrency, sendAmount: amount!.InstaswapFormattedValue , handler: { [weak self] result in
+                        guard let `self` = self,
+                        case .success(let tickersData) = result else { return }
                         DispatchQueue.main.async {
-                            self2.currentMin = tickersData.response!.min
-                            self2.receiveCell.text = S.Instaswap.youReceive + ": " + tickersData.response!.getAmount + " " + self2.currency.code
-                            
-                            if Double(truncating: amount!.tokenValue as NSNumber) < self2.currentMin {
-                                self2.receiveCell.textColor = .red
-                                self2.receiveCell.text! += String.init(format: " (min %.6f BTC)", self2.currentMin)
+                            if tickersData.response?.objectValue != nil {
+                                self.currentMin = tickersData.response!.objectValue!.min
+                                self.receiveCell.text = S.Instaswap.youReceive + ": " + tickersData.response!.objectValue!.getAmount + " " + self.currency.code
+                                
+                                if Double(truncating: value as NSNumber) < self.currentMin {
+                                    self.receiveCell.textColor = .red
+                                    self.receiveCell.text! += String.init(format: " (min %.6f %@)", self.currentMin, selectedCurrency)
+                                }
+                                else {
+                                    self.receiveCell.textColor = .grayTextTint
+                                }
+                                self.receiveCell.font = self.receiveCell.font.withSize(18)
                             }
-                            else {
-                                self2.receiveCell.textColor = .grayTextTint
+                            else    {   // fiat min warning case
+                                self.receiveCell.textColor = .red
+                                self.receiveCell.text! = tickersData.response!.stringValue!
+                                self.receiveCell.font = self.receiveCell.font.withSize(12)
                             }
                         }
                     })
@@ -303,16 +308,14 @@ class SwapViewController : UIViewController, Subscriber, ModalPresentable, Track
         
         walletManager.apiClient!.InstaswapSendSwap(getCoin: currency.code, giveCoin: amountView.selectedRate!.code, sendAmount: amount.InstaswapFormattedValue, receiveWallet: receiveAddress, refundWallet: refundAddress, handler: { [weak self] result in
             guard let `self` = self,
-                case .success(let swapData) = result, swapData.apiInfo! == "OK" else {
-                        return
-                }
+                case .success(let swapData) = result, swapData.apiInfo! == "OK" else { return }
                     
             guard swapData.apiInfo! == "OK" else {
                 message = String(format: S.Instaswap.errorSwap, swapData.apiInfo!)
                 let alert = UIAlertController(title: S.Alert.error, message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: S.Button.cancel, style: .default, handler: nil))
-                self2.present(alert, animated: true, completion: nil)
-                self2.enableSendButton(isEnabled: true)
+                self.present(alert, animated: true, completion: nil)
+                self.enableSendButton(isEnabled: true)
                 return
             }
             

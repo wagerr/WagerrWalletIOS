@@ -237,7 +237,7 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var hasSpreads : Bool   {
-        return (spreadPoints>0)
+        return !(spreadHomeOdds==0 && spreadAwayOdds==0 && spreadPoints==0)
     }
     var hasTotals : Bool   {
         return (totalPoints>0)

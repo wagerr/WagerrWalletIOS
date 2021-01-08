@@ -341,10 +341,10 @@ struct ExplorerTxPayoutLegs : Codable {
             ret += String.init(format: " (Price: %@)", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.drawOdds!)!))
         case .SPREADS_HOME:
             sign = ((lockedEvent?.spreadPoints)! > 0) ? "+" : "-"
-            ret += String.init(format: " (Price: %@, Spread: %@%.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadHomeOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
+            ret += String.init(format: " (Price: %@, Spread: %@%.2f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadHomeOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
         case .SPREADS_AWAY:
             sign = ((lockedEvent?.spreadPoints)! > 0) ? "-" : "+"
-            ret += String.init(format: " (Price: %@, Spread: %@%.1f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadAwayOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
+            ret += String.init(format: " (Price: %@, Spread: %@%.2f )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.spreadAwayOdds!)!), sign, abs(Double((lockedEvent?.spreadPoints)!)) / Double(EventMultipliers.SPREAD_MULTIPLIER))
         case .TOTAL_OVER:
             ret += String.init(format: " (Price: %@, Total: %@ )", BetEventDatabaseModel.getOddTx(odd: (lockedEvent?.totalOverOdds!)!), BetEventDatabaseModel.getTotalTx(total: (lockedEvent?.totalPoints!)!))
         case .TOTAL_UNDER:

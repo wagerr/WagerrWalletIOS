@@ -163,7 +163,7 @@ class BetEventDatabaseModel : BetCore {
     
     static func getSpreadTx(spread: UInt32) -> String {
         let signed   = Int16(bitPattern: UInt16(spread))
-        return (spread==0) ? "N/A" : String(format: "%.1f", abs(Float(signed) / Float(EventMultipliers.SPREAD_MULTIPLIER)) )
+        return (spread==0) ? "N/A" : String(format: "%.2f", abs(Float(signed) / Float(EventMultipliers.SPREAD_MULTIPLIER)) )
     }
     
     var getOddFormatString : String   {

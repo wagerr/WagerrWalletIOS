@@ -30,6 +30,8 @@ class ParlaySliderCell: EventSliderCellBase {
         for leg in viewModel.legs   {
             ret *= Float(leg.odd) / Float(EventMultipliers.ODDS_MULTIPLIER)
         }
+        // always apply effective odds in parlay regardless of the user setting
+        ret = ((ret-1)*0.94)+1
         self.betChoice = EventBetChoice.init(option: .none, type: .parlay, odd: ret)
 
         return UInt32( ret * Float(EventMultipliers.ODDS_MULTIPLIER) )

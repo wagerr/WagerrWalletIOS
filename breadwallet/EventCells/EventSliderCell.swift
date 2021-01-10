@@ -119,9 +119,9 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
         
         amountLabel.textColor = .primaryText
         let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
-        let minBet = UserDefaults.defaultBetAmount
-        let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
-        let currentValue = min(maxBet, Float(minBet) )
+        let minBetValue = UserDefaults.defaultBetAmount
+        let maxBetValue = min(maxBet, Float(balanceAmount) )
+        let currentValue = min(maxBetValue, Float(minBetValue) )
         
         self.amount = String.init( String(currentValue))
         amountLabel.delegate = self
@@ -136,8 +136,8 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
         self.reward = S.EventDetails.potentialReward
         
         //setup slider
-        self.betSlider.minimumValue = W.BetAmount.min;
-        self.betSlider.maximumValue = min(W.BetAmount.max, Float(balanceAmount) )
+        self.betSlider.minimumValue = minBet;
+        self.betSlider.maximumValue = maxBetValue
         self.betSlider.value = currentValue
         self.betSlider.isContinuous = true
         betSlider.addTarget(self, action: #selector(self.onSliderChange(sender:)), for: .valueChanged)
@@ -193,12 +193,12 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     
     func adjustSlider() {
         let balanceAmount = (Currencies.btc.state?.balance!.asUInt64)!/C.satoshis
-        let minBet = Int(W.BetAmount.min)
-        let maxBet = min(W.BetAmount.max, Float(balanceAmount) )
-        let nAmount = Int( Double(amount) ?? Double(minBet) )
+        let minBetValue = Int(minBet)
+        let maxBetValue = min(maxBet, Float(balanceAmount) )
+        let nAmount = Int( Double(amount) ?? Double(minBetValue) )
 
-        if (nAmount <= minBet)  { amount = String(minBet) }
-        if (Float(nAmount) > maxBet)  { amount = String(Int(maxBet)) }
+        if (nAmount <= minBetValue)  { amount = String(minBetValue) }
+        if (Float(nAmount) > maxBetValue)  { amount = String(Int(maxBetValue)) }
         betSlider.setValue(Float(nAmount), animated: true)
     }
     

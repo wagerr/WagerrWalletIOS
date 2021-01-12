@@ -73,7 +73,7 @@ struct EventBetChoice {
         }
     }
     
-    func potentialReward(stake: Int) -> (cryptoAmount: String, fiatAmount: String )   {
+    func potentialReward(stake: Int, isParlay: Bool) -> (cryptoAmount: String, fiatAmount: String )   {
         var decimalOdd = odd
         if UserDefaults.showAmericanNotationInOdds  {
             decimalOdd = AmericanToDecimal( odd: decimalOdd )

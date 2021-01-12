@@ -20,6 +20,10 @@ class ParlaySliderCell: EventSliderCellBase {
     internal override var maxBet : Float {
         return W.Parlay.max
     }
+    
+    internal override var isParlay : Bool {
+        return true
+    }
     // MARK: Views
     private let totalOddLabel = UILabel(font: UIFont.customBody(size: 24.0))
     private let totalOddTitleLabel = UILabel(font: UIFont.customBody(size: 24.0))

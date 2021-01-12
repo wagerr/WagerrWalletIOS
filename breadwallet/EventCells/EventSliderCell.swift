@@ -52,6 +52,10 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
         return W.BetAmount.max
     }
     
+    internal var isParlay : Bool {
+        return false
+    }
+    
     // MARK: Views
     internal let amountLabel = UITextField(frame: CGRect(x: 10.0, y: 10.0, width: 250.0, height: 35.0))
     internal let currencyLabel = UILabel(font: UIFont.customBody(size: 24.0))

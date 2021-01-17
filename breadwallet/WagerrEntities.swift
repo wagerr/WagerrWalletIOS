@@ -208,7 +208,8 @@ class BetEventDatabaseModel : BetCore {
     }
     
     var txSpreadPointsFormatted : String    {
-        //let fmt = (homeOdds>awayOdds) ? "+%@/-%@" : "-%@/+%@"
+        guard spreadPoints != 0 else { return "0"}
+        
         // spreads v2
         let signed   = Int16( bitPattern: UInt16(spreadPoints))
         let fmt = (signed>0) ? "+%@/-%@" : "-%@/+%@"

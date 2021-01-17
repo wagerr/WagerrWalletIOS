@@ -197,6 +197,7 @@ extension EventDetailDataSource: UITableViewDataSource {
             let betSliderCell = cell as! EventSliderCell
             self.sliderCell = betSliderCell
             self.sliderCell?.betChoice = currChoice
+            self.sliderCell?.currEvent = viewModel
             betSliderCell.cellDelegate = viewController
             
         }
@@ -218,6 +219,7 @@ extension EventDetailDataSource: UITableViewDataSource {
             return
         }
         self.sliderCell?.betChoice = choice
+        self.sliderCell?.currEvent = viewModel
         self.sliderCell?.recalculateReward(amount: -1)
     }
     

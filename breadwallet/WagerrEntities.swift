@@ -171,8 +171,9 @@ class BetEventDatabaseModel : BetCore {
     }
     
     static func getOddTx(odd : UInt32) -> String   {
-        //return (odd==0) ? "N/A" : String(format: getOddFormatString, getOdd(odd: Float(odd) / //Float(EventMultipliers.ODDS_MULTIPLIER) ) )
-        var ret = (odd==0) ? "N/A" : getOddNumberFormat.string(from: NSNumber(value: getOdd(odd: Float(odd) / Float(EventMultipliers.ODDS_MULTIPLIER) )) )!
+        var truncatedOdd = Double(getOdd(odd: Float(odd) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
+        truncatedOdd = truncatedOdd.truncate(places: 2)
+        var ret = (odd==0) ? "N/A" : getOddNumberFormat.string(from: NSNumber(value: truncatedOdd) )!
         
         if ret == "+100"    {
             ret = "-100"

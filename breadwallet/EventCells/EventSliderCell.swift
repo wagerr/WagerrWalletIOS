@@ -18,6 +18,7 @@ enum LegButtonMode {
 class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     var betChoice : EventBetChoice?
     var cellDelegate: EventBetSliderDelegate?
+    var currEvent : BetEventViewModel?
     
     // MARK: - Accessors
     public var amount: String {
@@ -184,7 +185,7 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     
     func recalculateReward(amount: Int = -1)    {
         let sliderValue = ( amount == -1 ) ? Int(betSlider.value) : amount
-        let potentialRewardData = betChoice?.potentialReward(stake: sliderValue, isParlay: false)
+        let potentialRewardData = betChoice?.potentialReward(stake: sliderValue, event: currEvent, isParlay: false)
         self.reward = String.init(format: "%@: %@ (%@)", S.EventDetails.potentialReward, potentialRewardData!.cryptoAmount, potentialRewardData!.fiatAmount)
     }
     

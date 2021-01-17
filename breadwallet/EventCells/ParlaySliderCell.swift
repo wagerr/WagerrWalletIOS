@@ -30,15 +30,13 @@ class ParlaySliderCell: EventSliderCellBase {
 
     // MARK: Computed vars
     var totalOdd : UInt32   {
-        var ret : Float = 1.0
+        var ret : Double = 1.0
         for leg in viewModel.legs   {
-            ret *= Float(leg.odd) / Float(EventMultipliers.ODDS_MULTIPLIER)
+            ret *= Double(leg.odd) / Double(EventMultipliers.ODDS_MULTIPLIER)
         }
-        // always apply effective odds in parlay regardless of the user setting
-        ret = ((ret-1)*0.94)+1
         self.betChoice = EventBetChoice.init(option: .none, type: .parlay, odd: ret)
 
-        return UInt32( ret * Float(EventMultipliers.ODDS_MULTIPLIER) )
+        return UInt32( ret * Double(EventMultipliers.ODDS_MULTIPLIER) )
     }
     
     // MARK: - Init

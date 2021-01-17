@@ -29,9 +29,9 @@ enum EventBetType   {
 struct EventBetChoice {
     let option : EventBetOption
     let type : EventBetType
-    let odd : Float
+    let odd : Double
     
-    init(option: EventBetOption, type: EventBetType, odd: Float) {
+    init(option: EventBetOption, type: EventBetType, odd: Double) {
         self.option = option
         self.type = type
         self.odd = odd
@@ -73,17 +73,38 @@ struct EventBetChoice {
         }
     }
     
-    func potentialReward(stake: Int, isParlay: Bool) -> (cryptoAmount: String, fiatAmount: String )   {
-        var decimalOdd = odd
-        if UserDefaults.showAmericanNotationInOdds  {
-            decimalOdd = AmericanToDecimal( odd: decimalOdd )
-        }
-        var winningAmount: Float = (UserDefaults.showNetworkFeesInOdds) ? Float(stake) * (decimalOdd - 1) * 0.94 : Float(stake) * (decimalOdd - 1)
-        let cryptoAmount: Float = Float(stake) + winningAmount
+    func potentialReward(stake: Int, event: BetEventDatabaseModel?, isParlay: Bool) -> (cryptoAmount: String, fiatAmount: String )   {
+        let decimalOdd = getEffectiveOdd(event: event)
+        let winningAmount: Double = Double(stake) * (decimalOdd - 1)
+        var cryptoAmount: Double = Double(stake) + winningAmount
+        cryptoAmount = cryptoAmount.truncate(places: 2)
         let currency = Currencies.btc
         let rate = currency.state?.currentRate
-        let amount = Amount(amount: UInt256(UInt64(cryptoAmount*Float(C.satoshis))), currency: currency, rate: rate)
+        let amount = Amount(amount: UInt256(UInt64(cryptoAmount*Double(C.satoshis))), currency: currency, rate: rate)
         return (String.init(format: "%.2f %@", cryptoAmount, currency.code), amount.fiatDescription)
+    }
+    
+    func getEffectiveOdd( event: BetEventDatabaseModel? ) -> Double {
+        var ret : Double
+        switch type {
+        case .home:
+            ret = (option == EventBetOption.MoneyLine) ? Double(event!.homeOdds) : Double(event!.spreadHomeOdds)
+        case .away:
+            ret = (option == EventBetOption.MoneyLine) ? Double(event!.awayOdds) : Double(event!.spreadAwayOdds)
+        case .draw:
+            ret = Double(event!.drawOdds)
+        case .over:
+            ret = Double(event!.overOdds)
+        case .under:
+            ret = Double(event!.underOdds)
+        case .none:
+            ret = 0
+        case .parlay:
+            ret = odd * Double(EventMultipliers.ODDS_MULTIPLIER)
+        }
+        ret = ret / Double(EventMultipliers.ODDS_MULTIPLIER)
+        ret = ((ret-1)*0.94)+1
+        return ret
     }
     
     func AmericanToDecimal( odd: Float ) -> Float   {
@@ -124,14 +145,14 @@ class EventBetOptionTotalsCell : EventBetOptionCell    {
     
     @objc override func actionTappedHome() {
         guard home != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .over, odd: Float(homeLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .over, odd: Double(homeLabel.text!)!)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: homeLabel.toggleLabel() )
         print("tapped")
     }
     
     @objc override func actionTappedAway() {
         guard away != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .under, odd: Float(awayLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .under, odd: Double(awayLabel.text!)!)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: awayLabel.toggleLabel() )
         print("tapped")
     }
@@ -245,21 +266,21 @@ class EventBetOptionCell: EventDetailRowCell {
     // MARK: - Tap actions
     @objc func actionTappedHome() {
         guard home != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .home, odd: Float(homeLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .home, odd: Double(homeLabel.text!)!)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: homeLabel.toggleLabel() )
         print("tapped")
     }
     
     @objc func actionTappedDraw() {
         guard draw != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .draw, odd: Float(drawLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .draw, odd: Double(drawLabel.text!)!)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: drawLabel.toggleLabel() )
         print("tapped")
     }
     
     @objc func actionTappedAway() {
         guard away != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .away, odd: Float(awayLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .away, odd: Double(awayLabel.text!)!)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: awayLabel.toggleLabel() )
     }
     

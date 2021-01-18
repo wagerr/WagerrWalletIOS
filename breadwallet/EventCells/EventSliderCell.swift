@@ -185,7 +185,7 @@ class EventSliderCellBase: EventDetailRowCell, UITextFieldDelegate {
     
     func recalculateReward(amount: Int = -1)    {
         let sliderValue = ( amount == -1 ) ? Int(betSlider.value) : amount
-        let potentialRewardData = betChoice?.potentialReward(stake: sliderValue, event: currEvent, isParlay: false)
+        let potentialRewardData = betChoice?.potentialReward(stake: sliderValue, event: currEvent)
         self.reward = String.init(format: "%@: %@ (%@)", S.EventDetails.potentialReward, potentialRewardData!.cryptoAmount, potentialRewardData!.fiatAmount)
     }
     

@@ -1015,6 +1015,15 @@ extension Double
 {
     func truncate(places : Int)-> Double
     {
-        return Double(floor(pow(10.0, Double(places)) * self)/pow(10.0, Double(places)))
+        // adjust for floating point 9999 effect
+        let mult = pow(10.0, Double(places))
+        var ret : Double
+        let tolerance : Double = 0.9999
+        ret = Double(floor(mult * self)/mult)
+        if mult*(self-ret) > tolerance     {   // 9999 effect, just round
+            ret = Double((mult * self).rounded()/mult)
+        }
+        return ret
+        
     }
 }

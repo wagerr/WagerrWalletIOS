@@ -73,7 +73,7 @@ struct EventBetChoice {
         }
     }
     
-    func potentialReward(stake: Int, event: BetEventDatabaseModel?, isParlay: Bool) -> (cryptoAmount: String, fiatAmount: String )   {
+    func potentialReward(stake: Int, event: BetEventDatabaseModel?) -> (cryptoAmount: String, fiatAmount: String )   {
         let decimalOdd = getEffectiveOdd(event: event)
         let winningAmount: Double = Double(stake) * (decimalOdd - 1)
         var cryptoAmount: Double = Double(stake) + winningAmount

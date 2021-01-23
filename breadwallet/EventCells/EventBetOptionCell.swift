@@ -30,11 +30,13 @@ struct EventBetChoice {
     let option : EventBetOption
     let type : EventBetType
     let odd : Double
+    let effectiveOdd : Double
     
-    init(option: EventBetOption, type: EventBetType, odd: Double) {
+    init(option: EventBetOption, type: EventBetType, odd: Double, effectiveOdd: Double) {
         self.option = option
         self.type = type
         self.odd = odd
+        self.effectiveOdd = effectiveOdd
     }
     
     func getOutcome() -> BetOutcome {
@@ -100,7 +102,7 @@ struct EventBetChoice {
         case .none:
             ret = 0
         case .parlay:
-            ret = odd * Double(EventMultipliers.ODDS_MULTIPLIER)
+            return effectiveOdd
         }
         ret = ret / Double(EventMultipliers.ODDS_MULTIPLIER)
         ret = ((ret-1)*0.94)+1
@@ -145,14 +147,14 @@ class EventBetOptionTotalsCell : EventBetOptionCell    {
     
     @objc override func actionTappedHome() {
         guard home != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .over, odd: Double(homeLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .over, odd: Double(homeLabel.text!)!,effectiveOdd: 0)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: homeLabel.toggleLabel() )
         print("tapped")
     }
     
     @objc override func actionTappedAway() {
         guard away != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .under, odd: Double(awayLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .under, odd: Double(awayLabel.text!)!,effectiveOdd: 0)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: awayLabel.toggleLabel() )
         print("tapped")
     }
@@ -266,21 +268,21 @@ class EventBetOptionCell: EventDetailRowCell {
     // MARK: - Tap actions
     @objc func actionTappedHome() {
         guard home != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .home, odd: Double(homeLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .home, odd: Double(homeLabel.text!)!,effectiveOdd: 0)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: homeLabel.toggleLabel() )
         print("tapped")
     }
     
     @objc func actionTappedDraw() {
         guard draw != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .draw, odd: Double(drawLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .draw, odd: Double(drawLabel.text!)!,effectiveOdd: 0)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: drawLabel.toggleLabel() )
         print("tapped")
     }
     
     @objc func actionTappedAway() {
         guard away != "N/A" else { return }
-        let choice = EventBetChoice.init(option: self.option, type: .away, odd: Double(awayLabel.text!)!)
+        let choice = EventBetChoice.init(option: self.option, type: .away, odd: Double(awayLabel.text!)!,effectiveOdd: 0)
         self.cellDelegate?.didTapBetOption ( choice: choice, isSelected: awayLabel.toggleLabel() )
     }
     

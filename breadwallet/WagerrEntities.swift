@@ -182,6 +182,19 @@ class BetEventDatabaseModel : BetCore {
         return ret
     }
     
+    // raw = regardless of effective or in-chain
+    static func getRawOddTx(odd : UInt32) -> String   {
+        var truncatedOdd = Double(getRawOdd(odd: Float(odd) / Float(EventMultipliers.ODDS_MULTIPLIER) ))
+        truncatedOdd = truncatedOdd.truncate(places: 2)
+        var ret = (odd==0) ? "N/A" : getOddNumberFormat.string(from: NSNumber(value: truncatedOdd) )!
+        
+        if ret == "+100"    {
+            ret = "-100"
+        }
+        
+        return ret
+    }
+    
     static var getOddNumberFormat : NumberFormatter   {
         let nf = NumberFormatter()
         nf.numberStyle = .decimal
@@ -195,6 +208,13 @@ class BetEventDatabaseModel : BetCore {
     
     public static func getOdd( odd : Float ) -> Float   {
         var ret = (UserDefaults.showNetworkFeesInOdds) ? odd : ((odd-1)*0.94)+1
+        ret = (UserDefaults.showAmericanNotationInOdds) ? DecimalToAmerican(odd: ret) : ret
+        return ret
+    }
+    
+    // raw = regardless of effective or in-chain
+    public static func getRawOdd( odd : Float ) -> Float   {
+        var ret = odd
         ret = (UserDefaults.showAmericanNotationInOdds) ? DecimalToAmerican(odd: ret) : ret
         return ret
     }

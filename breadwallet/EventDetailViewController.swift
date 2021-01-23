@@ -218,7 +218,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         tableView.deleteRows(at: [IndexPath(row: sliderPosToRemove, section: 0)], with: .none)
         tableView.endUpdates()
         sliderPosToRemove = 0
-        let choice = EventBetChoice.init(option: .none, type: .none, odd: 1.0 )
+        let choice = EventBetChoice.init(option: .none, type: .none, odd: 1.0, effectiveOdd: 0 )
         dataSource?.cleanBetOptions( choice: choice )
     }
 

@@ -32,11 +32,20 @@ class ParlaySliderCell: EventSliderCellBase {
     var totalOdd : UInt32   {
         var ret : Double = 1.0
         for leg in viewModel.legs   {
-            ret *= Double(leg.odd) / Double(EventMultipliers.ODDS_MULTIPLIER)
+            let odd = Double(leg.odd) / Double(EventMultipliers.ODDS_MULTIPLIER)
+            ret *= odd
         }
-        self.betChoice = EventBetChoice.init(option: .none, type: .parlay, odd: ret)
-
+    
         return UInt32( ret * Double(EventMultipliers.ODDS_MULTIPLIER) )
+    }
+    
+    var effectiveOdd : UInt32   {
+        var effective : Double = 1.0
+        for leg in viewModel.legs   {
+            let odd = Double(leg.odd) / Double(EventMultipliers.ODDS_MULTIPLIER)
+            effective *= ((odd-1)*0.94)+1
+        }
+        return UInt32( effective * Double(EventMultipliers.ODDS_MULTIPLIER) )
     }
     
     // MARK: - Init
@@ -69,7 +78,8 @@ class ParlaySliderCell: EventSliderCellBase {
     }
     
     func updateTotalOdds()  {
-        totalOddLabel.text = BetEventDatabaseModel.getOddTx(odd: totalOdd)
+        totalOddLabel.text = BetEventDatabaseModel.getRawOddTx(odd: (UserDefaults.showNetworkFeesInOdds) ? totalOdd : effectiveOdd)
+        self.betChoice = EventBetChoice.init(option: .none, type: .parlay, odd: Double(totalOdd) / Double(EventMultipliers.ODDS_MULTIPLIER), effectiveOdd: Double(effectiveOdd) /  Double(EventMultipliers.ODDS_MULTIPLIER) )
     }
     
 }

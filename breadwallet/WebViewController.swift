@@ -50,7 +50,7 @@ class WebViewController: UIViewController, WKNavigationDelegate {
     
     // MARK: - Init
     
-    init(theURL: String, didClose : @escaping ()->Void? = {} ) {
+    init(theURL: String, didClose : @escaping ()->Void? ) {
         self.theURL = theURL
         self.header = ModalHeaderView(title: "", style: .transaction, faqInfo: ArticleIds.transactionDetails)
         self.didClose = didClose

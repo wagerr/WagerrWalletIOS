@@ -254,7 +254,7 @@ class EventDetailViewController: UIViewController, Subscriber, EventBetOptionDel
         
         let betsmartDetails = WebViewController(theURL: String.init(format: "https://betsmart.app/teaser-team/?name=%@&sport=%@&mode=%@&source=wagerr"
             , teamName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-            , viewModel.txSport.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, style))
+                                                                    , viewModel.txSport.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!, style), didClose: {})
         betsmartDetails.modalPresentationStyle = .overCurrentContext
         //betsmartDetails.transitioningDelegate = transitionDelegate
         betsmartDetails.modalPresentationCapturesStatusBarAppearance = true

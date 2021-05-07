@@ -271,7 +271,7 @@ class EventListController : UIViewController, Subscriber, BetSettingsDelegate {
             }
         }
         
-        let betsmartDetails = WebViewController(theURL: String.init(format: "https://betsmart.app/teaser-event?id=%d&mode=%@&source=wagerr", eventID, style))
+        let betsmartDetails = WebViewController(theURL: String.init(format: "https://betsmart.app/teaser-event?id=%d&mode=%@&source=wagerr", eventID, style), didClose: {})
         betsmartDetails.modalPresentationStyle = .overCurrentContext
         betsmartDetails.transitioningDelegate = transitionDelegate
         betsmartDetails.modalPresentationCapturesStatusBarAppearance = true

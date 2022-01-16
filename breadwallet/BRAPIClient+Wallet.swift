@@ -95,7 +95,7 @@ extension BRAPIClient {
     }
 
     func FetchCoinRate(_ handler: @escaping (RatesResult) -> Void) {
-        let urlString = "https://api.crex24.com/CryptoExchangeService/BotPublic/ReturnTicker?request=[NamePairs=BTC_WGR]";
+        let urlString = "https://api.crex24.com/v2/public/tickers?instrument=WGR-BTC";
         var ret = [Rate]()
         
         guard let requestUrl = URL(string:urlString) else { return handler(.error("Coin rate not found")) }
@@ -105,27 +105,24 @@ extension BRAPIClient {
             if error == nil,let usableData = data {
                 
                 struct Crex24TickerItem : Codable {
-                    var PairId : integer_t!
-                    var PairName : String!
-                    var Last : double_t!
-                    var LowPrice: double_t!
-                    var HighPrice: double_t!
-                    var PercentChange: double_t!
-                    var BaseVolume: double_t!
-                    var QuoteVolume: double_t!
-                    var VolumeInBtc: double_t!
-                    var VolumeInUsd: double_t!
-                }
-                
-                struct Crex24TickerObject : Codable {
-                    var Error : String!
-                    var Tickers : [Crex24TickerItem]!
+                    var instrument : String!
+                    var last : double_t!
+                    var low: double_t!
+                    var high: double_t!
+                    var percentChange: double_t!
+                    var baseVolume: double_t!
+                    var quoteVolume: double_t!
+                    var volumeInBtc: double_t!
+                    var volumeInUsd: double_t!
+                    var ask: double_t!
+                    var bid: double_t!
+                    var timestamp : String!
                 }
                 
                 do {
                     let decoder = JSONDecoder()
-                    let objData = try decoder.decode(Crex24TickerObject.self, from: usableData)
-                    let coinrate = objData.Tickers[0].Last;
+                    let arrData = try decoder.decode([Crex24TickerItem].self, from: usableData)
+                    let coinrate = arrData[0].last;
                     ret.append(Rate(code: Currencies.btc.code, name: Currencies.btc.name, rate: coinrate!, reciprocalCode:"BTC"))
                     handler(.success(ret))
                 }

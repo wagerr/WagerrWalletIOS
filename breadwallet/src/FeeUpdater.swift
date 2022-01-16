@@ -87,6 +87,7 @@ class FeeUpdater : Trackable {
         let minFeePerKB: UInt64 = (txFeePerKb*1000 + 190)/191 // minimum relay fee on a 191byte tx
         let maxFeePerKB: UInt64 = ((1000100*1000 + 190)/191) // slightly higher than a 10000bit fee on a 191byte tx
         
+        /*  bypass BRD API call
         walletManager.apiClient?.feePerKb(code: walletManager.currency.code) { [weak self] newFees, error in
             guard let `self` = self else { return }
             guard error == nil else { print("feePerKb error: \(String(describing: error))"); completion(); return }
@@ -96,9 +97,12 @@ class FeeUpdater : Trackable {
                     return
                 }
             }
-            Store.perform(action: WalletChange(self.walletManager.currency).setFees(newFees))
-            completion()
-        }
+         */
+        let regularFeePerKb: uint_fast64_t = 12000
+        let economyFeePerKb: uint_fast64_t = 6000
+        let newFees = Fees(regular: regularFeePerKb, economy: economyFeePerKb, timestamp: Date().timeIntervalSince1970)
+        Store.perform(action: WalletChange(self.walletManager.currency).setFees(newFees))
+        completion()
     }
     
     private func refreshEthereum(completion: @escaping () -> Void) {
